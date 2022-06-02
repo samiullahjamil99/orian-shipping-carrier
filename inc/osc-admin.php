@@ -1,15 +1,25 @@
 <?php
 function orian_shipping_init() {
-    register_setting('orian_general','orian_main_setting');
+    register_setting('orian_general','orian_main_setting',array('sanitize_callback' => 'orian_sanitize_settings_callback'));
     
     add_settings_section( 'orian_api','API Credentials','orian_api_description_html','orian_general' );
-    add_settings_field( 'orian_username', 'Username','orian_api_fields_cb','orian_general','orian_api',array('label_for' => 'username','class'=>'orian_username') );
-    add_settings_field( 'orian_password', 'Password','orian_api_fields_cb','orian_general','orian_api',array('label_for' => 'password','class'=>'orian_password') );
+    add_settings_field( 'orian_username', 'Username','orian_common_text_field_cb','orian_general','orian_api',array('label_for' => 'username','class'=>'orian_username') );
+    add_settings_field( 'orian_password', 'Password','orian_common_password_field_cb','orian_general','orian_api',array('label_for' => 'password','class'=>'orian_password') );
 
     add_settings_section( 'orian_main', 'Orian Main Settings','orian_main_description_html','orian_general' );
-    add_settings_field( 'orian_consignee', 'Consignee','orian_main_fields_cb','orian_general','orian_main',array('label_for' => 'consignee','class'=>'orian_consignee') );
+    add_settings_field( 'orian_consignee', 'Consignee','orian_common_text_field_cb','orian_general','orian_main',array('label_for' => 'consignee','class'=>'orian_consignee') );
+    add_settings_field( 'orian_referenceorder2', 'REFERENCEORDER2','orian_common_text_field_cb','orian_general','orian_main',array('label_for' => 'referenceorder2','class'=>'orian_referenceorder2') );
+    add_settings_section( 'orian_source', 'Orian Source Settings','orian_source_description_html','orian_general' );
+    add_settings_field( 'orian_source_sitename', 'SITENAME','orian_common_text_field_cb','orian_general','orian_source',array('label_for' => 'source_sitename','class'=>'orian_source_sitename') );
 }
 add_action('admin_init','orian_shipping_init');
+
+function orian_sanitize_settings_callback( $input ) {
+    $output = $input;
+    if ($input['source_sitename'] === "abc")
+        $output['source_sitename'] = "abc1";
+    return $output;
+}
 
 function orian_api_description_html() {
     ?>
@@ -23,23 +33,29 @@ function orian_main_description_html() {
     <?php
 }
 
-function orian_api_fields_cb($args) {
-    $options = get_option('orian_main_setting');
-    $label_for = $args['label_for'];
-    if (isset($options))
-        $value = $options[$label_for];
+function orian_source_description_html() {
     ?>
-    <input type="<?php echo $label_for === "password" ? 'password' : 'text'; ?>" name="orian_main_setting[<?php echo $label_for; ?>]" value="<?php echo isset($options) ? $value : ''; ?>">
+    <p>Set Source details for the Orian</p>
     <?php
 }
 
-function orian_main_fields_cb($args) {
+function orian_common_password_field_cb($args) {
     $options = get_option('orian_main_setting');
     $label_for = $args['label_for'];
     if (isset($options))
         $value = $options[$label_for];
     ?>
-    <input type="text" name="orian_main_setting[<?php echo $label_for; ?>]" value="<?php echo isset($options) ? $value : ''; ?>">
+    <input type="password" id="<?php echo $label_for; ?>" name="orian_main_setting[<?php echo $label_for; ?>]" value="<?php echo isset($options) ? $value : ''; ?>">
+    <?php
+}
+
+function orian_common_text_field_cb($args) {
+    $options = get_option('orian_main_setting');
+    $label_for = $args['label_for'];
+    if (isset($options))
+        $value = $options[$label_for];
+    ?>
+    <input type="text" id="<?php echo $label_for; ?>" name="orian_main_setting[<?php echo $label_for; ?>]" value="<?php echo isset($options) ? $value : ''; ?>">
     <?php
 }
 
@@ -59,6 +75,7 @@ add_action('admin_menu','orian_shipping_menu');
 function orian_shipping_settings_page() {
     ?>
     <div class="wrap">
+    <?php settings_errors(); ?>
         <h1><?php echo esc_html( get_admin_page_title() ); ?></h1>
         <form action="options.php" method="post">
             <?php
