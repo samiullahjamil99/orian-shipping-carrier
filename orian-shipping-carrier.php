@@ -19,3 +19,4 @@ if ( ! defined( 'OSC_PLUGIN_FILE' ) ) {
 
 // Added the admin page for api options and other settings
 include_once dirname(OSC_PLUGIN_FILE) . '/inc/osc-admin.php';
+include_once dirname(OSC_PLUGIN_FILE) . '/inc/class-osc-api.php';
