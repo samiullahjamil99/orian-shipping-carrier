@@ -11,6 +11,10 @@ function orian_shipping_init() {
     add_settings_field( 'orian_referenceorder2', 'REFERENCEORDER2','orian_common_text_field_cb','orian_general','orian_main',array('label_for' => 'referenceorder2','class'=>'orian_referenceorder2') );
     add_settings_section( 'orian_source', 'Orian Source Settings','orian_source_description_html','orian_general' );
     add_settings_field( 'orian_source_sitename', 'SITENAME','orian_common_text_field_cb','orian_general','orian_source',array('label_for' => 'source_sitename','class'=>'orian_source_sitename') );
+    add_settings_field( 'orian_source_street1', 'STREET1','orian_common_text_field_cb','orian_general','orian_source',array('label_for' => 'source_street1','class'=>'orian_source_street1') );
+    add_settings_field( 'orian_source_city', 'CITY','orian_common_text_field_cb','orian_general','orian_source',array('label_for' => 'source_city','class'=>'orian_source_city') );
+    add_settings_field( 'orian_source_contact1name', 'CONTACT1NAME','orian_common_text_field_cb','orian_general','orian_source',array('label_for' => 'source_contact1name','class'=>'orian_source_contact1name') );
+    add_settings_field( 'orian_source_contact1phone', 'CONTACT1PHONE','orian_common_text_field_cb','orian_general','orian_source',array('label_for' => 'source_contact1phone','class'=>'orian_source_contact1phone') );
 }
 add_action('admin_init','orian_shipping_init');
 
