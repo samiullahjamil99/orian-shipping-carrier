@@ -7,7 +7,7 @@ class OSC_API {
     public $api_url = "https://disapi.orian.com";
     public function __construct() {
         $this->orian_options = get_option('orian_main_setting');
-        if (isset($this->$orian_options)) {
+        if (isset($this->orian_options)) {
             $this->authtoken = $this->orian_options['authtoken'];
         }
     }
@@ -41,6 +41,28 @@ class OSC_API {
     public function logged_in() {
         if (array_key_exists('authtoken',$this->orian_options)) {
             return true;
+        }
+        return false;
+    }
+    public function get_pudo_points($city,$address = "",$pudotype="",$distance="999999") {
+        if (!$this->logged_in()) {
+            $this->authorize_login();
+        }
+        if ($this->logged_in()) {
+            $pudos_url = $this->api_url . "/pudo/GetPudos?city=" . $city . "&address=" . $address . "&pudotype=" . $pudotype . "&distance=" . $distance;
+            $args = array(
+                'method' => 'GET',
+                'timeout' => 30,
+                'headers' => array(
+                    'AuthToken' => $this->authtoken,
+                ),
+            );
+            $response = wp_remote_request($pudos_url, $args);
+            $response_body = $response['body'];
+            $response_body = str_replace('\"', "'", $response_body);
+            $response_body = str_replace('"', "", $response_body);
+            return $response_body;
+            return wp_remote_retrieve_body($response);
         }
         return false;
     }
