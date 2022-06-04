@@ -89,8 +89,8 @@ class OSC_API {
                 $return_response['status'] = $response['response']['code'];
                 if ( $response['response']['code'] == 200 ) {
                     $response_body = $response['body'];
-                    $response_body = str_replace('\"', "'", $response_body);
-                    $response_body = str_replace('"', "", $response_body);
+                    $response_body = str_replace('\"', '"', $response_body);
+                    $response_body = substr($response_body, 1, -1);
                     $xml = simplexml_load_string($response_body,null,LIBXML_NOCDATA);
                     $pudos = array();
                     foreach($xml->children() as $pudo) {
