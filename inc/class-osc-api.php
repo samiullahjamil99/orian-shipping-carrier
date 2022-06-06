@@ -86,6 +86,7 @@ class OSC_API {
                 if ( $response['response']['code'] == 200 ) {
                     $response_body = $response['body'];
                     $response_body = str_replace('\"', '"', $response_body);
+                    if ($response_body[0] === '"')
                     $response_body = substr($response_body, 1, -1);
                     $xml = simplexml_load_string($response_body,null,LIBXML_NOCDATA);
                     $pudos = array();
