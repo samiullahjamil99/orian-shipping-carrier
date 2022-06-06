@@ -24,11 +24,13 @@ include_once dirname(OSC_PLUGIN_FILE) . '/inc/class-osc-api.php';
 if ( in_array( 'woocommerce/woocommerce.php', apply_filters( 'active_plugins', get_option( 'active_plugins' ) ) ) ) {
 function osc_shipping_init() {
 	include_once dirname(OSC_PLUGIN_FILE) . '/inc/shipping-methods/class-osc-delivery-shipping.php';
+	include_once dirname(OSC_PLUGIN_FILE) . '/inc/shipping-methods/class-osc-pudo-shipping.php';
 }
 add_action( 'woocommerce_shipping_init', 'osc_shipping_init' );
 
 function osc_add_shipping( $methods ) {
 	$methods['orian_delivery_shipping'] = 'OSC_Delivery_Shipping';
+	$methods['orian_pudo_shipping'] = 'OSC_Pudo_Shipping';
 	return $methods;
 }
 add_filter( 'woocommerce_shipping_methods', 'osc_add_shipping' );
