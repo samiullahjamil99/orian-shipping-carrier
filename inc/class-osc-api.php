@@ -109,6 +109,48 @@ class OSC_API {
         }
         return $return_response;
     }
+    public function get_transportation_order_status($orderid,$packagenumber=1) {
+        $return_response = array();
+        $order = wc_get_order($orderid);
+        if (!$this->logged_in()) {
+            $this->authorize_login();
+        }
+        if ($this->logged_in() && $order) {
+            $consignee = $this->orian_options['consignee'];
+            $packageid = "KST" . $orderid;
+            if ($packagenumber > 1)
+            $packageid .= "P" . $packagenumber;
+            $status_url = $this->api_url . '/GetPackageStatus?consignee=' . $consignee . '&package=' . $packageid;
+            $args = array(
+                'method' => 'GET',
+                'timeout' => 30,
+                'headers' => array(
+                    'AuthToken' => $this->authtoken,
+                ),
+            );
+            $response = wp_remote_request($status_url, $args);
+            if (is_wp_error($response)) {
+                $return_response['status'] = 408;
+              } else {
+                  $return_response['status'] = $response['response']['code'];
+                  if ( $response['response']['code'] == 200 ) {
+                    $response_body = $response['body'];
+                    $response_body = str_replace('\"', '"', $response_body);
+                    if ($response_body[0] === '"')
+                    $response_body = substr($response_body, 1, -1);
+                    $xml = simplexml_load_string($response_body,null,LIBXML_NOCDATA);
+                    $pkg_status = (string) $xml->DATA->PACKAGESTATUS;
+                    $return_response['package_status'] = $pkg_status;
+                  } elseif ( $response['response']['code'] == 401 && $this->firsttimecall) {
+                      $this->delete_auth();
+                      $return_response = $this->get_transportation_order_status($orderid,$packagenumber);
+                  } else {
+                    $return_response['data'] = $response['body'];
+                  }
+              }
+        }
+        return $return_response;
+    }
     public function generate_transportation_order($orderid,$numberofpackages=1) {
         $return_response = array();
         $order = wc_get_order($orderid);
