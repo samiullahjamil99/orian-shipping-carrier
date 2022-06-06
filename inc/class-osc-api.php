@@ -157,7 +157,7 @@ class OSC_API {
         </PACKAGE>';
         if ($numberofpackages > 1) {
             for ($i = 2; $i <= $numberofpackages; $i++) {
-                $packageid = 'KST' . $orderid . 'P' . $i;
+                $packageid = 'KKO' . $orderid . 'P' . $i;
                 $packages_xml .= '<PACKAGE>
         <PACKAGEID>'.$packageid.'</PACKAGEID>
         <PACKAGEREFID></PACKAGEREFID>
@@ -168,11 +168,11 @@ class OSC_API {
         </PACKAGE>';
             }
         }
-        $generate_order_xml = '<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+        $generate_order_xml = "<?xml version='1.0' encoding='UTF-8' standalone='yes'?>
         <DATACOLLECTION>
             <DATA>
             <TABLENAME>TRANSPORTATIONORDER</TABLENAME>
-            <CONSIGNEE>'.$consignee.'</CONSIGNEE>
+            <CONSIGNEE>$consignee</CONSIGNEE>
             <TRANSPORTATIONORDERID/>
             <ORDERTYPE>REGULAR</ORDERTYPE>
             <STATUS/>
@@ -198,8 +198,8 @@ class OSC_API {
             <STATUSDATE/>
             <COMPLETIONDATE/>
             <HOSTORDERID/>
-            <REFERENCEORDER>'.$orderid.'</REFERENCEORDER>
-            <REFERENCEORDER2>'.$ref2.'</REFERENCEORDER2>
+            <REFERENCEORDER>$orderid</REFERENCEORDER>
+            <REFERENCEORDER2>$ref2</REFERENCEORDER2>
             <DELIVERYNOTE/>
             <INTERNALDELIVERYNOTE/>
             <CONTAINERNUMBER/>
@@ -207,7 +207,7 @@ class OSC_API {
             <REFCOMPANYNAME/>
             <REFCOMPANYCONTACT/>
             <PACKAGETYPE>02</PACKAGETYPE>
-            <UNITS>'.$numberofpackages.'</UNITS>
+            <UNITS>$numberofpackages</UNITS>
             <ORIGINALUNITS>0</ORIGINALUNITS>
             <ORDERWEIGHT>0</ORDERWEIGHT>
             <ORDERVOLUME>0</ORDERVOLUME>
@@ -223,7 +223,7 @@ class OSC_API {
             <STORAGELOCATION/>
             <NOTES/>
             <PICKUPCOMMENTS/>
-            <DELIVERYCOMMENTS>'.$deliveryremarks.'</DELIVERYCOMMENTS>
+            <DELIVERYCOMMENTS>$deliveryremarks</DELIVERYCOMMENTS>
             <CHARGECOMMENTS/>
             <ORDERPRICE>0</ORDERPRICE>
             <CALCULATEDPRICE>0</CALCULATEDPRICE>
@@ -274,14 +274,14 @@ class OSC_API {
             <SOURCECONTACT>
                 <CONTACTTYPE>PICKUP</CONTACTTYPE>
                 <CONTACTID/>
-                <STREET1>'.$source_street1.'</STREET1>
+                <STREET1>$source_street1</STREET1>
                 <STREET2/>
                 <FLOOR/>
-                <CITY>'.$source_city.'</CITY>
+                <CITY>$source_city</CITY>
                 <ORIGINALADDRESS/>
-                <SITENAME>'.$source_sitename.'</SITENAME>
-                <CONTACT1NAME>'.$source_contact1name.'</CONTACT1NAME>
-                <CONTACT1PHONE>'.$source_contact1phone.'</CONTACT1PHONE>
+                <SITENAME>$source_sitename</SITENAME>
+                <CONTACT1NAME>$source_contact1name</CONTACT1NAME>
+                <CONTACT1PHONE>$source_contact1phone</CONTACT1PHONE>
                 <ADDRESSTYPE>03</ADDRESSTYPE>
                 <CONTACT2PHONE/>
                 <CONTACTIDNUMBE/>
@@ -290,25 +290,26 @@ class OSC_API {
             <TARGETCONTACT>
                 <CONTACTTYPE>DELIVERY</CONTACTTYPE>
                 <CONTACTID/>
-                <STREET1>'.$order_details['billing']['address_1'].'</STREET1>
+                <STREET1>" . $order_details['billing']['address_1'] . "</STREET1>
                 <STREET2/>
                 <FLOOR/>
-                <CITY>'.$order_details['billing']['city'].'</CITY>
+                <CITY>" . $order_details['billing']['city'] . "</CITY>
                 <ORIGINALADDRESS/>
-                <SITENAME>'.$sitename.'</SITENAME>
+                <SITENAME>$sitename</SITENAME>
                 <ORDERWEIGHT/>
-                <CONTACT1NAME>'. $order_details['billing']['first_name'] . ' ' . $order_details['billing']['last_name'] .'</CONTACT1NAME>
-                <CONTACT1PHONE>'.$order_details['billing']['phone'].'</CONTACT1PHONE>
+                <CONTACT1NAME>" . $order_details['billing']['first_name'] . " " . $order_details['billing']['last_name'] ."</CONTACT1NAME>
+                <CONTACT1PHONE>" . $order_details['billing']['phone'] . "</CONTACT1PHONE>
                 <CONTACT2PHONE/>
                 <CONTACT1EMAIL/>
                 <CONTACTIDNUMBE/>
-                <ADDRESSTYPE>'.$addresstype.'</ADDRESSTYPE>
+                <ADDRESSTYPE>$addresstype</ADDRESSTYPE>
             </TARGETCONTACT>
             <PACKAGES>
-            '.$packages_xml.'
+            $packages_xml
             </PACKAGES>
             </DATA>
-        </DATACOLLECTION>';
+        </DATACOLLECTION>";
+        //$return_response['sentheader'] = $generate_order_xml;
         $order_url = $this->api_url . '/CreateTransportationOrder';
         $args = array(
             'method' => 'POST',
@@ -317,6 +318,7 @@ class OSC_API {
                 'AuthToken' => $this->authtoken,
                 'Content-Type' => "application/xml",
             ),
+            'body' => $generate_order_xml,
         );
         $response = wp_remote_request($order_url, $args);
         if (is_wp_error($response)) {
@@ -324,6 +326,18 @@ class OSC_API {
           } else {
               $return_response['status'] = $response['response']['code'];
               if ( $response['response']['code'] == 200 ) {
+                $response_body = $response['body'];
+                $response_body = str_replace('\"', '"', $response_body);
+                if ($response_body[0] === '"')
+                $response_body = substr($response_body, 1, -1);
+                $xml = simplexml_load_string($response_body);
+                $success = (string) $xml->RESPONSE->SUCCESS;
+                $return_response['success'] = $success;
+                if ($success === "false") {
+                    $error = (string) $xml->RESPONSE->RESPONSEERROR;
+                    $return_response['error'] = $error;
+                    update_post_meta($orderid,'Orian Error', $error);
+                }
               } elseif ( $response['response']['code'] == 401 && $this->firsttimecall) {
                   $this->delete_auth();
                   $return_response = $this->generate_transportation_order($orderid,$numberofpackages);
