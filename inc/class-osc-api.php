@@ -118,7 +118,7 @@ class OSC_API {
         }
         if ($this->logged_in() && $order) {
             $consignee = $this->orian_options['consignee'];
-            $packageid = "KST" . $orderid;
+            $packageid = "KKO" . $orderid;
             if ($packagenumber > 1)
             $packageid .= "P" . $packagenumber;
             $status_url = $this->api_url . '/GetPackageStatus?consignee=' . $consignee . '&package=' . $packageid;
@@ -191,7 +191,7 @@ class OSC_API {
         if (!empty($shipping_remarks))
         $deliveryremarks .= $shipping_remarks;
         $packages_xml = '<PACKAGE>
-        <PACKAGEID>KST'.$orderid.'</PACKAGEID>
+        <PACKAGEID>KKO'.$orderid.'</PACKAGEID>
         <PACKAGEREFID></PACKAGEREFID>
         <PACKAGETYPE>02</PACKAGETYPE>
         <DOCUMENTTYPE>TRANSPORTATION</DOCUMENTTYPE>
