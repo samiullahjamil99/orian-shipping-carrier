@@ -21,6 +21,10 @@ if ( ! defined( 'OSC_PLUGIN_FILE' ) ) {
 include_once dirname(OSC_PLUGIN_FILE) . '/inc/osc-admin.php';
 include_once dirname(OSC_PLUGIN_FILE) . '/inc/class-osc-api.php';
 
+function osc_api() {
+	return OSC_API::instance();
+}
+
 if ( in_array( 'woocommerce/woocommerce.php', apply_filters( 'active_plugins', get_option( 'active_plugins' ) ) ) ) {
 function osc_shipping_init() {
 	include_once dirname(OSC_PLUGIN_FILE) . '/inc/shipping-methods/class-osc-delivery-shipping.php';
