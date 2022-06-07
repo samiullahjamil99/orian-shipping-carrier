@@ -185,9 +185,9 @@ final class OSC_API {
         $sitename = $order_details['billing']['first_name'] . ' ' . $order_details['billing']['last_name'];
         if ($billing_business_name_invoice === '1')
         $sitename = $billing_business_name;
-        $addresstype = "02";
-        if ($billing_business_type_address === '1')
         $addresstype = "03";
+        if ($billing_business_type_address === '1')
+        $addresstype = "02";
         $deliveryremarks = "";
         if ($billing_floor && !empty($billing_floor))
         $deliveryremarks .= "קומה:" . $billing_floor . ",";
@@ -332,7 +332,7 @@ final class OSC_API {
                 <SITENAME>$source_sitename</SITENAME>
                 <CONTACT1NAME>$source_contact1name</CONTACT1NAME>
                 <CONTACT1PHONE>$source_contact1phone</CONTACT1PHONE>
-                <ADDRESSTYPE>03</ADDRESSTYPE>
+                <ADDRESSTYPE>02</ADDRESSTYPE>
                 <CONTACT2PHONE/>
                 <CONTACTIDNUMBE/>
                 <CONTACT1EMAIL/>
