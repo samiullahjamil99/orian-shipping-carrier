@@ -19,7 +19,10 @@ if (!class_exists('OSC_Woocommerce_Order_Actions')) {
             return $actions;
         }
         public function osc_process_carrier_order($order) {
-            $response = osc_api()->generate_transportation_order($order->get_id());
+            $numberofpackages = get_post_meta($order->get_id(), 'number_of_packages', true);
+            if (!$numberofpackages)
+            $numberofpackages = 1;
+            $response = osc_api()->generate_transportation_order($order->get_id(), $numberofpackages);
             if ($response['status'] == 200 && $response['success'] === "true")
             $order->update_status("wc-osc-new");
         }
