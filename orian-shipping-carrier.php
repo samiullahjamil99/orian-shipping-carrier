@@ -40,7 +40,9 @@ function osc_add_shipping( $methods ) {
 add_filter( 'woocommerce_shipping_methods', 'osc_add_shipping' );
 include_once dirname(OSC_PLUGIN_FILE) . '/inc/class-osc-woocommerce-order-status.php';
 include_once dirname(OSC_PLUGIN_FILE) . '/inc/class-osc-woocommerce-order-actions.php';
+include_once dirname(OSC_PLUGIN_FILE) . '/inc/class-osc-woocommerce-order-sync.php';
 $osc_order_status = new OSC_Woocommerce_Order_Status();
 $osc_order_actions = new OSC_Woocommerce_Order_Actions();
+$osc_order_sync = new OSC_Woocommerce_Order_Sync();
 }
 add_filter('acf/settings/remove_wp_meta_box', '__return_false');
