@@ -22,9 +22,18 @@ if (!class_exists('OSC_Woocommerce_Order_Actions')) {
             $numberofpackages = get_post_meta($order->get_id(), 'number_of_packages', true);
             if (!$numberofpackages)
             $numberofpackages = 1;
+            else
+            $numberofpackages = intval($numberofpackages);
             $response = osc_api()->generate_transportation_order($order->get_id(), $numberofpackages);
             if ($response['status'] == 200 && $response['success'] === "true")
             $order->update_status("wc-osc-new");
+            if ($numberofpackages > 1) {
+                $extra_statuses = array();
+                for ($i = 1; $i < $numberofpackages; $i++) {
+                    $extra_statuses[] = 'osc-new';
+                }
+                update_post_meta($order->get_id(), '_osc_packages_statues',$extra_statuses);
+            }
         }
         public function osc_bulk_actions( $bulk_actions ) {
             $bulk_actions['osc_send_orders'] = __('Send Orders to Carrier',$this->text_domain);
