@@ -5,14 +5,7 @@ final class OSC_API {
     protected $orian_options;
     protected $authtoken;
     protected $firsttimecall;
-    protected static $_instance = null;
     public $api_url = "https://disapi.orian.com";
-    public static function instance() {
-        if (is_null(self::$_instance)) {
-            self::$_instance = new self();
-        }
-        return self::$_instance;
-    }
     public function __construct() {
         $this->orian_options = get_option('orian_main_setting');
         $this->firsttimecall = true;
