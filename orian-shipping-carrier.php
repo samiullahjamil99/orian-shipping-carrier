@@ -17,12 +17,15 @@ if ( ! defined( 'OSC_PLUGIN_FILE' ) ) {
 	define( 'OSC_PLUGIN_FILE', __FILE__ );
 }
 
+include_once dirname(OSC_PLUGIN_FILE) . '/inc/class-orian-shipping.php';
+function orian_shipping() {
+	return Orian_Shipping::instance();
+} 
 // Added the admin page for api options and other settings
 include_once dirname(OSC_PLUGIN_FILE) . '/inc/osc-admin.php';
-include_once dirname(OSC_PLUGIN_FILE) . '/inc/class-osc-api.php';
 
 function osc_api() {
-	return OSC_API::instance();
+	return orian_shipping()->api;
 }
 
 if ( in_array( 'woocommerce/woocommerce.php', apply_filters( 'active_plugins', get_option( 'active_plugins' ) ) ) ) {
@@ -38,11 +41,6 @@ function osc_add_shipping( $methods ) {
 	return $methods;
 }
 add_filter( 'woocommerce_shipping_methods', 'osc_add_shipping' );
-include_once dirname(OSC_PLUGIN_FILE) . '/inc/class-osc-woocommerce-order-status.php';
-include_once dirname(OSC_PLUGIN_FILE) . '/inc/class-osc-woocommerce-order-actions.php';
-include_once dirname(OSC_PLUGIN_FILE) . '/inc/class-osc-woocommerce-order-sync.php';
-$osc_order_status = new OSC_Woocommerce_Order_Status();
-$osc_order_actions = new OSC_Woocommerce_Order_Actions();
-$osc_order_sync = new OSC_Woocommerce_Order_Sync();
+$GLOBALS['osc'] = orian_shipping();
 }
 add_filter('acf/settings/remove_wp_meta_box', '__return_false');

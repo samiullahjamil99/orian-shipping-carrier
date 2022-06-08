@@ -44,5 +44,12 @@ if (!class_exists('OSC_Woocommerce_Order_Status')) {
             }
             return $output_statuses;
         }
+        public function compare_carrier_order_status($carrier_order) {
+            $lowercase_carrier_order = strtolower($carrier_order);
+            if (array_key_exists($lowercase_carrier_order,$this->orian_statuses))
+            return $this->orian_statuses[$lowercase_carrier_order];
+            else
+            return false;
+        }
     }
 }
