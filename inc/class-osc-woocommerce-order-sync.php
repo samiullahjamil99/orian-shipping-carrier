@@ -29,7 +29,18 @@ if (!class_exists('OSC_Woocommerce_Order_Sync')) {
             return $schedules;
         }
         public function osc_order_sync_callback() {
-
+            $orders = wc_get_orders(array(
+                'limit' => -1,
+                'status' => array('osc-new','osc-loaded','osc-offloaded','osc-pickedup'),
+            ));
+            foreach($orders as $order) {
+                $carrier_response = orian_shipping()->api->get_transportation_order_status($order->get_id());
+                if ($carrier_response['status'] == 200) {
+                    $woocommerce_status = orian_shipping()->order_status->compare_carrier_order_status($carrier_response['package_status']);
+                    if ($woocommerce_status && $woocommerce_status !== "wc-".$order->get_status())
+                    $order->update_status($woocommerce_status);
+                }
+            }
         }
     }
 }
