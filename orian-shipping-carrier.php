@@ -23,10 +23,9 @@ function orian_shipping() {
 } 
 // Added the admin page for api options and other settings
 include_once dirname(OSC_PLUGIN_FILE) . '/inc/osc-admin.php';
-include_once dirname(OSC_PLUGIN_FILE) . '/inc/class-osc-api.php';
 
 function osc_api() {
-	return OSC_API::instance();
+	return orian_shipping()->api;
 }
 
 if ( in_array( 'woocommerce/woocommerce.php', apply_filters( 'active_plugins', get_option( 'active_plugins' ) ) ) ) {
