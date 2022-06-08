@@ -2,7 +2,7 @@
 if (!class_exists('OSC_Woocommerce_Order_Sync')) {
     class OSC_Woocommerce_Order_Sync {
         public $sync_minutes = 0;
-        public function __contruct() {
+        public function __construct() {
             $this->init();
         }
         public function init() {
