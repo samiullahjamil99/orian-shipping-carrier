@@ -34,11 +34,31 @@ if (!class_exists('OSC_Woocommerce_Order_Sync')) {
                 'status' => array('osc-new','osc-loaded','osc-offloaded','osc-pickedup'),
             ));
             foreach($orders as $order) {
+                $number_of_packages = get_post_meta($order->get_id(),'number_of_packages',true);
                 $carrier_response = orian_shipping()->api->get_transportation_order_status($order->get_id());
                 if ($carrier_response['status'] == 200) {
                     $woocommerce_status = orian_shipping()->order_status->compare_carrier_order_status($carrier_response['package_status']);
                     if ($woocommerce_status && $woocommerce_status !== "wc-".$order->get_status())
                     $order->update_status($woocommerce_status);
+                }
+                if ($number_of_packages && intval($number_of_packages) > 1) {
+                    $packages_statuses = get_post_meta($order->get_id(),'_osc_packages_statues',true);
+                    $new_packages_statuses = $packages_statuses;
+                    if ($packages_statuses) {
+                        for ($i = 2; $i <= $number_of_packages; $i++) {
+                            $carrier_response = orian_shipping()->api->get_transportation_order_status($order->get_id(),$i);
+                            if ($carrier_response['status'] == 200) {
+                                $woocommerce_status = orian_shipping()->order_status->compare_carrier_order_status($carrier_response['package_status']);
+                                if ($woocommerce_status && $woocommerce_status !== 'wc-'.$packages_status) {
+                                    $woocommerce_status_array = explode('-',$woocommerce_status,2);
+                                    $woocommerce_status = $woocommerce_status_array[1];
+                                    $new_packages_statuses[$i - 2] = $woocommerce_status;
+                                }
+                            }
+                            $packages_status_index++;
+                        }
+                        update_post_meta($order->get_id(),'_osc_packages_statues',$new_packages_statuses);
+                    }
                 }
             }
         }
