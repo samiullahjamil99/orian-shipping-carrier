@@ -17,6 +17,10 @@ if ( ! defined( 'OSC_PLUGIN_FILE' ) ) {
 	define( 'OSC_PLUGIN_FILE', __FILE__ );
 }
 
+include_once dirname(OSC_PLUGIN_FILE) . '/inc/class-orian-shipping.php';
+function orian_shipping() {
+	return Orian_Shipping::instance();
+} 
 // Added the admin page for api options and other settings
 include_once dirname(OSC_PLUGIN_FILE) . '/inc/osc-admin.php';
 include_once dirname(OSC_PLUGIN_FILE) . '/inc/class-osc-api.php';
