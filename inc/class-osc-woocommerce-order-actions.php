@@ -29,12 +29,14 @@ if (!class_exists('OSC_Woocommerce_Order_Actions')) {
                 <tr><td>KKO<?php echo $orderid; ?></td><td><?php echo $wc_statuses['wc-'.$order->get_status()]; ?></td></tr>
             <?php
             $packagenumber = 2;
+            if ($package_statuses):
             foreach($package_statuses as $package_status):
                 ?>
                 <tr><td>KKO<?php echo $orderid; ?>P<?php echo $packagenumber; ?></td><td><?php echo $wc_statuses['wc-'.$package_status]; ?></td></tr>
                 <?php
                 $packagenumber++;
                 endforeach;
+            endif;
                 ?>
                 </table>
                 <?php
