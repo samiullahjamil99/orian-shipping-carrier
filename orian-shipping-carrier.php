@@ -32,3 +32,11 @@ if ( in_array( 'woocommerce/woocommerce.php', apply_filters( 'active_plugins', g
 $GLOBALS['osc'] = orian_shipping();
 }
 add_filter('acf/settings/remove_wp_meta_box', '__return_false');
+
+function osc_pudo_fields_html() {
+	?>
+	<div>
+<input type="text">
+</div>
+	<?php
+}
