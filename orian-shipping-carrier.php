@@ -34,6 +34,7 @@ $GLOBALS['osc'] = orian_shipping();
 add_filter('acf/settings/remove_wp_meta_box', '__return_false');
 
 function osc_pudo_fields_html() {
+	if (is_checkout()):
 	?>
 	<div>
 		<p class="form-row form-row-wide">
@@ -48,6 +49,7 @@ function osc_pudo_fields_html() {
 		</p>
 	</div>
 	<?php
+	endif;
 }
 
 function osc_pudo_script() {
