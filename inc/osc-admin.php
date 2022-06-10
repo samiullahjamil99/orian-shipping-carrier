@@ -17,6 +17,10 @@ function orian_shipping_init() {
     add_settings_field( 'orian_source_city', 'CITY','orian_common_text_field_cb','orian_general','orian_source',array('label_for' => 'source_city','class'=>'orian_source_city') );
     add_settings_field( 'orian_source_contact1name', 'CONTACT1NAME','orian_common_text_field_cb','orian_general','orian_source',array('label_for' => 'source_contact1name','class'=>'orian_source_contact1name') );
     add_settings_field( 'orian_source_contact1phone', 'CONTACT1PHONE','orian_common_text_field_cb','orian_general','orian_source',array('label_for' => 'source_contact1phone','class'=>'orian_source_contact1phone') );
+    add_settings_section( 'orian_sla', 'Orian SLA Settings','orian_sla_description_html','orian_general' );
+    add_settings_field( 'orian_pickup_sla', 'Pickup Location SLA','orian_common_number_field_cb','orian_general','orian_sla',array('label_for' => 'pickup_sla','class'=>'orian_pickup_sla') );
+    add_settings_field( 'orian_delivery_sla', 'Home Delivery SLA','orian_common_number_field_cb','orian_general','orian_sla',array('label_for' => 'delivery_sla','class'=>'orian_delivery_sla') );
+    add_settings_field( 'orian_delivery_far_sla', 'Home Delivery Far Destination SLA','orian_common_number_field_cb','orian_general','orian_sla',array('label_for' => 'delivery_far_sla','class'=>'orian_delivery_far_sla') );
 }
 add_action('admin_init','orian_shipping_init');
 
@@ -42,6 +46,12 @@ function orian_main_description_html() {
 function orian_source_description_html() {
     ?>
     <p>Set Source details for the Orian</p>
+    <?php
+}
+
+function orian_sla_description_html() {
+    ?>
+    <p>Set SLA for following options</p>
     <?php
 }
 
