@@ -38,12 +38,12 @@ function osc_pudo_fields_html() {
 	?>
 	<div>
 		<p class="form-row form-row-wide">
-			<select id="pudocityselect">
+			<select id="pudocityselect" style="width:100%">
 				<option value="" disabled selected>Select City</option>
 			</select>
 		</p>
 		<p class="form-row form-row-wide">
-			<select name="pudo_point" id="pudopointselect">
+			<select name="pudo_point" id="pudopointselect" style="width:100%">
 				<option value="" disabled selected>Select Pudo</option>
 			</select>
 		</p>
