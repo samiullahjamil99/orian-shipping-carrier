@@ -49,12 +49,21 @@ if (!class_exists('OSC_Woocommerce_Order_Actions')) {
             return $actions;
         }
         public function osc_process_carrier_order($order) {
-            $numberofpackages = get_post_meta($order->get_id(), 'number_of_packages', true);
-            if (!$numberofpackages)
+            $pudo_shipping = false;
+            foreach($order->get_items("shipping") as $item_key => $item) {
+                if ($item->get_method_id() === orian_shipping()->pudo_method_id)
+                $pudo_shipping = true;
+            }
+            $pudo_point = get_post_meta($order->get_id(),'pudo_point',true);
             $numberofpackages = 1;
-            else
+            if ($pudo_shipping && $pudo_point) {
+                $response = osc_api()->generate_pudo_transportation_order($order->get_id());
+            } else {
+            $numberofpackages = get_post_meta($order->get_id(), 'number_of_packages', true);
+            if ($numberofpackages)
             $numberofpackages = intval($numberofpackages);
             $response = osc_api()->generate_transportation_order($order->get_id(), $numberofpackages);
+            }
             if ($response['status'] == 200 && $response['success'] === "true")
             $order->update_status("wc-osc-new");
             if ($numberofpackages > 1) {
