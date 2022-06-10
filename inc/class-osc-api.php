@@ -391,4 +391,209 @@ final class OSC_API {
         }
         return $return_response;
     }
+    public function generate_pudo_transportation_order($orderid) {
+        $return_response = array();
+        $order = wc_get_order($orderid);
+        if (!$this->logged_in()) {
+            $this->authorize_login();
+        }
+        if ($this->logged_in() && $order) {
+            $order_details = $order->get_data();
+            $consignee = $this->orian_options['consignee'];
+            $ref2 = $this->orian_options['referenceorder2'];
+            $source_street1 = $this->orian_options['source_street1'];
+            $source_sitename = $this->orian_options['source_sitename'];
+            $source_city = $this->orian_options['source_city'];
+            $source_contact1name = $this->orian_options['source_contact1name'];
+            $source_contact1phone = $this->orian_options['source_contact1phone'];
+            $target_contactid = get_post_meta($orderid, 'pudo_point',true);
+            $packages_xml = '<PACKAGE>
+            <PACKAGEID>KKO'.$orderid.'</PACKAGEID>
+            <PACKAGEREFID></PACKAGEREFID>
+            <PACKAGETYPE>02</PACKAGETYPE>
+            <DOCUMENTTYPE>TRANSPORTATION</DOCUMENTTYPE>
+            <CONSIGNEE>'.$consignee.'</CONSIGNEE>
+            <DOCUMENTID/>
+            </PACKAGE>';
+            $generate_order_xml = "<?xml version='1.0' encoding='UTF-8' standalone='yes'?>
+        <DATACOLLECTION>
+            <DATA>
+            <TABLENAME>TRANSPORTATIONORDER</TABLENAME>
+            <CONSIGNEE>$consignee</CONSIGNEE>
+            <TRANSPORTATIONORDERID/>
+            <ORDERTYPE>REGULAR</ORDERTYPE>
+            <STATUS/>
+            <PAYINGCUSTOMER/>
+            <SOURCECOMPANY/>
+            <SOURCECOMPANYTYPE/>
+            <SOURCECONTACTID/>
+            <TARGETCOMPANY/>
+            <TARGETCOMPANYTYPE/>
+            <TARGETCONTACTID>$target_contactid</TARGETCONTACTID>
+            <PICKUPBRANCH/>
+            <DELIVERYBRANCH/>
+            <PICKUPDEPOT/>
+            <DELIVERYDEPOT/>
+            <DRAFTCREATEDATE/>
+            <CREATEDATE/>
+            <REQUESTEDPICKUPDATE/>
+            <REQPICKUPENDDATE/>
+            <REQUESTEDDELIVERYDATE/>
+            <REQDELENDDATE/>
+            <REQUESTEDORIGINALDATE/>
+            <SCHEDULEDDATE/>
+            <STATUSDATE/>
+            <COMPLETIONDATE/>
+            <TARGETPUDONAME>" . $order_details['billing']['first_name'] . " " . $order_details['billing']['last_name'] ."</TARGETPUDONAME>
+            <TARGETPUDOPHONE>" . $order_details['billing']['phone'] . "</TARGETPUDOPHONE>
+            <HOSTORDERID/>
+            <REFERENCEORDER>$orderid</REFERENCEORDER>
+            <REFERENCEORDER2>$ref2</REFERENCEORDER2>
+            <DELIVERYNOTE/>
+            <INTERNALDELIVERYNOTE/>
+            <CONTAINERNUMBER/>
+            <REFCOMPANYCODE/>
+            <REFCOMPANYNAME/>
+            <REFCOMPANYCONTACT/>
+            <PACKAGETYPE>02</PACKAGETYPE>
+            <UNITS>1</UNITS>
+            <ORIGINALUNITS>0</ORIGINALUNITS>
+            <ORDERWEIGHT>0</ORDERWEIGHT>
+            <ORDERVOLUME>0</ORDERVOLUME>
+            <ORDERVALUE>0</ORDERVALUE>
+            <TRANSPORTATIONTYPE>DOMESTIC</TRANSPORTATIONTYPE>
+            <SERVICETYPE>NEXTDAY</SERVICETYPE>
+            <TRANSPORTATIONCLASS/>
+            <HAZARDCLASS/>
+            <HAZARDCOMMENTS/>
+            <CARGOTYPE/>
+            <LOADTYPE/>
+            <SECURITYCLASS/>
+            <STORAGELOCATION/>
+            <NOTES/>
+            <PICKUPCOMMENTS/>
+            <DELIVERYCOMMENTS/>
+            <CHARGECOMMENTS/>
+            <ORDERPRICE>0</ORDERPRICE>
+            <CALCULATEDPRICE>0</CALCULATEDPRICE>
+            <PRICECALCULATIONDATE/>
+            <CHARGEID/>
+            <AGREEMENTCODE/>
+            <CHARGED>0</CHARGED>
+            <CARRIERCREDITED>0</CARRIERCREDITED>
+            <ORDERCOST>0</ORDERCOST>
+            <CALCULATEDCOST>0</CALCULATEDCOST>
+            <COSTCALCULATIONDATE/>
+            <COSTCHARGEID/>
+            <PAYMENTTYPE>CREDIT</PAYMENTTYPE>
+            <ORIGINALORDERID/>
+            <COLLECTNEEDED>0</COLLECTNEEDED>
+            <COLLECTSUM>0</COLLECTSUM>
+            <COLLECTCHEQUE1>0</COLLECTCHEQUE1>
+            <COLLECTCHEQUE1DATE/>
+            <COLLECTCHEQUE2>0</COLLECTCHEQUE2>
+            <COLLECTCHEQUE2DATE/>
+            <COLLECTCHEQUE3>0</COLLECTCHEQUE3>
+            <COLLECTCHEQUE3DATE/>
+            <COLLECTRECEIPT/>
+            <RETURNPACKAGE>0</RETURNPACKAGE>
+            <RETURNPACKAGETYPE/>
+            <SIGNEDDOC>0</SIGNEDDOC>
+            <CONFDOC>0</CONFDOC>
+            <ORDERPRIORITY>0</ORDERPRIORITY>
+            <DELIVERYCONFIRMATIONTYPE/>
+            <IDPIC/>
+            <ACTIVITYSTATUS/>
+            <SHORTAGE>0</SHORTAGE>
+            <UNKNOWNPACKAGES>0</UNKNOWNPACKAGES>
+            <ROUTINGSET/>
+            <CHKPNT/>
+            <DELIVERYPOINT/>
+            <MANUALHANDLING>0</MANUALHANDLING>
+            <SCHEDULINGSTATUS/>
+            <SCHEDULINGFAILCODE/>
+            <SCHEDULINGFAILNOTES/>
+            <SCHEDULINGSTATUSDATE/>
+            <DELIVERYLOCATION/>
+            <DELIVERYRECIPIENT/>
+            <ADDDATE/>
+            <ADDUSER/>
+            <EDITDATE/>
+            <EDITUSER/>
+            <SOURCECONTACT>
+                <CONTACTTYPE>PICKUP</CONTACTTYPE>
+                <CONTACTID/>
+                <STREET1>$source_street1</STREET1>
+                <STREET2/>
+                <FLOOR/>
+                <CITY>$source_city</CITY>
+                <ORIGINALADDRESS/>
+                <SITENAME>$source_sitename</SITENAME>
+                <CONTACT1NAME>$source_contact1name</CONTACT1NAME>
+                <CONTACT1PHONE>$source_contact1phone</CONTACT1PHONE>
+                <ADDRESSTYPE>02</ADDRESSTYPE>
+                <CONTACT2PHONE/>
+                <CONTACTIDNUMBE/>
+                <CONTACT1EMAIL/>
+            </SOURCECONTACT>
+            <TARGETCONTACT>
+                <CONTACTTYPE>DELIVERY</CONTACTTYPE>
+                <CONTACTID/>
+                <STREET1/>
+                <STREET2/>
+                <FLOOR/>
+                <CITY/>
+                <ORIGINALADDRESS/>
+                <SITENAME/>
+                <ORDERWEIGHT/>
+                <CONTACT1NAME/>
+                <CONTACT1PHONE/>
+                <CONTACT2PHONE/>
+                <CONTACT1EMAIL/>
+                <CONTACTIDNUMBE/>
+                <ADDRESSTYPE/>
+            </TARGETCONTACT>
+            <PACKAGES>
+            $packages_xml
+            </PACKAGES>
+            </DATA>
+        </DATACOLLECTION>";
+        $order_url = $this->api_url . '/CreateTransportationOrder';
+        $args = array(
+            'method' => 'POST',
+            'timeout' => 30,
+            'headers' => array(
+                'AuthToken' => $this->authtoken,
+                'Content-Type' => "application/xml",
+            ),
+            'body' => $generate_order_xml,
+        );
+        $response = wp_remote_request($order_url, $args);
+        if (is_wp_error($response)) {
+            $return_response['status'] = 408;
+          } else {
+              $return_response['status'] = $response['response']['code'];
+              if ( $response['response']['code'] == 200 ) {
+                $response_body = $response['body'];
+                $response_body = str_replace('\"', '"', $response_body);
+                if ($response_body[0] === '"')
+                $response_body = substr($response_body, 1, -1);
+                $xml = simplexml_load_string($response_body);
+                $success = (string) $xml->RESPONSE->SUCCESS;
+                $return_response['success'] = $success;
+                if ($success === "false") {
+                    $error = (string) $xml->RESPONSE->RESPONSEERROR;
+                    $return_response['error'] = $error;
+                    update_post_meta($orderid,'Orian Error', $error);
+                }
+              } elseif ( $response['response']['code'] == 401 && $this->firsttimecall) {
+                  $this->delete_auth();
+                  $return_response = $this->generate_transportation_order($orderid,$numberofpackages);
+              } else {
+                $return_response['data'] = $response['body'];
+              }
+          }
+        }
+        return $return_response;
+    }
 }
