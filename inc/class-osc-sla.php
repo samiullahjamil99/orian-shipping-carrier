@@ -2,11 +2,14 @@
 if (!class_exists("OSC_SLA")) {
     class OSC_SLA {
         public $timezone = 'Asia/Jerusalem';
+        public $nonbusiness_days;
         public function __construct() {
             $this->init();
         }
         public function init() {
-
+            $orian_settings = get_option('orian_main_setting');
+            if (isset($orian_settings) && array_key_exists('nonbusiness_days',$orian_settings))
+            $this->nonbusiness_days = array_map('trim', explode(",",$orian_settings['nonbusiness_days']));
         }
         public function business_days_to_date($days) {
             $response = array();
@@ -17,7 +20,7 @@ if (!class_exists("OSC_SLA")) {
             $nextday = $today;
             for($i = 1; $i <= $days; $i++) {
                 $nextday = new DateTime("+$i days");
-                if ($nextday->format('w') === "5" || $nextday->format('w') === "6")
+                if ($nextday->format('w') === "5" || $nextday->format('w') === "6" || in_array($nextday->format('d/m'),$this->nonbusiness_days))
                 $days++;
             }
             $response[1] = $this->date_sla_format($nextday);
