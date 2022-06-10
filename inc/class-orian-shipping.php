@@ -47,8 +47,14 @@ if (!class_exists('Orian_Shipping')) {
         }
         public function shipping_input_fields($method,$i) {
             $chosen_method = isset( WC()->session->chosen_shipping_methods[ $i ] ) ? WC()->session->chosen_shipping_methods[ $i ] : '';
-            if ($method->method_id === $this->pudo_method_id && $method->id === $chosen_method)
+            if ($method->method_id === $this->pudo_method_id && $method->id === $chosen_method) {
+                $delivery_dates = $this->sla->get_delivery_date('pudo');
+                echo '<p>Estimated Delivery Between ' . $delivery_dates[0] . ' and ' . $delivery_dates[1] . '</p>';
             osc_pudo_fields_html();
+            } elseif ($method->method_id === $this->home_method_id && $method->id === $chosen_method) {
+                $delivery_dates = $this->sla->get_delivery_date('home');
+                echo '<p>Estimated Delivery Between ' . $delivery_dates[0] . ' and ' . $delivery_dates[1] . '</p>';
+            }
         }
     }
 }
