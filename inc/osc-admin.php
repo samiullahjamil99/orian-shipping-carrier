@@ -10,6 +10,7 @@ function orian_shipping_init() {
     add_settings_field( 'orian_consignee', 'Consignee','orian_common_text_field_cb','orian_general','orian_main',array('label_for' => 'consignee','class'=>'orian_consignee') );
     add_settings_field( 'orian_referenceorder2', 'REFERENCEORDER2','orian_common_text_field_cb','orian_general','orian_main',array('label_for' => 'referenceorder2','class'=>'orian_referenceorder2') );
     add_settings_field( 'orian_sync_time', 'Order Sync Time (In Minutes)','orian_common_number_field_cb','orian_general','orian_main',array('label_for' => 'sync_time','class'=>'orian_sync_time') );
+    add_settings_field( 'orian_nonbusiness_days', 'Non Business Days','orian_common_text_field_cb','orian_general','orian_main',array('label_for' => 'nonbusiness_days','class'=>'orian_nonbusiness_days') );
     add_settings_section( 'orian_source', 'Orian Source Settings','orian_source_description_html','orian_general' );
     add_settings_field( 'orian_source_sitename', 'SITENAME','orian_common_text_field_cb','orian_general','orian_source',array('label_for' => 'source_sitename','class'=>'orian_source_sitename') );
     add_settings_field( 'orian_source_street1', 'STREET1','orian_common_text_field_cb','orian_general','orian_source',array('label_for' => 'source_street1','class'=>'orian_source_street1') );
@@ -62,6 +63,11 @@ function orian_common_text_field_cb($args) {
     ?>
     <input type="text" id="<?php echo $label_for; ?>" name="orian_main_setting[<?php echo $label_for; ?>]" value="<?php echo isset($options) ? $value : ''; ?>">
     <?php
+    if ($label_for === "nonbusiness_days"):
+        ?>
+        <p>Use the format dd/mm where dd is for day and mm for month. Use two digits for days and months. The days will be separated by commas. For example 10/06,09/05,02/04</p>
+        <?php
+    endif;
 }
 function orian_common_number_field_cb($args) {
     $options = get_option('orian_main_setting');
