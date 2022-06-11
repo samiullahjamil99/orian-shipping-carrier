@@ -10,12 +10,17 @@ function orian_shipping_init() {
     add_settings_field( 'orian_consignee', 'Consignee','orian_common_text_field_cb','orian_general','orian_main',array('label_for' => 'consignee','class'=>'orian_consignee') );
     add_settings_field( 'orian_referenceorder2', 'REFERENCEORDER2','orian_common_text_field_cb','orian_general','orian_main',array('label_for' => 'referenceorder2','class'=>'orian_referenceorder2') );
     add_settings_field( 'orian_sync_time', 'Order Sync Time (In Minutes)','orian_common_number_field_cb','orian_general','orian_main',array('label_for' => 'sync_time','class'=>'orian_sync_time') );
+    add_settings_field( 'orian_nonbusiness_days', 'Non Business Days','orian_common_text_field_cb','orian_general','orian_main',array('label_for' => 'nonbusiness_days','class'=>'orian_nonbusiness_days') );
     add_settings_section( 'orian_source', 'Orian Source Settings','orian_source_description_html','orian_general' );
     add_settings_field( 'orian_source_sitename', 'SITENAME','orian_common_text_field_cb','orian_general','orian_source',array('label_for' => 'source_sitename','class'=>'orian_source_sitename') );
     add_settings_field( 'orian_source_street1', 'STREET1','orian_common_text_field_cb','orian_general','orian_source',array('label_for' => 'source_street1','class'=>'orian_source_street1') );
     add_settings_field( 'orian_source_city', 'CITY','orian_common_text_field_cb','orian_general','orian_source',array('label_for' => 'source_city','class'=>'orian_source_city') );
     add_settings_field( 'orian_source_contact1name', 'CONTACT1NAME','orian_common_text_field_cb','orian_general','orian_source',array('label_for' => 'source_contact1name','class'=>'orian_source_contact1name') );
     add_settings_field( 'orian_source_contact1phone', 'CONTACT1PHONE','orian_common_text_field_cb','orian_general','orian_source',array('label_for' => 'source_contact1phone','class'=>'orian_source_contact1phone') );
+    add_settings_section( 'orian_sla', 'Orian SLA Settings','orian_sla_description_html','orian_general' );
+    add_settings_field( 'orian_pickup_sla', 'Pickup Location SLA','orian_common_number_field_cb','orian_general','orian_sla',array('label_for' => 'pickup_sla','class'=>'orian_pickup_sla') );
+    add_settings_field( 'orian_delivery_sla', 'Home Delivery SLA','orian_common_number_field_cb','orian_general','orian_sla',array('label_for' => 'delivery_sla','class'=>'orian_delivery_sla') );
+    add_settings_field( 'orian_delivery_far_sla', 'Home Delivery Far Destination SLA','orian_common_number_field_cb','orian_general','orian_sla',array('label_for' => 'delivery_far_sla','class'=>'orian_delivery_far_sla') );
 }
 add_action('admin_init','orian_shipping_init');
 
@@ -44,6 +49,12 @@ function orian_source_description_html() {
     <?php
 }
 
+function orian_sla_description_html() {
+    ?>
+    <p>Set SLA for following options</p>
+    <?php
+}
+
 function orian_common_password_field_cb($args) {
     $options = get_option('orian_main_setting');
     $label_for = $args['label_for'];
@@ -62,6 +73,11 @@ function orian_common_text_field_cb($args) {
     ?>
     <input type="text" id="<?php echo $label_for; ?>" name="orian_main_setting[<?php echo $label_for; ?>]" value="<?php echo isset($options) ? $value : ''; ?>">
     <?php
+    if ($label_for === "nonbusiness_days"):
+        ?>
+        <p>Use the format dd/mm where dd is for day and mm for month. Use two digits for days and months. The days will be separated by commas. For example 10/06,09/05,02/04</p>
+        <?php
+    endif;
 }
 function orian_common_number_field_cb($args) {
     $options = get_option('orian_main_setting');
@@ -83,6 +99,14 @@ function orian_shipping_menu() {
         'dashicons-car',
         20
     );
+    add_submenu_page(
+        'orian',
+        'Import SLA Details',
+        'Import SLA Details',
+        'manage_options',
+        'orian_sla',
+        'orian_sla_import_page',
+    );
 }
 add_action('admin_menu','orian_shipping_menu');
 
@@ -97,6 +121,57 @@ function orian_shipping_settings_page() {
                 do_settings_sections('orian_general');
                 submit_button( __('Save Settings', 'textdomain') );
             ?>
+        </form>
+    </div>
+    <?php
+}
+
+function orian_sla_import_page() {
+    if ($_POST['submit']) {
+        $uploadedfile = $_FILES['import_csv'];
+        $upload_dir = wp_upload_dir();
+        $filename = basename($uploadedfile["name"]);
+        $upload_overrides = array(
+            'test_form' => false,
+            'mimes' => array('csv' => 'text/csv'),
+        );
+         
+        $movefile = wp_handle_upload( $uploadedfile, $upload_overrides );
+         
+        if ( $movefile && ! isset( $movefile['error'] ) ) {
+            //print_r($movefile);
+            $filename = basename($movefile['url']);
+            $csvfile = $upload_dir['path'] . '/' . $filename;
+            $file = fopen( $csvfile,"r");
+            $cities_data = array();
+            if ($file) {
+                while(!feof($file)) {
+                  $line = fgetcsv($file);
+                  //echo $line[0];
+                  //echo "\n";
+                  $cities_data[] = $line;
+                }
+                fclose($file);
+            }
+            if (!empty($cities_data)) {
+                update_option( 'orian_cities',$cities_data );
+            }
+        }
+    }
+    $orian_cities = get_option('orian_cities');
+    ?>
+    <div class="wrap">
+        <h1><?php echo esc_html( get_admin_page_title() ); ?></h1>
+        <form method="post" enctype="multipart/form-data">
+            <?php
+            if ($orian_cities):
+                ?>
+                <p>Cities data is uploaded. Upload a new file to update it.</p>
+                <?php
+            endif;
+            ?>
+            <input type="file" name="import_csv" accept=".csv">
+            <input type="submit" name="submit" value="Import Data">
         </form>
     </div>
     <?php

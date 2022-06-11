@@ -6,6 +6,7 @@ if (!class_exists('Orian_Shipping')) {
         public $order_status;
         public $order_actions;
         public $order_sync;
+        public $sla;
         public $home_method_id = "orian_delivery_shipping";
         public $pudo_method_id = "orian_pudo_shipping";
         public static function instance() {
@@ -23,6 +24,7 @@ if (!class_exists('Orian_Shipping')) {
             include_once dirname(OSC_PLUGIN_FILE) . '/inc/class-osc-woocommerce-order-status.php';
             include_once dirname(OSC_PLUGIN_FILE) . '/inc/class-osc-woocommerce-order-actions.php';
             include_once dirname(OSC_PLUGIN_FILE) . '/inc/class-osc-woocommerce-order-sync.php';
+            include_once dirname(OSC_PLUGIN_FILE) . '/inc/class-osc-sla.php';
         }
         public function init() {
             add_action( 'woocommerce_shipping_init', array($this,'osc_shipping_init') );
@@ -32,6 +34,7 @@ if (!class_exists('Orian_Shipping')) {
             $this->order_status = new OSC_Woocommerce_Order_Status();
             $this->order_actions = new OSC_Woocommerce_Order_Actions();
             $this->order_sync = new OSC_Woocommerce_Order_Sync();
+            $this->sla = new OSC_SLA();
         }
         public function osc_shipping_init() {
             include_once dirname(OSC_PLUGIN_FILE) . '/inc/shipping-methods/class-osc-delivery-shipping.php';
@@ -43,9 +46,27 @@ if (!class_exists('Orian_Shipping')) {
             return $methods;
         }
         public function shipping_input_fields($method,$i) {
+            $customer_session = WC()->session->get('customer');
+            $selected_city = $customer_session['city'];
+            $selected_city_far = array($selected_city,"0");
+            $far_destination = false;
+            if ($this->sla->orian_cities) {
+                if (in_array($selected_city_far,$this->sla->orian_cities))
+                $far_destination = true;
+            }
             $chosen_method = isset( WC()->session->chosen_shipping_methods[ $i ] ) ? WC()->session->chosen_shipping_methods[ $i ] : '';
-            if ($method->method_id === $this->pudo_method_id && $method->id === $chosen_method)
+            if ($method->method_id === $this->pudo_method_id && $method->id === $chosen_method) {
+                $delivery_dates = $this->sla->get_delivery_date('pudo');
+                echo '<p>Estimated Delivery Between ' . $delivery_dates[0] . ' and ' . $delivery_dates[1] . '</p>';
             osc_pudo_fields_html();
+            } elseif ($method->method_id === $this->home_method_id && $method->id === $chosen_method) {
+                if ($far_destination) {
+                    $delivery_dates = $this->sla->get_delivery_date('far');
+                } else {
+                $delivery_dates = $this->sla->get_delivery_date('home');
+                }
+                echo '<p>Estimated Delivery Between ' . $delivery_dates[0] . ' and ' . $delivery_dates[1] . '</p>';
+            }
         }
     }
 }

@@ -7,7 +7,7 @@ if (!class_exists('OSC_Woocommerce_Order_Sync')) {
         }
         public function init() {
             $orian_options = get_option('orian_main_setting');
-            if (isset($orian_options) && array_key_exists('sync_time',$orian_options)) {
+            if ($orian_options && array_key_exists('sync_time',$orian_options)) {
                 $this->sync_minutes = intval($orian_options['sync_time']);
                 if ($this->sync_minutes > 0) {
                     add_filter( 'cron_schedules', array($this, 'osc_add_cron_interval') );
