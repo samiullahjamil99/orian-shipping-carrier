@@ -93,7 +93,7 @@ if (!class_exists("OSC_SLA")) {
             <script>
                 var sla_cities = <?php echo json_encode($my_orian_cities,JSON_UNESCAPED_UNICODE); ?>;
                 jQuery(document).ready(function() {
-                    jQuery("#billing_city_field").append('<div id="billing_city_extra"></div>');
+                    jQuery("#billing_city_field").append('<div style="margin-top:5px;" id="billing_city_extra"></div>');
                     function sla_init() {
                         jQuery("#billing_city").select2();
                     }
@@ -102,7 +102,7 @@ if (!class_exists("OSC_SLA")) {
                     });
                     jQuery("#billing_city").on("change",function() {
                         if (sla_cities[jQuery(this).val()] == "0") {
-                            jQuery("#billing_city_extra").html("<span style='margin-top:5px'>City is Far Destination so Expected Delivery is different.</span>");
+                            jQuery("#billing_city_extra").html("City is Far Destination so Expected Delivery is different.");
                         } else {
                             jQuery("#billing_city_extra").html("");
                         }
