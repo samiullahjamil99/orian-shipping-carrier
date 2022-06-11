@@ -97,15 +97,20 @@ if (!class_exists("OSC_SLA")) {
                     function sla_init() {
                         jQuery("#billing_city").select2();
                     }
-                    jQuery(document.body).on('updated_checkout',function() {
-                        sla_init();
-                    });
-                    jQuery("#billing_city").on("change",function() {
-                        if (sla_cities[jQuery(this).val()] == "0") {
+                    function set_sla_message() {
+                        if (sla_cities[jQuery("#billing_city").val()] == "0") {
                             jQuery("#billing_city_extra").html("City is Far Destination so Expected Delivery is different.");
                         } else {
                             jQuery("#billing_city_extra").html("");
                         }
+                    }
+                    sla_init();
+                    set_sla_message();
+                    jQuery(document.body).on('updated_checkout',function() {
+                        sla_init();
+                    });
+                    jQuery("#billing_city").on("change",function() {
+                        set_sla_message();
                     });
                 });
                 </script>
