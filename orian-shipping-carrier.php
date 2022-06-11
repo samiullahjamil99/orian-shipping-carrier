@@ -47,6 +47,8 @@ function osc_pudo_fields_html() {
 				<option value="" disabled selected>Select Pudo</option>
 			</select>
 		</p>
+		<div id="selectedpudodetails">
+		</div>
 	</div>
 	<?php
 	endif;
@@ -77,6 +79,7 @@ function osc_pudo_script() {
 	<script>
 		var pudo_cities = <?php echo json_encode($pudo_cities); ?>;
 		var pudo_ids = <?php echo json_encode($pudo_ids); ?>;
+		var pudo_points = [];
 		//console.log(pudo_ids['city1']);
 		//console.log(pudo_ids);
 		jQuery(document.body).on('updated_checkout',function() {
@@ -86,12 +89,22 @@ function osc_pudo_script() {
 			jQuery("#pudocityselect").select2();
 			jQuery("#pudopointselect").select2();
 			jQuery("#pudocityselect").on('change',function() {
-				var pudo_points = pudo_ids[jQuery(this).val()];
+				jQuery("#selectedpudodetails").html('');
+				pudo_points = pudo_ids[jQuery(this).val()];
 				jQuery("#pudopointselect").html('<option value="" disabled selected>Select Pudo</option>');
 				for(var i = 0; i < pudo_points.length; i++) {
 					jQuery("#pudopointselect").append('<option value="'+pudo_points[i]['contactid']+'">'+pudo_points[i]['pudoname']+'</option>');
 				}
 				jQuery("#pudopointselect").select2();
+			});
+			jQuery("#pudopointselect").on('change',function() {
+				var pointval = jQuery(this).val();
+				for(var i = 0; i < pudo_points.length; i++) {
+					var pudocontactid = pudo_points[i]['contactid'];
+					if (pointval == pudocontactid) {
+						jQuery("#selectedpudodetails").html(pudo_points[i]['pudoaddress']);
+					}
+				}
 			});
 		});
 	</script>
