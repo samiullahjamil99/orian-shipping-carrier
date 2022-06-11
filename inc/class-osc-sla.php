@@ -11,7 +11,7 @@ if (!class_exists("OSC_SLA")) {
         }
         public function init() {
             $orian_settings = get_option('orian_main_setting');
-            if (isset($orian_settings)) {
+            if ($orian_settings) {
                 if (array_key_exists('nonbusiness_days',$orian_settings))
             $this->nonbusiness_days = array_map('trim', explode(",",$orian_settings['nonbusiness_days']));
             if (array_key_exists('delivery_sla',$orian_settings))
