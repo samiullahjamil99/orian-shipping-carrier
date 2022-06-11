@@ -79,24 +79,43 @@ if (!class_exists("OSC_SLA")) {
             );
             $options = array();
             foreach ($this->orian_cities as $orian_city) {
-                $options[] = $orian_city[0];
+                $options[$orian_city[0]] = $orian_city[0];
             }
             $fields['billing']['billing_city']['options'] = $options;
             return $fields;
         }
         public function custom_script_for_sla() {
+            $my_orian_cities = array();
+            foreach($this->orian_cities as $orian_city) {
+                $my_orian_cities[$orian_city[0]] = $orian_city[1];
+            }
             ?>
             <script>
+                var sla_cities = <?php echo json_encode($my_orian_cities,JSON_UNESCAPED_UNICODE); ?>;
                 jQuery(document).ready(function() {
+                    jQuery("#billing_city_field").append('<div id="billing_city_extra"></div>');
                     function sla_init() {
                         jQuery("#billing_city").select2();
                     }
                     jQuery(document.body).on('updated_checkout',function() {
                         sla_init();
                     });
+                    jQuery("#billing_city").on("change",function() {
+                        if (sla_cities[jQuery(this).val()] == "0") {
+                            jQuery("#billing_city_extra").html("<span style='margin-top:5px'>City is Far Destination so Expected Delivery is different.</span>");
+                        } else {
+                            jQuery("#billing_city_extra").html("");
+                        }
+                    });
                 });
                 </script>
             <?php
+        }
+        public function sla_city_text($field,$key) {
+            if ($key === "billing_city") {
+                $field .= '<div id="sla_city_text">test</div>';
+            }
+            return $field;
         }
     }
 }
