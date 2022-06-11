@@ -166,7 +166,7 @@ function orian_sla_import_page() {
             <?php
             if ($orian_cities):
                 ?>
-                <p>Cities data is uploaded. Uploaded a new file to update it.</p>
+                <p>Cities data is uploaded. Upload a new file to update it.</p>
                 <?php
             endif;
             ?>
