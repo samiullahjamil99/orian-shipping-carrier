@@ -46,13 +46,25 @@ if (!class_exists('Orian_Shipping')) {
             return $methods;
         }
         public function shipping_input_fields($method,$i) {
+            $customer_session = WC()->session->get('customer');
+            $selected_city = $customer_session['city'];
+            $selected_city_far = array($selected_city,"0");
+            $far_destination = false;
+            if ($this->sla->orian_cities) {
+                if (in_array($selected_city_far,$this->sla->orian_cities))
+                $far_destination = true;
+            }
             $chosen_method = isset( WC()->session->chosen_shipping_methods[ $i ] ) ? WC()->session->chosen_shipping_methods[ $i ] : '';
             if ($method->method_id === $this->pudo_method_id && $method->id === $chosen_method) {
                 $delivery_dates = $this->sla->get_delivery_date('pudo');
                 echo '<p>Estimated Delivery Between ' . $delivery_dates[0] . ' and ' . $delivery_dates[1] . '</p>';
             osc_pudo_fields_html();
             } elseif ($method->method_id === $this->home_method_id && $method->id === $chosen_method) {
+                if ($far_destination) {
+                    $delivery_dates = $this->sla->get_delivery_date('far');
+                } else {
                 $delivery_dates = $this->sla->get_delivery_date('home');
+                }
                 echo '<p>Estimated Delivery Between ' . $delivery_dates[0] . ' and ' . $delivery_dates[1] . '</p>';
             }
         }
