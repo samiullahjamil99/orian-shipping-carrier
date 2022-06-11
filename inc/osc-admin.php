@@ -99,6 +99,14 @@ function orian_shipping_menu() {
         'dashicons-car',
         20
     );
+    add_submenu_page(
+        'orian',
+        'Import SLA Details',
+        'Import SLA Details',
+        'manage_options',
+        'orian_sla',
+        'orian_sla_import_page',
+    );
 }
 add_action('admin_menu','orian_shipping_menu');
 
@@ -113,6 +121,57 @@ function orian_shipping_settings_page() {
                 do_settings_sections('orian_general');
                 submit_button( __('Save Settings', 'textdomain') );
             ?>
+        </form>
+    </div>
+    <?php
+}
+
+function orian_sla_import_page() {
+    if ($_POST['submit']) {
+        $uploadedfile = $_FILES['import_csv'];
+        $upload_dir = wp_upload_dir();
+        $filename = basename($uploadedfile["name"]);
+        $upload_overrides = array(
+            'test_form' => false,
+            'mimes' => array('csv' => 'text/csv'),
+        );
+         
+        $movefile = wp_handle_upload( $uploadedfile, $upload_overrides );
+         
+        if ( $movefile && ! isset( $movefile['error'] ) ) {
+            //print_r($movefile);
+            $filename = basename($movefile['url']);
+            $csvfile = $upload_dir['path'] . '/' . $filename;
+            $file = fopen( $csvfile,"r");
+            $cities_data = array();
+            if ($file) {
+                while(!feof($file)) {
+                  $line = fgetcsv($file);
+                  //echo $line[0];
+                  //echo "\n";
+                  $cities_data[] = $line;
+                }
+                fclose($file);
+            }
+            if (!empty($cities_data)) {
+                update_option( 'orian_cities',$cities_data );
+            }
+        }
+    }
+    $orian_cities = get_option('orian_cities');
+    ?>
+    <div class="wrap">
+        <h1><?php echo esc_html( get_admin_page_title() ); ?></h1>
+        <form method="post" enctype="multipart/form-data">
+            <?php
+            if ($orian_cities):
+                ?>
+                <p>Cities data is uploaded. Uploaded a new file to update it.</p>
+                <?php
+            endif;
+            ?>
+            <input type="file" name="import_csv" accept=".csv">
+            <input type="submit" name="submit" value="Import Data">
         </form>
     </div>
     <?php
