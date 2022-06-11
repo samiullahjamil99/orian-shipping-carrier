@@ -6,6 +6,7 @@ if (!class_exists("OSC_SLA")) {
         public $home_regular_sla;
         public $home_far_sla;
         public $pudo_sla;
+        public $orian_cities;
         public function __construct() {
             $this->init();
         }
@@ -20,6 +21,11 @@ if (!class_exists("OSC_SLA")) {
             $this->home_far_sla = $orian_settings['delivery_far_sla'];
             if (array_key_exists('pickup_sla',$orian_settings))
             $this->pudo_sla = $orian_settings['pickup_sla'];
+            }
+            $this->orian_cities = get_option('orian_cities');
+            if ($this->orian_cities) {
+            add_filter( 'woocommerce_checkout_fields' , array($this,'custom_override_city_fields') );
+            add_action( 'wp_footer',array($this,'custom_script_for_sla') );
             }
         }
         public function business_days_to_date($days) {
@@ -61,6 +67,36 @@ if (!class_exists("OSC_SLA")) {
             $delivery_dates = $this->business_days_to_date($numberofdays);
             }
             return $delivery_dates;
+        }
+        public function custom_override_city_fields( $fields ) {
+            $fields['billing']['billing_city'] = array(
+               'label'     => __('City', 'woocommerce'),
+               'type' => 'select',
+               'required'  => true,
+               'class'     => array('form-row-wide'),
+               'clear'     => true,
+               'options' => array(),
+            );
+            $options = array();
+            foreach ($this->orian_cities as $orian_city) {
+                $options[] = $orian_city[0];
+            }
+            $fields['billing']['billing_city']['options'] = $options;
+            return $fields;
+        }
+        public function custom_script_for_sla() {
+            ?>
+            <script>
+                jQuery(document).ready(function() {
+                    function sla_init() {
+                        jQuery("#billing_city").select2();
+                    }
+                    jQuery(document.body).on('updated_checkout',function() {
+                        sla_init();
+                    });
+                });
+                </script>
+            <?php
         }
     }
 }
