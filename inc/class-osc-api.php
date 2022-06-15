@@ -59,7 +59,7 @@ final class OSC_API {
         return false;
     }
     public function logged_in() {
-        if (isset($this->authtoken)) {
+        if ($this->authtoken) {
             return true;
         }
         return false;
@@ -538,7 +538,6 @@ final class OSC_API {
             </SOURCECONTACT>
             <TARGETCONTACT>
                 <CONTACTTYPE>DELIVERY</CONTACTTYPE>
-                <CONTACTID/>
                 <STREET1/>
                 <STREET2/>
                 <FLOOR/>
@@ -588,7 +587,7 @@ final class OSC_API {
                 }
               } elseif ( $response['response']['code'] == 401 && $this->firsttimecall) {
                   $this->delete_auth();
-                  $return_response = $this->generate_transportation_order($orderid,$numberofpackages);
+                  $return_response = $this->generate_pudo_transportation_order($orderid);
               } else {
                 $return_response['data'] = $response['body'];
               }
