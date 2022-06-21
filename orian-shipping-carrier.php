@@ -9,6 +9,7 @@ Description: This plugin is developed integrate Orian Shipping Carrier API to Wo
 Author: Samiullah Jamil
 Version: 1.0.0
 Author URI: https://www.samiullahjaml.com/about-me/
+Domain Path: /i18n/languages
 */
 
 defined( 'ABSPATH' ) || exit;
@@ -39,12 +40,12 @@ function osc_pudo_fields_html() {
 	<div>
 		<p class="form-row form-row-wide">
 			<select id="pudocityselect" style="width:100%">
-				<option value="" disabled selected>Select City</option>
+				<option value="" disabled selected><?php echo __("Select City","orian-shipping-carrier"); ?></option>
 			</select>
 		</p>
 		<p class="form-row form-row-wide">
 			<select name="pudo_point" id="pudopointselect" style="width:100%">
-				<option value="" disabled selected>Select Pudo</option>
+				<option value="" disabled selected><?php echo __("Select Pudo","orian-shipping-carrier"); ?></option>
 			</select>
 		</p>
 		<div id="selectedpudodetails">
@@ -119,3 +120,12 @@ function osc_pudo_update_meta( $order_id ) {
         update_post_meta( $order_id, 'pudo_point', sanitize_text_field( $_POST['pudo_point'] ) );
     }
 }
+
+function osc_load_my_own_textdomain( $mofile, $domain ) {
+    if ( 'orian-shipping-carrier' === $domain && false !== strpos( $mofile, WP_LANG_DIR . '/plugins/' ) ) {
+        $locale = apply_filters( 'plugin_locale', determine_locale(), $domain );
+        $mofile = WP_PLUGIN_DIR . '/' . dirname( plugin_basename( __FILE__ ) ) . '/i18n/languages/' . $domain . '-' . $locale . '.mo';
+    }
+    return $mofile;
+}
+add_filter( 'load_textdomain_mofile', 'osc_load_my_own_textdomain', 10, 2 );

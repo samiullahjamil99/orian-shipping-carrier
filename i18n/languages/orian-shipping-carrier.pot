@@ -1,0 +1,117 @@
+# Copyright (C) 2022 Samiullah Jamil
+# This file is distributed under the same license as the Orian Shipping Carrier plugin.
+msgid ""
+msgstr ""
+"Project-Id-Version: Orian Shipping Carrier 1.0.0\n"
+"Report-Msgid-Bugs-To: https://wordpress.org/support/plugin/orian-shipping-carrier\n"
+"Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
+"Language-Team: LANGUAGE <LL@li.org>\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"POT-Creation-Date: 2022-06-21T13:15:49+05:00\n"
+"PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
+"X-Generator: WP-CLI 2.6.0\n"
+"X-Domain: orian-shipping-carrier\n"
+
+#. Plugin Name of the plugin
+msgid "Orian Shipping Carrier"
+msgstr ""
+
+#. Description of the plugin
+msgid "This plugin is developed integrate Orian Shipping Carrier API to Woocommerce."
+msgstr ""
+
+#. Author of the plugin
+msgid "Samiullah Jamil"
+msgstr ""
+
+#. Author URI of the plugin
+msgid "https://www.samiullahjaml.com/about-me/"
+msgstr ""
+
+#: inc/class-orian-shipping.php:61
+#: inc/class-orian-shipping.php:71
+msgid "Estimated Delivery Between %1$s and %2$s"
+msgstr ""
+
+#: inc/class-osc-sla.php:49
+msgid "Sunday"
+msgstr ""
+
+#: inc/class-osc-sla.php:50
+msgid "Monday"
+msgstr ""
+
+#: inc/class-osc-sla.php:51
+msgid "Tuesday"
+msgstr ""
+
+#: inc/class-osc-sla.php:52
+msgid "Wednesday"
+msgstr ""
+
+#: inc/class-osc-sla.php:53
+msgid "Thursday"
+msgstr ""
+
+#: inc/class-osc-sla.php:54
+msgid "Friday"
+msgstr ""
+
+#: inc/class-osc-sla.php:55
+msgid "Saturday"
+msgstr ""
+
+#: inc/class-osc-sla.php:90
+#: orian-shipping-carrier.php:43
+msgid "Select City"
+msgstr ""
+
+#: inc/class-osc-woocommerce-order-actions.php:15
+msgid "Packages Status"
+msgstr ""
+
+#: inc/class-osc-woocommerce-order-actions.php:26
+msgid "Package Id"
+msgstr ""
+
+#: inc/class-osc-woocommerce-order-actions.php:26
+msgid "Status"
+msgstr ""
+
+#: inc/class-osc-woocommerce-order-actions.php:47
+msgid "Send Order to Carrier"
+msgstr ""
+
+#: inc/class-osc-woocommerce-order-actions.php:77
+msgid "Send Orders to Carrier"
+msgstr ""
+
+#: inc/class-osc-woocommerce-order-status.php:19
+msgid "New"
+msgstr ""
+
+#: inc/class-osc-woocommerce-order-status.php:20
+msgid "Loaded"
+msgstr ""
+
+#: inc/class-osc-woocommerce-order-status.php:21
+msgid "Delivered"
+msgstr ""
+
+#: inc/class-osc-woocommerce-order-status.php:22
+msgid "Lost"
+msgstr ""
+
+#: inc/class-osc-woocommerce-order-status.php:23
+msgid "Offloaded"
+msgstr ""
+
+#: inc/class-osc-woocommerce-order-status.php:24
+msgid "Picked Up"
+msgstr ""
+
+#: orian-shipping-carrier.php:48
+msgid "Select Pudo"
+msgstr ""

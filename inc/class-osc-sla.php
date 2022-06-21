@@ -45,7 +45,15 @@ if (!class_exists("OSC_SLA")) {
             return $response;
         }
         public function date_sla_format($date) {
-            $weekdays = array('Sunday','Monday','Tuesday','Wednesday','Thursday','Friday','Saturday');
+            $weekdays = array(
+                __('Sunday','orian-shipping-carrier'),
+                __('Monday','orian-shipping-carrier'),
+                __('Tuesday','orian-shipping-carrier'),
+                __('Wednesday','orian-shipping-carrier'),
+                __('Thursday','orian-shipping-carrier'),
+                __('Friday','orian-shipping-carrier'),
+                __('Saturday','orian-shipping-carrier')
+            );
             $dayofweek = intval($date->format('w'));
             return $weekdays[$dayofweek] . ' ' . $date->format('d/m');
         }
@@ -79,7 +87,7 @@ if (!class_exists("OSC_SLA")) {
                'options'    => array(),
                'priority'   => $original_city_fields['priority'],
             );
-            $options = array(''=>'Select City');
+            $options = array(''=>__('Select City','orian-shipping-carrier'));
             foreach ($this->orian_cities as $orian_city) {
                 $options[$orian_city[0]] = $orian_city[0];
             }

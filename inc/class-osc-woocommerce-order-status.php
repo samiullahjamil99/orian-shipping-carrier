@@ -1,14 +1,7 @@
 <?php
 if (!class_exists('OSC_Woocommerce_Order_Status')) {
     class OSC_Woocommerce_Order_Status {
-        public $statuses = array(
-            'wc-osc-new' => 'New',
-            'wc-osc-loaded' => 'Loaded',
-            'wc-osc-delivered' => 'Delivered',
-            'wc-osc-lost' => 'Lost',
-            'wc-osc-offloaded' => 'Offloaded',
-            'wc-osc-pickedup' => 'Picked Up',
-        );
+        public $statuses;
         public $orian_statuses = array(
             'new' => 'wc-osc-new',
             'loaded' => 'wc-osc-loaded',
@@ -22,6 +15,14 @@ if (!class_exists('OSC_Woocommerce_Order_Status')) {
             $this->init();
         }
         public function init() {
+            $this->statuses = array(
+                'wc-osc-new' => __("New","orian-shipping-carrier"),
+                'wc-osc-loaded' => __("Loaded","orian-shipping-carrier"),
+                'wc-osc-delivered' => __("Delivered","orian-shipping-carrier"),
+                'wc-osc-lost' => __("Lost","orian-shipping-carrier"),
+                'wc-osc-offloaded' => __("Offloaded","orian-shipping-carrier"),
+                'wc-osc-pickedup' => __("Picked Up","orian-shipping-carrier"),
+            );
             add_action( 'init', array($this,'register_order_statuses') );
             add_filter( 'wc_order_statuses', array($this,'add_order_statuses') );
         }

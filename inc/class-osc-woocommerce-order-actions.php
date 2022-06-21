@@ -1,7 +1,6 @@
 <?php
 if (!class_exists('OSC_Woocommerce_Order_Actions')) {
     class OSC_Woocommerce_Order_Actions {
-        public $text_domain = "osc";
         public function __construct() {
             $this->init();
         }
@@ -13,7 +12,7 @@ if (!class_exists('OSC_Woocommerce_Order_Actions')) {
             add_action( 'add_meta_boxes', array($this, 'osc_add_meta_boxes') );
         }
         public function osc_add_meta_boxes() {
-            add_meta_box( 'osc_packages_status', __('Packages Status','woocommerce'), array($this,'osc_packages_status_cb'), 'shop_order', 'side', 'core' );
+            add_meta_box( 'osc_packages_status', __('Packages Status','orian-shipping-carrier'), array($this,'osc_packages_status_cb'), 'shop_order', 'side', 'core' );
         }
         public function osc_packages_status_cb() {
             global $post;
@@ -24,7 +23,7 @@ if (!class_exists('OSC_Woocommerce_Order_Actions')) {
             ?>
             <table style="width:100%;text-align:left;">
             <thead>
-                <tr><th>Package Id</th><th>Status</th></tr>
+                <tr><th><?php _e('Package Id','orian-shipping-carrier'); ?></th><th><?php _e('Status','orian-shipping-carrier'); ?></th></tr>
         </thead>
                 <tr><td>KKO<?php echo $orderid; ?></td><td><?php echo $wc_statuses['wc-'.$order->get_status()]; ?></td></tr>
             <?php
@@ -45,7 +44,7 @@ if (!class_exists('OSC_Woocommerce_Order_Actions')) {
             global $theorder;
             $order_status = $theorder->get_status();
             if ($order_status === "processing")
-            $actions['osc_send_order_to_carrier'] = __("Send Order to Carrier",$this->text_domain);
+            $actions['osc_send_order_to_carrier'] = __("Send Order to Carrier","orian-shipping-carrier");
             return $actions;
         }
         public function osc_process_carrier_order($order) {
@@ -75,7 +74,7 @@ if (!class_exists('OSC_Woocommerce_Order_Actions')) {
             }
         }
         public function osc_bulk_actions( $bulk_actions ) {
-            $bulk_actions['osc_send_orders'] = __('Send Orders to Carrier',$this->text_domain);
+            $bulk_actions['osc_send_orders'] = __('Send Orders to Carrier','orian-shipping-carrier');
             return $bulk_actions;
         }
         public function bulk_process_send_orders() {

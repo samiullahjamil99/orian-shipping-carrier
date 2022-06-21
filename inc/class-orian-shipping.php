@@ -57,7 +57,9 @@ if (!class_exists('Orian_Shipping')) {
             $chosen_method = isset( WC()->session->chosen_shipping_methods[ $i ] ) ? WC()->session->chosen_shipping_methods[ $i ] : '';
             if ($method->method_id === $this->pudo_method_id && $method->id === $chosen_method) {
                 $delivery_dates = $this->sla->get_delivery_date('pudo');
-                echo '<p>Estimated Delivery Between ' . $delivery_dates[0] . ' and ' . $delivery_dates[1] . '</p>';
+                echo '<p>';
+                printf(__('Estimated Delivery Between %1$s and %2$s','orian-shipping-carrier'), $delivery_dates[0], $delivery_dates[1]);
+                echo '</p>';
             osc_pudo_fields_html();
             } elseif ($method->method_id === $this->home_method_id && $method->id === $chosen_method) {
                 if ($far_destination) {
@@ -65,7 +67,9 @@ if (!class_exists('Orian_Shipping')) {
                 } else {
                 $delivery_dates = $this->sla->get_delivery_date('home');
                 }
-                echo '<p>Estimated Delivery Between ' . $delivery_dates[0] . ' and ' . $delivery_dates[1] . '</p>';
+                echo '<p>';
+                printf(__('Estimated Delivery Between %1$s and %2$s','orian-shipping-carrier'), $delivery_dates[0], $delivery_dates[1]);
+                echo '</p>';
             }
         }
     }
