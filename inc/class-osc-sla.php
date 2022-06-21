@@ -69,15 +69,17 @@ if (!class_exists("OSC_SLA")) {
             return $delivery_dates;
         }
         public function custom_override_city_fields( $fields ) {
+            $original_city_fields = $fields['billing']['billing_city'];
             $fields['billing']['billing_city'] = array(
-               'label'     => __('City', 'woocommerce'),
-               'type' => 'select',
-               'required'  => true,
-               'class'     => array('form-row-wide'),
-               'clear'     => true,
-               'options' => array(),
+               'label'      => $original_city_fields['label'],
+               'type'       => 'select',
+               'required'   => true,
+               'class'      => array('form-row-wide'),
+               'clear'      => true,
+               'options'    => array(),
+               'priority'   => $original_city_fields['priority'],
             );
-            $options = array();
+            $options = array(''=>'Select City');
             foreach ($this->orian_cities as $orian_city) {
                 $options[$orian_city[0]] = $orian_city[0];
             }
