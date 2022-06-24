@@ -129,3 +129,10 @@ function osc_load_my_own_textdomain( $mofile, $domain ) {
     return $mofile;
 }
 add_filter( 'load_textdomain_mofile', 'osc_load_my_own_textdomain', 10, 2 );
+
+include_once dirname(OSC_PLUGIN_FILE) . '/lib/tcpdf/tcpdf.php';
+function osc_test_pdf() {
+	//print_r($uploads_dir);
+	orian_shipping()->pdf_labels->create_order_labels_pdf(121212);
+}
+add_action('init','osc_test_pdf');
