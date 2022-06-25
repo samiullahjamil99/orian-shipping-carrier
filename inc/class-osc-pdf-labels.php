@@ -9,7 +9,12 @@ if (!class_exists('OSC_PDF_Labels')) {
         );
         public function create_order_labels_pdf($orderid) {
             $order = wc_get_order($orderid);
-            $data = array("orderid" => $orderid);
+            $order_details = $order->get_data();
+            $billing_floor = get_post_meta($orderid,'billing_floor',true);
+            $billing_apartment = get_post_meta($orderid,'billing_apartment',true);
+            $billing_intercom_code = get_post_meta($orderid,'billing_intercom_code',true);
+            $billing_business_name = get_post_meta($orderid,'billing_business_name',true);
+            $shipping_remarks = get_post_meta($orderid,'shipping_remarks',true);
             $uploads_dir = wp_upload_dir();
             $labels_pdf_dir = $uploads_dir['basedir'] . '/orian-labels/';
             if(!is_dir($labels_pdf_dir)) {
@@ -55,9 +60,26 @@ if (!class_exists('OSC_PDF_Labels')) {
             $pdf->RoundedRect(2.5, 2.5, $pdf->getPageWidth() - 5, $pdf->getPageHeight() - 5, 7, '1111');
             $html = "<hr>";
             $pdf->writeHTMLCell(0, 0, '', '30', $html, 0, 1, 0, true, '', true);
+            $data = array(
+                "billing_address" => str_replace('﻿', '', $order_details['billing']['address_1'] ),
+                "billing_city" => str_replace('﻿', '', $order_details['billing']['city'] ),
+                "contact1name" => str_replace('﻿', '', $order_details['billing']['first_name'] . " " . $order_details['billing']['last_name'] ),
+                "contact1phone" => str_replace('﻿', '', $order_details['billing']['phone'] ),
+            );
+            if ($billing_business_name)
+                $data['billing_business_name'] = str_replace('﻿', '', $billing_business_name);
+            else
+                $data['billing_business_name'] = $data['contact1name'];
+            if ($billing_floor)
+                $data['billing_floor'] = str_replace('﻿', '', $billing_floor);
+            if ($billing_apartment)
+                $data['billing_apartment'] = str_replace('﻿', '', $billing_apartment);
+            if ($billing_intercom_code)
+                $data['billing_intercom_code'] = str_replace('﻿', '', $billing_intercom_code);
             $this->add_pdf_main_section($pdf, $data);
             $html = "<hr>";
             $pdf->writeHTMLCell(0, 0, '', '75', $html, 0, 1, 0, true, '', true);
+            $data = array('shipping_remarks' => $shipping_remarks);
             $this->add_pdf_note_section($pdf, $data);
             $html = "<hr>";
             $pdf->writeHTMLCell(0, 0, '', '106', $html, 0, 1, 0, true, '', true);
@@ -70,26 +92,34 @@ if (!class_exists('OSC_PDF_Labels')) {
         }
         public function add_pdf_main_section($pdf,$data = array()) {
             $pdf->SetFont('heebomedium', '', 15, '', false);
-            $html = "<p>עבור: {SITENAME}</p>";
+            $html = "<p>עבור: ".$data['billing_business_name']."</p>";
             $pdf->writeHTMLCell(0, 0, '', '34.5', $html, 0, 1, 0, true, '', true);
             $pdf->SetFont('heebo', '', 12, '', false);
-            $html = "<p>רחוב: {STREET1}</p>";
+            $html = "<p>רחוב: ".$data['billing_address']."</p>";
             $pdf->writeHTMLCell(0, 0, '', '40.5', $html, 0, 1, 0, true, '', true);
-            $html = "<p>עיר: {CITY}</p>";
+            $html = "<p>עיר: ".$data['billing_city']."</p>";
             $pdf->writeHTMLCell(0, 0, '', '45.5', $html, 0, 1, 0, true, '', true);
-            $html = "<p>איש קשר: {CONTACT1NAME} | טלפון: {CONTACT1PHONE}</p>";
+            $html = "<p>איש קשר: ". $data['contact1name'] ." | טלפון: ". $data['contact1phone'] ."</p>";
             $pdf->writeHTMLCell(0, 0, '', '50.5', $html, 0, 1, 0, true, '', true);
-            $html = "<p>קומה: {billing_floor} | דירה: {billing_apartmnt}</p>";
+            $html = "";
+            if ($data['billing_floor'])
+            $html = "קומה: ".$data['billing_floor'];
+            if ($html !== "" && $data['billing_apartment'])
+            $html .= " | דירה: " . $data['billing_apartment'];
+            elseif ($data['billing_apartment'])
+            $html = "דירה: " . $data['billing_apartment'];
             $pdf->writeHTMLCell(0, 0, '', '60.5', $html, 0, 1, 0, true, '', true);
-            $html = "<p>קוד לאינטרקום: {billing_intercom_code}</p>";
+            if ($data['billing_intercom_code']) {
+            $html = "<p>קוד לאינטרקום: ".$data['billing_intercom_code']."</p>";
             $pdf->writeHTMLCell(0, 0, '', '65.5', $html, 0, 1, 0, true, '', true);
+            }
         }
         public function add_pdf_note_section($pdf,$data = array()) {
             $pdf->SetFont('heebomedium', '', 15, '', false);
             $html = "<p>הערות:</p>";
             $pdf->writeHTMLCell(0, 0, '', '77', $html, 0, 1, 0, true, '', true);
             $pdf->SetFont('heebo', '', 12, '', false);
-            $html = "<p>{shipping_remarks max lengh = 100 letters}</p>";
+            $html = "<p>".$data['shipping_remarks']."</p>";
             $pdf->writeHTMLCell(0, 0, '', '83', $html, 0, 1, 0, true, '', true);
         }
         public function add_pdf_extra_section($pdf,$data = array()) {
