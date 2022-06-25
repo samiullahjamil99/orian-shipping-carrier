@@ -43,7 +43,14 @@ if (!class_exists('OSC_PDF_Labels')) {
             $pdf->setFontSubsetting(true);
             $pdf->SetFont('heebo', '', 12, '', false);
             $pdf->AddPage();
-            $pdf->Image('/var/www/example-wordpress-dev.com/test-logo.png',2.5,0,'98','','');
+            $osc_options = get_option('orian_main_setting');
+            if ($osc_options) {
+            $top_image_id = $osc_options['label_logo'];
+            if ($top_image_id) {
+            $top_image_path = wp_get_original_image_path($top_image_id);
+            $pdf->Image($top_image_path,2.5,0,'98','','');
+            }
+            }
             $pdf->SetLineStyle(array('width' => 0.7, 'cap' => 'butt', 'join' => 'miter', 'dash' => 0, 'color' => array(0, 0, 0)));
             $pdf->RoundedRect(2.5, 2.5, $pdf->getPageWidth() - 5, $pdf->getPageHeight() - 5, 7, '1111');
             $html = "<hr>";

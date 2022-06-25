@@ -11,6 +11,7 @@ function orian_shipping_init() {
     add_settings_field( 'orian_referenceorder2', 'REFERENCEORDER2','orian_common_text_field_cb','orian_general','orian_main',array('label_for' => 'referenceorder2','class'=>'orian_referenceorder2') );
     add_settings_field( 'orian_sync_time', 'Order Sync Time (In Minutes)','orian_common_number_field_cb','orian_general','orian_main',array('label_for' => 'sync_time','class'=>'orian_sync_time') );
     add_settings_field( 'orian_nonbusiness_days', 'Non Business Days','orian_common_text_field_cb','orian_general','orian_main',array('label_for' => 'nonbusiness_days','class'=>'orian_nonbusiness_days') );
+    add_settings_field( 'orian_label_logo', 'PDF Label Logo','orian_media_uploader_cb','orian_general','orian_main',array('label_for' => 'label_logo','class'=>'orian_label_logo') );
     add_settings_section( 'orian_source', 'Orian Source Settings','orian_source_description_html','orian_general' );
     add_settings_field( 'orian_source_sitename', 'SITENAME','orian_common_text_field_cb','orian_general','orian_source',array('label_for' => 'source_sitename','class'=>'orian_source_sitename') );
     add_settings_field( 'orian_source_street1', 'STREET1','orian_common_text_field_cb','orian_general','orian_source',array('label_for' => 'source_street1','class'=>'orian_source_street1') );
@@ -87,6 +88,25 @@ function orian_common_number_field_cb($args) {
     ?>
     <input type="number" id="<?php echo $label_for; ?>" name="orian_main_setting[<?php echo $label_for; ?>]" value="<?php echo isset($options) ? $value : ''; ?>">
     <?php
+}
+function orian_media_uploader_cb($args) {
+    $options = get_option('orian_main_setting');
+    $label_for = $args['label_for'];
+    if (isset($options))
+        $value = $options[$label_for];
+        if( $image = wp_get_attachment_image_src( $value,'full' ) ) {
+        ?>
+        <a href="#" class="osc-upl" style="display:inline-block;"><img src="<?php echo $image[0]; ?>"  style="max-width:100%;width:300px;" /></a>
+	      <a href="#" class="osc-rmv">Remove image</a>
+          <input type="hidden" name="orian_main_setting[<?php echo $label_for; ?>]" value="<?php echo $value; ?>">
+          <?php
+        } else {
+            ?>
+        <a href="#" class="osc-upl" style="display:inline-block;">Upload image</a>
+	      <a href="#" class="osc-rmv" style="display:none">Remove image</a>
+	      <input type="hidden" name="orian_main_setting[<?php echo $label_for; ?>]" value="">
+        <?php
+        }
 }
 
 function orian_shipping_menu() {
@@ -176,3 +196,12 @@ function orian_sla_import_page() {
     </div>
     <?php
 }
+
+function orian_include_admin_js() {
+    if ( ! did_action( 'wp_enqueue_media' ) ) {
+		wp_enqueue_media();
+	}
+ 
+ 	wp_enqueue_script( 'oscuploadscript', plugin_dir_url(OSC_PLUGIN_FILE) . 'assets/js/admin-media-upload.js', array( 'jquery' ) );
+}
+add_action( 'admin_enqueue_scripts', 'orian_include_admin_js' );
