@@ -26,6 +26,7 @@ if (!class_exists('Orian_Shipping')) {
             include_once dirname(OSC_PLUGIN_FILE) . '/inc/class-osc-woocommerce-order-actions.php';
             include_once dirname(OSC_PLUGIN_FILE) . '/inc/class-osc-woocommerce-order-sync.php';
             include_once dirname(OSC_PLUGIN_FILE) . '/inc/class-osc-sla.php';
+            include_once dirname(OSC_PLUGIN_FILE) . '/lib/tcpdf/tcpdf.php';
             include_once dirname(OSC_PLUGIN_FILE) . '/inc/class-osc-pdf-labels.php';
         }
         public function init() {

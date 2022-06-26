@@ -10,6 +10,10 @@ if (!class_exists('OSC_PDF_Labels')) {
         public function create_order_labels_pdf($orderid) {
             $order = wc_get_order($orderid);
             $order_details = $order->get_data();
+            $orian_options = get_option('orian_main_setting');
+            $ref2 = $orian_options['referenceorder2'];
+            if ($ref2)
+            $ref2data = get_post_meta($orderid,$ref2,true);
             $billing_floor = get_post_meta($orderid,'billing_floor',true);
             $billing_apartment = get_post_meta($orderid,'billing_apartment',true);
             $billing_intercom_code = get_post_meta($orderid,'billing_intercom_code',true);
@@ -72,17 +76,32 @@ if (!class_exists('OSC_PDF_Labels')) {
                 $data['billing_business_name'] = $data['contact1name'];
             if ($billing_floor)
                 $data['billing_floor'] = str_replace('﻿', '', $billing_floor);
+            else
+                $data['billing_floor'] = __("none","orian-shipping-carrier");
             if ($billing_apartment)
                 $data['billing_apartment'] = str_replace('﻿', '', $billing_apartment);
+            else
+                $data['billing_apartment'] = __("none","orian-shipping-carrier");
             if ($billing_intercom_code)
                 $data['billing_intercom_code'] = str_replace('﻿', '', $billing_intercom_code);
+            else
+                $data['billing_intercom_code'] = __("none","orian-shipping-carrier");
             $this->add_pdf_main_section($pdf, $data);
             $html = "<hr>";
             $pdf->writeHTMLCell(0, 0, '', '75', $html, 0, 1, 0, true, '', true);
-            $data = array('shipping_remarks' => $shipping_remarks);
+            $data = array();
+            if ($shipping_remarks)
+                $data['shipping_remarks'] = $shipping_remarks;
+            else
+                $data['shipping_remarks'] = __("none","orian-shipping-carrier");
             $this->add_pdf_note_section($pdf, $data);
             $html = "<hr>";
             $pdf->writeHTMLCell(0, 0, '', '106', $html, 0, 1, 0, true, '', true);
+            $data = array();
+            $data['delivery_type'] = __("Home Delivery","orian-shipping-carrier");
+            $data['ref1'] = $orderid;
+            if ($ref2data)
+                $data['ref2'] = $ref2data;
             $this->add_pdf_extra_section($pdf, $data);
             $html = "<hr>";
             $pdf->writeHTMLCell(0, 0, '', '134', $html, 0, 1, 0, true, '', true);
@@ -129,21 +148,23 @@ if (!class_exists('OSC_PDF_Labels')) {
             $pdf->SetFont('heebomedium', '', 12, '', false);
             $html = "סוג משלוח: ";
             $pdf->Write(1,$html);
-            $html = "{delivery type}\n";
+            $html = $data["delivery_type"] . "\n";
             $pdf->SetFont('heebo', '', 12, '', false);
             $pdf->Write(1,$html);
             $pdf->SetFont('heebomedium', '', 12, '', false);
             $html = "מס׳ הזמנה באתר: ";
             $pdf->Write(1,$html);
             $pdf->SetFont('heebo', '', 12, '', false);
-            $html = "{REFERENCEORDER1}\n";
+            $html = $data['ref1']."\n";
             $pdf->Write(1,$html);
+            if ($data['ref2']) {
             $pdf->SetFont('heebomedium', '', 12, '', false);
             $html = "מס׳ חשבונית: ";
             $pdf->Write(1,$html);
             $pdf->SetFont('heebo', '', 12, '', false);
-            $html = "{REFERENCEORDER2}\n";
+            $html = $data['ref2']."\n";
             $pdf->Write(1,$html);
+            }
             //$pdf->writeHTMLCell(0, 0, '', '114.5', $html, 0, 1, 0, true, '', true);
         }
     }
