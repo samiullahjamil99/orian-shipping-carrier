@@ -48,6 +48,7 @@ function osc_pudo_fields_html() {
 				<option value="" disabled selected><?php echo __("Select Pudo","orian-shipping-carrier"); ?></option>
 			</select>
 		</p>
+		<input type="hidden" name="pudo_details" value="" id="pudo_details">
 		<div id="selectedpudodetails">
 		</div>
 	</div>
@@ -104,6 +105,7 @@ function osc_pudo_script() {
 					var pudocontactid = pudo_points[i]['contactid'];
 					if (pointval == pudocontactid) {
 						jQuery("#selectedpudodetails").html(pudo_points[i]['pudoaddress']);
+						jQuery("#pudo_details").val(JSON.stringify(pudo_points[i]));
 					}
 				}
 			});
@@ -119,6 +121,9 @@ function osc_pudo_update_meta( $order_id ) {
     if ( ! empty( $_POST['pudo_point'] ) ) {
         update_post_meta( $order_id, 'pudo_point', sanitize_text_field( $_POST['pudo_point'] ) );
     }
+	if ( ! empty( $_POST['pudo_details'] ) ) {
+		update_post_meta( $order_id, 'pudo_details', $_POST['pudo_details'] );
+	}
 }
 
 function osc_load_my_own_textdomain( $mofile, $domain ) {

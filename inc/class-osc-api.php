@@ -162,6 +162,9 @@ final class OSC_API {
             $order_details = $order->get_data();
         $consignee = $this->orian_options['consignee'];
         $ref2 = $this->orian_options['referenceorder2'];
+        $ref2val = "";
+        if ($ref2)
+            $ref2val = get_post_meta($orderid,$ref2,true);
         $source_street1 = $this->orian_options['source_street1'];
         $source_sitename = $this->orian_options['source_sitename'];
         $source_city = $this->orian_options['source_city'];
@@ -242,7 +245,7 @@ final class OSC_API {
             <COMPLETIONDATE/>
             <HOSTORDERID/>
             <REFERENCEORDER>$orderid</REFERENCEORDER>
-            <REFERENCEORDER2>$ref2</REFERENCEORDER2>
+            <REFERENCEORDER2>$ref2val</REFERENCEORDER2>
             <DELIVERYNOTE/>
             <INTERNALDELIVERYNOTE/>
             <CONTAINERNUMBER/>
@@ -401,6 +404,9 @@ final class OSC_API {
             $order_details = $order->get_data();
             $consignee = $this->orian_options['consignee'];
             $ref2 = $this->orian_options['referenceorder2'];
+            $ref2val = "";
+            if ($ref2)
+                $ref2val = get_post_meta($orderid,$ref2,true);
             $source_street1 = $this->orian_options['source_street1'];
             $source_sitename = $this->orian_options['source_sitename'];
             $source_city = $this->orian_options['source_city'];
@@ -448,7 +454,7 @@ final class OSC_API {
             <TARGETPUDOPHONE>" . $order_details['billing']['phone'] . "</TARGETPUDOPHONE>
             <HOSTORDERID/>
             <REFERENCEORDER>$orderid</REFERENCEORDER>
-            <REFERENCEORDER2>$ref2</REFERENCEORDER2>
+            <REFERENCEORDER2>$ref2val</REFERENCEORDER2>
             <DELIVERYNOTE/>
             <INTERNALDELIVERYNOTE/>
             <CONTAINERNUMBER/>

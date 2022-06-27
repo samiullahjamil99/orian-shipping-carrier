@@ -7,25 +7,56 @@ if (!class_exists('OSC_PDF_Labels')) {
             'creator' => 'Orian Shipping Carrier Plugin',
             'subject' => 'Orian Order Labels',
         );
-        public function create_order_labels_pdf($orderid) {
+        public function create_order_labels($orderid) {
+            $fileurls = array();
+            $pudoorder = false;
+            $pudo_point = get_post_meta($orderid,'pudo_point',true);
+            if ($pudo_point)
+                $pudoorder = true;
+            $numberofpackages = get_post_meta($orderid,'number_of_packages',true);
+            if (!$numberofpackages)
+                $numberofpackages = "1";
+            for($i = 1; $i <= intval($numberofpackages); $i++) {
+                $fileurl = $this->create_order_package_pdf($orderid, $i, $pudoorder);
+                if ($fileurl)
+                    $fileurls[] = $fileurl;
+            }
+            update_post_meta($orderid, 'pdf_urls',$fileurls);
+        }
+        public function create_order_package_pdf($orderid, $packagenumber = 1, $pudoorder = false) {
             $order = wc_get_order($orderid);
             $order_details = $order->get_data();
+            $pudodetails = false;
+            if ($pudoorder) {
+                $pudodetailsstr = get_post_meta($orderid,'pudo_details',true);
+                if ($pudodetailsstr)
+                    $pudodetails = json_decode($pudodetailsstr);
+            }
             $orian_options = get_option('orian_main_setting');
             $ref2 = $orian_options['referenceorder2'];
             if ($ref2)
             $ref2data = get_post_meta($orderid,$ref2,true);
+            $numberofpackages = get_post_meta($orderid,'number_of_packages',true);
+            if (!$numberofpackages)
+            $numberofpackages = '1';
+            $packageid = "KKO" . $orderid;
+            if ($packagenumber > 1)
+                $packageid .= "P".$packagenumber;
             $billing_floor = get_post_meta($orderid,'billing_floor',true);
             $billing_apartment = get_post_meta($orderid,'billing_apartment',true);
             $billing_intercom_code = get_post_meta($orderid,'billing_intercom_code',true);
             $billing_business_name = get_post_meta($orderid,'billing_business_name',true);
+            if ($pudodetails)
+                $billing_business_name = $pudodetails->pudoname;
             $shipping_remarks = get_post_meta($orderid,'shipping_remarks',true);
             $uploads_dir = wp_upload_dir();
             $labels_pdf_dir = $uploads_dir['basedir'] . '/orian-labels/';
             if(!is_dir($labels_pdf_dir)) {
                 mkdir($labels_pdf_dir);
             }
-            $filename = 'order-label-KST' . $orderid . '.pdf';
-            $filepath = $labels_pdf_dir . '/order-label-KST' . $orderid . '.pdf';
+            $filename = 'order-label-' . $packageid . '.pdf';
+            $filepath = $labels_pdf_dir . '/' . $filename;
+            $fileurl = $uploads_dir['baseurl'] . '/orian-labels/' . $filename;
             $barcodestyle = array(
                 'position'=>'C',
                 'text'=>true,
@@ -70,10 +101,16 @@ if (!class_exists('OSC_PDF_Labels')) {
                 "contact1name" => str_replace('﻿', '', $order_details['billing']['first_name'] . " " . $order_details['billing']['last_name'] ),
                 "contact1phone" => str_replace('﻿', '', $order_details['billing']['phone'] ),
             );
+            if ($pudodetails) {
+                $data['billing_address'] = $pudodetails->pudoaddress;
+                $data['billing_city'] = $pudodetails->pudocity;
+                $data['pudocontactid'] = $pudodetails->contactid;
+            }
             if ($billing_business_name)
                 $data['billing_business_name'] = str_replace('﻿', '', $billing_business_name);
             else
                 $data['billing_business_name'] = $data['contact1name'];
+            if (!$pudoorder) {
             if ($billing_floor)
                 $data['billing_floor'] = str_replace('﻿', '', $billing_floor);
             else
@@ -86,6 +123,7 @@ if (!class_exists('OSC_PDF_Labels')) {
                 $data['billing_intercom_code'] = str_replace('﻿', '', $billing_intercom_code);
             else
                 $data['billing_intercom_code'] = __("none","orian-shipping-carrier");
+            }
             $this->add_pdf_main_section($pdf, $data);
             $html = "<hr>";
             $pdf->writeHTMLCell(0, 0, '', '75', $html, 0, 1, 0, true, '', true);
@@ -99,15 +137,24 @@ if (!class_exists('OSC_PDF_Labels')) {
             $pdf->writeHTMLCell(0, 0, '', '106', $html, 0, 1, 0, true, '', true);
             $data = array();
             $data['delivery_type'] = __("Home Delivery","orian-shipping-carrier");
+            if ($pudoorder)
+                $data['delivery_type'] = __("Pudo","orian-shipping-carrier");
             $data['ref1'] = $orderid;
             if ($ref2data)
                 $data['ref2'] = $ref2data;
+            $data['numberofpackages'] = $numberofpackages;
+            $data['packagenumber'] = $packagenumber;
             $this->add_pdf_extra_section($pdf, $data);
             $html = "<hr>";
             $pdf->writeHTMLCell(0, 0, '', '134', $html, 0, 1, 0, true, '', true);
-            $pdf->write1DBarcode('12346','C128','','140','55','12',0.7,$barcodestyle,'N');
+            $pdf->write1DBarcode($packageid,'C128','','140','55','12',0.7,$barcodestyle,'N');
             $pdf_string = $pdf->Output($filename, 'S');
-            file_put_contents($filepath, $pdf_string);
+            $filewriten = file_put_contents($filepath, $pdf_string);
+            if ($filewriten) {
+                return $fileurl;
+            } else {
+                return false;
+            }
         }
         public function add_pdf_main_section($pdf,$data = array()) {
             $pdf->SetFont('heebomedium', '', 15, '', false);
@@ -120,6 +167,10 @@ if (!class_exists('OSC_PDF_Labels')) {
             $pdf->writeHTMLCell(0, 0, '', '45.5', $html, 0, 1, 0, true, '', true);
             $html = "<p>איש קשר: ". $data['contact1name'] ." | טלפון: ". $data['contact1phone'] ."</p>";
             $pdf->writeHTMLCell(0, 0, '', '50.5', $html, 0, 1, 0, true, '', true);
+            if ($data['pudocontactid']) {
+            $html = "<p>מזהה נקודת איסוף: ". $data['pudocontactid'] ."</p>";
+            $pdf->writeHTMLCell(0, 0, '', '55.5', $html, 0, 1, 0, true, '', true);
+            }
             $html = "";
             if ($data['billing_floor'])
             $html = "קומה: ".$data['billing_floor'];
@@ -143,7 +194,7 @@ if (!class_exists('OSC_PDF_Labels')) {
         }
         public function add_pdf_extra_section($pdf,$data = array()) {
             $pdf->SetFont('heebomedium', '', 12, '', false);
-            $html = "<p>חבילה 1 מתוך 1</p>";
+            $html = "<p>חבילה ".$data['packagenumber']." מתוך ".$data['numberofpackages']."</p>";
             $pdf->writeHTMLCell(0, 0, '', '109.5', $html, 0, 1, 0, true, '', true);
             $pdf->SetFont('heebomedium', '', 12, '', false);
             $html = "סוג משלוח: ";
