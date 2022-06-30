@@ -11,6 +11,7 @@ function orian_shipping_init() {
     add_settings_field( 'orian_referenceorder2', 'REFERENCEORDER2','orian_common_text_field_cb','orian_general','orian_main',array('label_for' => 'referenceorder2','class'=>'orian_referenceorder2') );
     add_settings_field( 'orian_sync_time', 'Order Sync Time (In Minutes)','orian_common_number_field_cb','orian_general','orian_main',array('label_for' => 'sync_time','class'=>'orian_sync_time') );
     add_settings_field( 'orian_nonbusiness_days', 'Non Business Days','orian_common_text_field_cb','orian_general','orian_main',array('label_for' => 'nonbusiness_days','class'=>'orian_nonbusiness_days') );
+    add_settings_field( 'orian_businessday_end', 'Business Day End Time','orian_common_time_field_cb','orian_general','orian_main',array('label_for' => 'businessday_end','class'=>'orian_businessday_end') );
     add_settings_field( 'orian_label_logo', 'PDF Label Logo','orian_media_uploader_cb','orian_general','orian_main',array('label_for' => 'label_logo','class'=>'orian_label_logo') );
     add_settings_section( 'orian_source', 'Orian Source Settings','orian_source_description_html','orian_general' );
     add_settings_field( 'orian_source_sitename', 'SITENAME','orian_common_text_field_cb','orian_general','orian_source',array('label_for' => 'source_sitename','class'=>'orian_source_sitename') );
@@ -87,6 +88,15 @@ function orian_common_number_field_cb($args) {
         $value = $options[$label_for];
     ?>
     <input type="number" id="<?php echo $label_for; ?>" name="orian_main_setting[<?php echo $label_for; ?>]" value="<?php echo isset($options) ? $value : ''; ?>">
+    <?php
+}
+function orian_common_time_field_cb($args) {
+    $options = get_option('orian_main_setting');
+    $label_for = $args['label_for'];
+    if (isset($options))
+        $value = $options[$label_for];
+    ?>
+    <input type="time" id="<?php echo $label_for; ?>" name="orian_main_setting[<?php echo $label_for; ?>]" value="<?php echo isset($options) ? $value : ''; ?>">
     <?php
 }
 function orian_media_uploader_cb($args) {
