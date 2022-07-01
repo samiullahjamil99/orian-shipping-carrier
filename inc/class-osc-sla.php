@@ -1,47 +1,59 @@
 <?php
 if (!class_exists("OSC_SLA")) {
     class OSC_SLA {
-        public $timezone = 'Asia/Jerusalem';
+        public $timezone;
         public $nonbusiness_days;
         public $home_regular_sla;
         public $home_far_sla;
         public $pudo_sla;
         public $orian_cities;
+        public $businessday_endtime;
         public function __construct() {
             $this->init();
         }
         public function init() {
+            $this->timezone = wp_timezone();
             $orian_settings = get_option('orian_main_setting');
             if ($orian_settings) {
                 if (array_key_exists('nonbusiness_days',$orian_settings))
-            $this->nonbusiness_days = array_map('trim', explode(",",$orian_settings['nonbusiness_days']));
-            if (array_key_exists('delivery_sla',$orian_settings))
-            $this->home_regular_sla = $orian_settings['delivery_sla'];
-            if (array_key_exists('delivery_far_sla',$orian_settings))
-            $this->home_far_sla = $orian_settings['delivery_far_sla'];
-            if (array_key_exists('pickup_sla',$orian_settings))
-            $this->pudo_sla = $orian_settings['pickup_sla'];
+                    $this->nonbusiness_days = array_map('trim', explode(",",$orian_settings['nonbusiness_days']));
+                if (array_key_exists('delivery_sla',$orian_settings))
+                    $this->home_regular_sla = $orian_settings['delivery_sla'];
+                if (array_key_exists('delivery_far_sla',$orian_settings))
+                    $this->home_far_sla = $orian_settings['delivery_far_sla'];
+                if (array_key_exists('pickup_sla',$orian_settings))
+                    $this->pudo_sla = $orian_settings['pickup_sla'];
+                if (array_key_exists('businessday_end',$orian_settings))
+                    $this->businessday_endtime = $orian_settings['businessday_end'];
             }
             $this->orian_cities = get_option('orian_cities');
             if ($this->orian_cities) {
+                sort($this->orian_cities);
             add_filter( 'woocommerce_checkout_fields' , array($this,'custom_override_city_fields') );
             add_action( 'wp_footer',array($this,'custom_script_for_sla') );
             }
         }
         public function business_days_to_date($days) {
             $response = array();
-            $originaltimezone = date_default_timezone_get();
-            date_default_timezone_set($this->timezone);
-            $today = new DateTime("now");
-            $response[0] = $this->date_sla_format($today);
-            $nextday = $today;
-            for($i = 1; $i <= $days; $i++) {
-                $nextday = new DateTime("+$i days");
-                if ($nextday->format('w') === "5" || $nextday->format('w') === "6" || in_array($nextday->format('d/m'),$this->nonbusiness_days))
+            $now = new DateTime("now",$this->timezone);
+            $response[0] = $this->date_sla_format($now);
+            $nextday = $now;
+            $endtime = new DateTime($this->businessday_endtime, $this->timezone);
+            $firstday = 1;
+            if ($now > $endtime) {
                 $days++;
+                $firstday = 2;
+            }
+            for($i = 1; $i <= $days; $i++) {
+                $nextday = new DateTime("+$i days", $this->timezone);
+                if ($nextday->format('w') === "5" || $nextday->format('w') === "6" || in_array($nextday->format('d/m/Y'),$this->nonbusiness_days)) {
+                    $days++;
+                    $firstday++;
+                }
+                if ($i == $firstday)
+                    $response[0] = $this->date_sla_format($nextday);
             }
             $response[1] = $this->date_sla_format($nextday);
-            date_default_timezone_set($originaltimezone);
             return $response;
         }
         public function date_sla_format($date) {
@@ -97,7 +109,7 @@ if (!class_exists("OSC_SLA")) {
         public function custom_script_for_sla() {
             $my_orian_cities = array();
             foreach($this->orian_cities as $orian_city) {
-                $my_orian_cities[$orian_city[0]] = $orian_city[1];
+                $my_orian_cities[$orian_city[0]] = $orian_city[0];
             }
             ?>
             <script>
@@ -109,7 +121,7 @@ if (!class_exists("OSC_SLA")) {
                     }
                     function set_sla_message() {
                         if (sla_cities[jQuery("#billing_city").val()] == "0") {
-                            jQuery("#billing_city_extra").html("City is Far Destination so Expected Delivery is different.");
+                            jQuery("#billing_city_extra").html("<?php printf(__('City is far destination please except delivery time of up to %1$s Business Days.','orian-shipping-carrier'),$this->home_far_sla); ?>");
                         } else {
                             jQuery("#billing_city_extra").html("");
                         }

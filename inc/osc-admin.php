@@ -10,7 +10,7 @@ function orian_shipping_init() {
     add_settings_field( 'orian_consignee', 'Consignee','orian_common_text_field_cb','orian_general','orian_main',array('label_for' => 'consignee','class'=>'orian_consignee') );
     add_settings_field( 'orian_referenceorder2', 'REFERENCEORDER2','orian_common_text_field_cb','orian_general','orian_main',array('label_for' => 'referenceorder2','class'=>'orian_referenceorder2') );
     add_settings_field( 'orian_sync_time', 'Order Sync Time (In Minutes)','orian_common_number_field_cb','orian_general','orian_main',array('label_for' => 'sync_time','class'=>'orian_sync_time') );
-    add_settings_field( 'orian_nonbusiness_days', 'Non Business Days','orian_common_text_field_cb','orian_general','orian_main',array('label_for' => 'nonbusiness_days','class'=>'orian_nonbusiness_days') );
+    add_settings_field( 'orian_nonbusiness_days', 'Non Business Days','orian_multi_date_field_cb','orian_general','orian_main',array('label_for' => 'nonbusiness_days','class'=>'orian_nonbusiness_days') );
     add_settings_field( 'orian_businessday_end', 'Business Day End Time','orian_common_time_field_cb','orian_general','orian_main',array('label_for' => 'businessday_end','class'=>'orian_businessday_end') );
     add_settings_field( 'orian_label_logo', 'PDF Label Logo','orian_media_uploader_cb','orian_general','orian_main',array('label_for' => 'label_logo','class'=>'orian_label_logo') );
     add_settings_section( 'orian_source', 'Orian Source Settings','orian_source_description_html','orian_general' );
@@ -80,6 +80,19 @@ function orian_common_text_field_cb($args) {
         <p>Use the format dd/mm where dd is for day and mm for month. Use two digits for days and months. The days will be separated by commas. For example 10/06,09/05,02/04</p>
         <?php
     endif;
+}
+
+function orian_multi_date_field_cb($args) {
+    $options = get_option('orian_main_setting');
+    $label_for = $args['label_for'];
+    if (isset($options))
+        $value = $options[$label_for];
+    $day = date('w');
+    ?>
+    <div class="multi-date-select">
+    </div>
+    <input type="hidden" id="<?php echo $label_for; ?>" name="orian_main_setting[<?php echo $label_for; ?>]" value="<?php echo isset($options) ? $value : ''; ?>">
+    <?php
 }
 function orian_common_number_field_cb($args) {
     $options = get_option('orian_main_setting');
@@ -213,5 +226,7 @@ function orian_include_admin_js() {
 	}
  
  	wp_enqueue_script( 'oscuploadscript', plugin_dir_url(OSC_PLUGIN_FILE) . 'assets/js/admin-media-upload.js', array( 'jquery' ) );
+    wp_enqueue_script( 'multi-date', plugin_dir_url(OSC_PLUGIN_FILE) . 'assets/js/multi-date-select.js', array( 'jquery' ) );
+    wp_enqueue_style( 'multi-date', plugin_dir_url(OSC_PLUGIN_FILE) . 'assets/css/multi-date-select.css');
 }
 add_action( 'admin_enqueue_scripts', 'orian_include_admin_js' );

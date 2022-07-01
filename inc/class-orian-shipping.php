@@ -61,19 +61,31 @@ if (!class_exists('Orian_Shipping')) {
             $chosen_method = isset( WC()->session->chosen_shipping_methods[ $i ] ) ? WC()->session->chosen_shipping_methods[ $i ] : '';
             if ($method->method_id === $this->pudo_method_id && $method->id === $chosen_method) {
                 $delivery_dates = $this->sla->get_delivery_date('pudo');
-                echo '<p>';
-                printf(__('Estimated Delivery Between %1$s and %2$s','orian-shipping-carrier'), $delivery_dates[0], $delivery_dates[1]);
-                echo '</p>';
+                if ($delivery_dates[0] !== $delivery_dates[1]) {
+                    echo '<p>';
+                    printf(__('Estimated Delivery Between %1$s and %2$s','orian-shipping-carrier'), $delivery_dates[0], $delivery_dates[1]);
+                    echo '</p>';
+                } else {
+                    echo '<p>';
+                    printf(__('Estimated Delivery On %1$s','orian-shipping-carrier'), $delivery_dates[0]);
+                    echo '</p>';
+                }
             osc_pudo_fields_html();
             } elseif ($method->method_id === $this->home_method_id && $method->id === $chosen_method) {
                 if ($far_destination) {
                     $delivery_dates = $this->sla->get_delivery_date('far');
                 } else {
-                $delivery_dates = $this->sla->get_delivery_date('home');
+                    $delivery_dates = $this->sla->get_delivery_date('home');
                 }
-                echo '<p>';
-                printf(__('Estimated Delivery Between %1$s and %2$s','orian-shipping-carrier'), $delivery_dates[0], $delivery_dates[1]);
-                echo '</p>';
+                if ($delivery_dates[0] !== $delivery_dates[1]) {
+                    echo '<p>';
+                    printf(__('Estimated Delivery Between %1$s and %2$s','orian-shipping-carrier'), $delivery_dates[0], $delivery_dates[1]);
+                    echo '</p>';
+                } else {
+                    echo '<p>';
+                    printf(__('Estimated Delivery On %1$s','orian-shipping-carrier'), $delivery_dates[0]);
+                    echo '</p>';
+                }
             }
         }
     }

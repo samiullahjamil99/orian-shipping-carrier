@@ -77,6 +77,7 @@ function osc_pudo_script() {
 				}
 			}
 		}
+		sort($pudo_cities);
 	?>
 	<script>
 		var pudo_cities = <?php echo json_encode($pudo_cities); ?>;
