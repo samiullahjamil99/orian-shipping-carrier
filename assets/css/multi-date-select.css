@@ -5,6 +5,38 @@
     border-radius: 8px;
     background-color: black;
 }
+.multi-date-select .cal-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+.multi-date-select .cal-header a {
+    text-decoration: none;
+    color:white;
+}
+.multi-date-select a.prev-month, .multi-date-select a.next-month {
+    position: relative;
+    visibility: hidden;
+}
+.multi-date-select a.prev-month::after, .multi-date-select a.next-month::after {
+    position: absolute;
+    content: "";
+    height:12px;
+    width:12px;
+    visibility: visible;
+}
+.multi-date-select a.prev-month::after {
+    border-bottom: 2px solid white;
+    border-left: 2px solid white;
+    transform: rotate(45deg);
+    left:0;
+}
+.multi-date-select a.next-month::after {
+    border-bottom: 2px solid white;
+    border-right: 2px solid white;
+    transform: rotate(-45deg);
+    right:0;
+}
 .multi-date-select h1.month {
     text-align: center;
     margin-bottom: 10px;
@@ -29,6 +61,7 @@
     list-style: none;
     margin:0;
     padding:0;
+    margin-top:10px;
 }
 .multi-date-select .weekdays li {
     padding:8px;
@@ -42,6 +75,7 @@
     box-sizing: border-box;
     margin-bottom: 0px;
     color:white;
+    cursor:pointer;
 }
 .multi-date-select .dates li.selected {
     background-color:white;

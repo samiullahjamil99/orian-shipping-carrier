@@ -23,6 +23,9 @@ function renderCalender(el,month = null,year = null) {
     var currentYear = year;
     var firstOfMonth = currentYear + "-" + (currentMonthNum + 1) + "-1";
     var firstOfMonthD = new Date(firstOfMonth);
+    var calenderHeader = document.createElement("div");
+    calenderHeader.classList.add("cal-header");
+    el.appendChild(calenderHeader);
     var prevMonthBtn = document.createElement("a");
     prevMonthBtn.href = "javascript:void(0)";
     prevMonthBtn.classList.add("prev-month");
@@ -38,11 +41,11 @@ function renderCalender(el,month = null,year = null) {
         }
         renderCalender(el,prevmonth,prevyear);
     });
-    el.appendChild(prevMonthBtn);
+    calenderHeader.appendChild(prevMonthBtn);
     var monthTitle = document.createElement("h1");
     monthTitle.classList.add("month");
     monthTitle.innerHTML = currentMonth + " " + currentYear;
-    el.appendChild(monthTitle);
+    calenderHeader.appendChild(monthTitle);
     var nextMonthBtn = document.createElement("a");
     nextMonthBtn.href = "javascript:void(0)";
     nextMonthBtn.classList.add("next-month");
@@ -58,7 +61,7 @@ function renderCalender(el,month = null,year = null) {
         }
         renderCalender(el,nextmonth,nextyear);
     });
-    el.appendChild(nextMonthBtn);
+    calenderHeader.appendChild(nextMonthBtn);
     var weekdays = document.createElement("ul");
     weekdays.classList.add("weekdays");
     el.appendChild(weekdays);
