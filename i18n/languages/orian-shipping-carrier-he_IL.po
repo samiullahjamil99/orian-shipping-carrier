@@ -11,110 +11,152 @@ msgstr ""
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "POT-Creation-Date: 2022-06-21T13:15:49+05:00\n"
-"PO-Revision-Date: 2022-06-21 08:28+0000\n"
+"PO-Revision-Date: 2022-07-04 08:07+0000\n"
 "X-Generator: Loco https://localise.biz/\n"
 "X-Domain: orian-shipping-carrier\n"
 "Language: he_IL\n"
 "Plural-Forms: nplurals=2; plural=n != 1;\n"
 "X-Loco-Version: 2.6.2; wp-6.0"
 
-#. Plugin Name of the plugin
+#: inc/class-osc-sla.php:124
+#, php-format
+msgid ""
+"City is far destination please except delivery time of up to %1$s Business "
+"Days."
+msgstr "העיר רחוקה היעד בבקשה למעט זמן אספקה ​​של עד %1$s ימי עסקים."
+
+#: inc/class-osc-woocommerce-order-status.php:21
+msgid "Delivered"
+msgstr "נמסר"
+
+#: inc/class-orian-shipping.php:66 inc/class-orian-shipping.php:82
+msgid "Estimated Delivery Between %1$s and %2$s"
+msgstr "משלוח משוער בין %1$s ל- %2$s"
+
+#: inc/class-orian-shipping.php:70 inc/class-orian-shipping.php:86
+#, php-format
+msgid "Estimated Delivery On %1$s"
+msgstr "משלוח משוער ב-%1$s"
+
+#: inc/class-osc-sla.php:66
+msgid "Friday"
+msgstr "יוֹם שִׁישִׁי"
+
+#: inc/class-osc-woocommerce-order-actions.php:78
+msgid "Generate PDF Label"
+msgstr "צור תווית PDF"
+
+#: inc/class-osc-pdf-labels.php:139
+msgid "Home Delivery"
+msgstr "משלוח עד הבית"
+
+#. Author URI of the plugin
+msgid "https://www.samiullahjaml.com/about-me/"
+msgstr "https://www.samiullahjaml.com/about-me"
+
+#: inc/class-osc-woocommerce-order-status.php:20
+msgid "Loaded"
+msgstr "עמוס"
+
+#: inc/class-osc-woocommerce-order-status.php:22
+msgid "Lost"
+msgstr "אָבֵד"
+
+#: inc/class-osc-sla.php:62
+msgid "Monday"
+msgstr "יוֹם שֵׁנִי"
+
+#: inc/class-osc-woocommerce-order-status.php:19
+msgid "New"
+msgstr "חָדָשׁ"
+
+#: inc/class-osc-pdf-labels.php:117 inc/class-osc-pdf-labels.php:121
+#: inc/class-osc-pdf-labels.php:125 inc/class-osc-pdf-labels.php:134
+msgid "none"
+msgstr "אף אחד"
+
+#: inc/class-osc-woocommerce-order-status.php:23
+msgid "Offloaded"
+msgstr "הורידו"
+
+#. Name of the plugin
 msgid "Orian Shipping Carrier"
 msgstr "Orian Shipping Carrier"
+
+#: inc/class-osc-woocommerce-order-actions.php:28
+#: inc/class-osc-woocommerce-order-actions.php:54
+msgid "Package Id"
+msgstr "מזהה חבילה"
+
+#: inc/class-osc-woocommerce-order-actions.php:17
+msgid "Packages Labels"
+msgstr "תוויות חבילות"
+
+#: inc/class-osc-woocommerce-order-actions.php:16
+msgid "Packages Status"
+msgstr "סטטוס חבילות"
+
+#: inc/class-osc-woocommerce-order-actions.php:54
+msgid "PDF Label"
+msgstr "תווית PDF"
+
+#: inc/class-osc-woocommerce-order-status.php:24
+msgid "Picked Up"
+msgstr "נאסף"
+
+#: inc/class-osc-pdf-labels.php:141
+msgid "Pudo"
+msgstr "פודו"
+
+#: inc/class-osc-woocommerce-order-actions.php:76
+msgid "Regenerate PDF Label"
+msgstr "צור מחדש תווית PDF"
+
+#. Author of the plugin
+msgid "Samiullah Jamil"
+msgstr "Samiullah Jamil"
+
+#: inc/class-osc-sla.php:67
+msgid "Saturday"
+msgstr "יום שבת"
+
+#: orian-shipping-carrier.php:43 inc/class-osc-sla.php:102
+msgid "Select City"
+msgstr "בחר עיר"
+
+#: orian-shipping-carrier.php:48
+msgid "Select Pudo"
+msgstr "בחר יכול"
+
+#: inc/class-osc-woocommerce-order-actions.php:74
+msgid "Send Order to Carrier"
+msgstr "שלח הזמנה למוביל"
+
+#: inc/class-osc-woocommerce-order-actions.php:111
+msgid "Send Orders to Carrier"
+msgstr "שלח הזמנות למוביל"
+
+#: inc/class-osc-woocommerce-order-actions.php:28
+msgid "Status"
+msgstr "סטָטוּס"
+
+#: inc/class-osc-sla.php:61
+msgid "Sunday"
+msgstr "יוֹם רִאשׁוֹן"
 
 #. Description of the plugin
 msgid ""
 "This plugin is developed integrate Orian Shipping Carrier API to Woocommerce."
 msgstr "תוסף זה פותח בשילוב Orian Shipping Carrier API ל-Woocommerce."
 
-#. Author of the plugin
-msgid "Samiullah Jamil"
-msgstr "Samiullah Jamil"
-
-#. Author URI of the plugin
-msgid "https://www.samiullahjaml.com/about-me/"
-msgstr "https://www.samiullahjaml.com/about-me"
-
-#: inc/class-orian-shipping.php:61 inc/class-orian-shipping.php:71
-msgid "Estimated Delivery Between %1$s and %2$s"
-msgstr "משלוח משוער בין %1$s ל- %2$s"
-
-#: inc/class-osc-sla.php:49
-msgid "Sunday"
-msgstr "יוֹם רִאשׁוֹן"
-
-#: inc/class-osc-sla.php:50
-msgid "Monday"
-msgstr "יוֹם שֵׁנִי"
-
-#: inc/class-osc-sla.php:51
-msgid "Tuesday"
-msgstr "יוֹם שְׁלִישִׁי"
-
-#: inc/class-osc-sla.php:52
-msgid "Wednesday"
-msgstr "יום רביעי"
-
-#: inc/class-osc-sla.php:53
+#: inc/class-osc-sla.php:65
 msgid "Thursday"
 msgstr "יוֹם חֲמִישִׁי"
 
-#: inc/class-osc-sla.php:54
-msgid "Friday"
-msgstr "יוֹם שִׁישִׁי"
+#: inc/class-osc-sla.php:63
+msgid "Tuesday"
+msgstr "יוֹם שְׁלִישִׁי"
 
-#: inc/class-osc-sla.php:55
-msgid "Saturday"
-msgstr "יום שבת"
-
-#: inc/class-osc-sla.php:90 orian-shipping-carrier.php:43
-msgid "Select City"
-msgstr "בחר עיר"
-
-#: inc/class-osc-woocommerce-order-actions.php:15
-msgid "Packages Status"
-msgstr "סטטוס חבילות"
-
-#: inc/class-osc-woocommerce-order-actions.php:26
-msgid "Package Id"
-msgstr "מזהה חבילה"
-
-#: inc/class-osc-woocommerce-order-actions.php:26
-msgid "Status"
-msgstr "סטָטוּס"
-
-#: inc/class-osc-woocommerce-order-actions.php:47
-msgid "Send Order to Carrier"
-msgstr "שלח הזמנה למוביל"
-
-#: inc/class-osc-woocommerce-order-actions.php:77
-msgid "Send Orders to Carrier"
-msgstr "שלח הזמנות למוביל"
-
-#: inc/class-osc-woocommerce-order-status.php:19
-msgid "New"
-msgstr "חָדָשׁ"
-
-#: inc/class-osc-woocommerce-order-status.php:20
-msgid "Loaded"
-msgstr "עמוס"
-
-#: inc/class-osc-woocommerce-order-status.php:21
-msgid "Delivered"
-msgstr "נמסר"
-
-#: inc/class-osc-woocommerce-order-status.php:22
-msgid "Lost"
-msgstr "אָבֵד"
-
-#: inc/class-osc-woocommerce-order-status.php:23
-msgid "Offloaded"
-msgstr "הורידו"
-
-#: inc/class-osc-woocommerce-order-status.php:24
-msgid "Picked Up"
-msgstr "נאסף"
-
-#: orian-shipping-carrier.php:48
-msgid "Select Pudo"
-msgstr "בחר יכול"
+#: inc/class-osc-sla.php:64
+msgid "Wednesday"
+msgstr "יום רביעי"
