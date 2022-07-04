@@ -16,12 +16,12 @@ if (!class_exists('OSC_Woocommerce_Order_Status')) {
         }
         public function init() {
             $this->statuses = array(
-                'wc-osc-new' => __("New","orian-shipping-carrier"),
-                'wc-osc-loaded' => __("Loaded","orian-shipping-carrier"),
-                'wc-osc-delivered' => __("Delivered","orian-shipping-carrier"),
-                'wc-osc-lost' => __("Lost","orian-shipping-carrier"),
-                'wc-osc-offloaded' => __("Offloaded","orian-shipping-carrier"),
-                'wc-osc-pickedup' => __("Picked Up","orian-shipping-carrier"),
+                'wc-osc-new' => "New",
+                'wc-osc-loaded' => "Loaded",
+                'wc-osc-delivered' => "Delivered",
+                'wc-osc-lost' => "Lost",
+                'wc-osc-offloaded' => "Offloaded",
+                'wc-osc-pickedup' => "Picked Up",
             );
             add_action( 'init', array($this,'register_order_statuses') );
             add_filter( 'wc_order_statuses', array($this,'add_order_statuses') );
@@ -29,19 +29,19 @@ if (!class_exists('OSC_Woocommerce_Order_Status')) {
         public function register_order_statuses() {
             foreach($this->statuses as $status_key => $status_label) {
                 register_post_status( $status_key, array(
-                    'label'                     => $status_label,
+                    'label'                     => __($status_label,'orian-shipping-carrier'),
                     'public'                    => true,
                     'show_in_admin_status_list' => true,
                     'show_in_admin_all_list'    => true,
                     'exclude_from_search'       => false,
-                    'label_count'               => _n_noop( $status_label . ' <span class="count">(%s)</span>', $status_label . ' <span class="count">(%s)</span>' )
+                    'label_count'               => _n_noop( $status_label . ' <span class="count">(%s)</span>', $status_label . ' <span class="count">(%s)</span>','orian-shipping-carrier' )
                 ) );
             }
         }
         public function add_order_statuses( $order_statuses) {
             $output_statuses = $order_statuses;
             foreach ( $this->statuses as $key => $status ) {
-                $output_statuses[ $key ] = $status;
+                $output_statuses[ $key ] = __($status,'orian-shipping-carrier');
             }
             return $output_statuses;
         }

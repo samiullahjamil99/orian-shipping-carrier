@@ -127,11 +127,15 @@ function osc_pudo_update_meta( $order_id ) {
 	}
 }
 
-function osc_load_my_own_textdomain( $mofile, $domain ) {
+/*function osc_load_my_own_textdomain( $mofile, $domain ) {
     if ( 'orian-shipping-carrier' === $domain && false !== strpos( $mofile, WP_LANG_DIR . '/plugins/' ) ) {
         $locale = apply_filters( 'plugin_locale', determine_locale(), $domain );
         $mofile = WP_PLUGIN_DIR . '/' . dirname( plugin_basename( __FILE__ ) ) . '/i18n/languages/' . $domain . '-' . $locale . '.mo';
     }
     return $mofile;
 }
-add_filter( 'load_textdomain_mofile', 'osc_load_my_own_textdomain', 10, 2 );
+add_filter( 'load_textdomain_mofile', 'osc_load_my_own_textdomain', 10, 2 );*/
+add_action( 'init', 'osc_load_textdomain' );
+function osc_load_textdomain() {
+    load_plugin_textdomain( 'orian-shipping-carrier', false, dirname( plugin_basename(OSC_PLUGIN_FILE) ) . '/i18n/languages' ); 
+}
