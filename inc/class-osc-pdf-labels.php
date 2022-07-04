@@ -35,19 +35,16 @@ if (!class_exists('OSC_PDF_Labels')) {
             }
             update_post_meta($orderid, 'pdf_urls',$fileurls);
         }
-        public function create_order_package_pdf($orderid, $packagenumber = 1, $pudoorder = false) {
+        public function create_order_package_pdf($orderid, $pudoorder = false) {
             $uploads_dir = wp_upload_dir();
             $labels_pdf_dir = $uploads_dir['basedir'] . '/orian-labels/';
             if(!is_dir($labels_pdf_dir)) {
                 mkdir($labels_pdf_dir);
             }
-            $packageid = "KKO" . $orderid;
-            if ($packagenumber > 1)
-                $packageid .= "P".$packagenumber;
-            $filename = 'order-label-' . $packageid . '.pdf';
+            $filename = 'order-label-' . $orderid . '.pdf';
             $filepath = $labels_pdf_dir . '/' . $filename;
             $fileurl = $uploads_dir['baseurl'] . '/orian-labels/' . $filename;
-            $pdf_string = $this->create_order_package_pdf_string($orderid, $packagenumber, $pudoorder);
+            $pdf_string = $this->create_order_package_pdf_string($orderid, $pudoorder);
             $filewriten = file_put_contents($filepath, $pdf_string);
             if ($filewriten) {
                 return $fileurl;
@@ -61,13 +58,14 @@ if (!class_exists('OSC_PDF_Labels')) {
             $pudo_point = get_post_meta($orderid,'pudo_point',true);
             if ($pudo_point)
                 $pudoorder = true;
-            $pdf_string = $this->create_order_package_pdf_string($orderid,1,$pudoorder);
+            $pdf_string = $this->create_order_package_pdf_string($orderid,$pudoorder);
             echo base64_encode($pdf_string);
             wp_die();
         }
-        public function create_order_package_pdf_string($orderid, $packagenumber = 1, $pudoorder = false) {
+        public function create_order_package_pdf_string($orderid, $pudoorder = false) {
             $order = wc_get_order($orderid);
             $order_details = $order->get_data();
+            $packagenumber = 1;
             $pudodetails = false;
             if ($pudoorder) {
                 $pudodetailsstr = get_post_meta($orderid,'pudo_details',true);
@@ -81,9 +79,6 @@ if (!class_exists('OSC_PDF_Labels')) {
             $numberofpackages = get_post_meta($orderid,'number_of_packages',true);
             if (!$numberofpackages)
             $numberofpackages = '1';
-            $packageid = "KKO" . $orderid;
-            if ($packagenumber > 1)
-                $packageid .= "P".$packagenumber;
             $billing_floor = get_post_meta($orderid,'billing_floor',true);
             $billing_apartment = get_post_meta($orderid,'billing_apartment',true);
             $billing_intercom_code = get_post_meta($orderid,'billing_intercom_code',true);
@@ -106,7 +101,7 @@ if (!class_exists('OSC_PDF_Labels')) {
             $pdf->setPrintFooter(false);
             $pdf->SetDefaultMonospacedFont(PDF_FONT_MONOSPACED);
             $pdf->SetMargins(5, 5, 5);
-            $pdf->SetAutoPageBreak(FALSE);
+            $pdf->SetAutoPageBreak(TRUE);
             $pdf->setImageScale(PDF_IMAGE_SCALE_RATIO);
             $l = Array();
             $l['a_meta_charset'] = 'UTF-8';
@@ -116,6 +111,10 @@ if (!class_exists('OSC_PDF_Labels')) {
             $pdf->setLanguageArray($l);
             $pdf->setFontSubsetting(true);
             $pdf->SetFont('heebo', '', 12, '', false);
+            for ($packagenumber = 1; $packagenumber <= intval($numberofpackages); $packagenumber++) {
+            $packageid = "KKO" . $orderid;
+            if ($packagenumber > 1)
+                $packageid .= "P".$packagenumber;
             $pdf->AddPage();
             $osc_options = get_option('orian_main_setting');
             if ($osc_options) {
@@ -182,6 +181,7 @@ if (!class_exists('OSC_PDF_Labels')) {
             $html = "<hr>";
             $pdf->writeHTMLCell(0, 0, '', '134', $html, 0, 1, 0, true, '', true);
             $pdf->write1DBarcode($packageid,'C128','','140','55','12',0.7,$barcodestyle,'N');
+            }
             $filename = 'pdf-label.pdf';
             $pdf_string = $pdf->Output($filename, 'S');
             return $pdf_string;
