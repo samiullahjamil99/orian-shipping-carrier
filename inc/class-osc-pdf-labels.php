@@ -7,6 +7,18 @@ if (!class_exists('OSC_PDF_Labels')) {
             'creator' => 'Orian Shipping Carrier Plugin',
             'subject' => 'Orian Order Labels',
         );
+        public function __construct() {
+            $this->init();
+        }
+        public function init() {
+            add_action( 'wp_ajax_osc_generate_pdf', array($this,'ajax_create_package_pdf') );
+            add_action( 'admin_enqueue_scripts',array($this,'admin_pdf_scripts') );
+        }
+        public function admin_pdf_scripts() {
+            wp_enqueue_script( 'pdf-generate', plugin_dir_url(OSC_PLUGIN_FILE) . 'assets/js/pdf-generate.js', array( 'jquery' ) );
+            wp_localize_script( 'pdf-generate', 'ajax_object',
+            array( 'ajax_url' => admin_url( 'admin-ajax.php' ) ) );
+        }
         public function create_order_labels($orderid) {
             $fileurls = array();
             $pudoorder = false;
@@ -24,6 +36,36 @@ if (!class_exists('OSC_PDF_Labels')) {
             update_post_meta($orderid, 'pdf_urls',$fileurls);
         }
         public function create_order_package_pdf($orderid, $packagenumber = 1, $pudoorder = false) {
+            $uploads_dir = wp_upload_dir();
+            $labels_pdf_dir = $uploads_dir['basedir'] . '/orian-labels/';
+            if(!is_dir($labels_pdf_dir)) {
+                mkdir($labels_pdf_dir);
+            }
+            $packageid = "KKO" . $orderid;
+            if ($packagenumber > 1)
+                $packageid .= "P".$packagenumber;
+            $filename = 'order-label-' . $packageid . '.pdf';
+            $filepath = $labels_pdf_dir . '/' . $filename;
+            $fileurl = $uploads_dir['baseurl'] . '/orian-labels/' . $filename;
+            $pdf_string = $this->create_order_package_pdf_string($orderid, $packagenumber, $pudoorder);
+            $filewriten = file_put_contents($filepath, $pdf_string);
+            if ($filewriten) {
+                return $fileurl;
+            } else {
+                return false;
+            }
+        }
+        public function ajax_create_package_pdf() {
+            $orderid = intval($_POST['orderid']);
+            $pudoorder = false;
+            $pudo_point = get_post_meta($orderid,'pudo_point',true);
+            if ($pudo_point)
+                $pudoorder = true;
+            $pdf_string = $this->create_order_package_pdf_string($orderid,1,$pudoorder);
+            echo base64_encode($pdf_string);
+            wp_die();
+        }
+        public function create_order_package_pdf_string($orderid, $packagenumber = 1, $pudoorder = false) {
             $order = wc_get_order($orderid);
             $order_details = $order->get_data();
             $pudodetails = false;
@@ -49,14 +91,6 @@ if (!class_exists('OSC_PDF_Labels')) {
             if ($pudodetails)
                 $billing_business_name = $pudodetails->pudoname;
             $shipping_remarks = get_post_meta($orderid,'shipping_remarks',true);
-            $uploads_dir = wp_upload_dir();
-            $labels_pdf_dir = $uploads_dir['basedir'] . '/orian-labels/';
-            if(!is_dir($labels_pdf_dir)) {
-                mkdir($labels_pdf_dir);
-            }
-            $filename = 'order-label-' . $packageid . '.pdf';
-            $filepath = $labels_pdf_dir . '/' . $filename;
-            $fileurl = $uploads_dir['baseurl'] . '/orian-labels/' . $filename;
             $barcodestyle = array(
                 'position'=>'C',
                 'text'=>true,
@@ -148,13 +182,9 @@ if (!class_exists('OSC_PDF_Labels')) {
             $html = "<hr>";
             $pdf->writeHTMLCell(0, 0, '', '134', $html, 0, 1, 0, true, '', true);
             $pdf->write1DBarcode($packageid,'C128','','140','55','12',0.7,$barcodestyle,'N');
+            $filename = 'pdf-label.pdf';
             $pdf_string = $pdf->Output($filename, 'S');
-            $filewriten = file_put_contents($filepath, $pdf_string);
-            if ($filewriten) {
-                return $fileurl;
-            } else {
-                return false;
-            }
+            return $pdf_string;
         }
         public function add_pdf_main_section($pdf,$data = array()) {
             $pdf->SetFont('heebomedium', '', 15, '', false);

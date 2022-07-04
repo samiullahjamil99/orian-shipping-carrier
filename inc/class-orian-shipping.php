@@ -8,6 +8,7 @@ if (!class_exists('Orian_Shipping')) {
         public $order_sync;
         public $sla;
         public $pdf_labels;
+        public $meta_boxes;
         public $home_method_id = "orian_delivery_shipping";
         public $pudo_method_id = "orian_pudo_shipping";
         public static function instance() {
@@ -28,6 +29,7 @@ if (!class_exists('Orian_Shipping')) {
             include_once dirname(OSC_PLUGIN_FILE) . '/inc/class-osc-sla.php';
             include_once dirname(OSC_PLUGIN_FILE) . '/lib/tcpdf/tcpdf.php';
             include_once dirname(OSC_PLUGIN_FILE) . '/inc/class-osc-pdf-labels.php';
+            include_once dirname(OSC_PLUGIN_FILE) . '/inc/class-osc-meta-boxes.php';
         }
         public function init() {
             add_action( 'woocommerce_shipping_init', array($this,'osc_shipping_init') );
@@ -39,6 +41,7 @@ if (!class_exists('Orian_Shipping')) {
             $this->order_sync = new OSC_Woocommerce_Order_Sync();
             $this->sla = new OSC_SLA();
             $this->pdf_labels = new OSC_PDF_Labels();
+            $this->meta_boxes = new OSC_Meta_Boxes();
         }
         public function osc_shipping_init() {
             include_once dirname(OSC_PLUGIN_FILE) . '/inc/shipping-methods/class-osc-delivery-shipping.php';
