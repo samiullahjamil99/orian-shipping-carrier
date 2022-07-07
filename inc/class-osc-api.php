@@ -186,11 +186,11 @@ final class OSC_API {
         $addresstype = "02";
         $deliveryremarks = "";
         if ($billing_floor && !empty($billing_floor))
-        $deliveryremarks .= "קומה:" . $billing_floor . ",";
+        $deliveryremarks .= "קומה:" . $billing_floor . ", ";
         if ($billing_apartment && !empty($billing_apartment))
-        $deliveryremarks .= "דירה:" . $billing_apartment . ",";
+        $deliveryremarks .= "דירה:" . $billing_apartment . ", ";
         if ($billing_intercom_code && !empty($billing_intercom_code))
-        $deliveryremarks .= "קוד לאינטרקום:". $billing_intercom_code . ",";
+        $deliveryremarks .= "קוד לאינטרקום:". $billing_intercom_code . ", ";
         if (!empty($shipping_remarks))
         $deliveryremarks .= $shipping_remarks;
         $packages_xml = '<PACKAGE>

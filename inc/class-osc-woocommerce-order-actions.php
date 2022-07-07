@@ -81,6 +81,7 @@ if (!class_exists('OSC_Woocommerce_Order_Actions')) {
             orian_shipping()->pdf_labels->create_order_labels($order->get_id());
         }
         public function osc_bulk_actions( $bulk_actions ) {
+            if ($_GET['post_status'] === 'wc-processing')
             $bulk_actions['osc_send_orders'] = __('Send Orders to Carrier','orian-shipping-carrier');
             return $bulk_actions;
         }
