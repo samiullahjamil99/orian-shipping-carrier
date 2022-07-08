@@ -48,12 +48,18 @@ function osc_pudo_fields_html() {
 				<option value="" disabled selected><?php echo __("Select Pudo","orian-shipping-carrier"); ?></option>
 			</select>
 		</p>
-		<input type="hidden" name="pudo_details" value="" id="pudo_details">
+		<input type="hidden" name="pudo_details" id="pudo_details">
+		<input type="hidden" name="pudo_shipping" value="yes">
 		<div id="selectedpudodetails">
 		</div>
 	</div>
 	<?php
 	endif;
+}
+add_action('woocommerce_checkout_process', 'osc_verify_pudo_fields');
+function osc_verify_pudo_fields() {
+	if ($_POST["pudo_shipping"] && ! $_POST["pudo_point"])
+		wc_add_notice( __( 'Pudo Location not selected. Please select a location or choose a different shipping method.','orian-shipping-method' ), 'error' );
 }
 
 function osc_pudo_script() {
