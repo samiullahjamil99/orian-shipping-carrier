@@ -10,12 +10,35 @@ if (!class_exists('OSC_Meta_Boxes')) {
         }
         public function osc_add_meta_boxes() {
             add_meta_box( 'osc_orian_meta', __('Orian Shipping','orian-shipping-carrier'), array($this,'osc_orian_meta_cb'), 'shop_order', 'side', 'core' );
+            add_meta_box( 'osc_orian_meta', __('Orian Order Status','orian-shipping-carrier'), array($this,'osc_orian_status_cb'), 'shop_order', 'side', 'high' );
         }
         public function osc_ajax_update_packages_number() {
             $orderid = intval($_POST['orderid']);
             $numberofpackages = $_POST['numberofpackages'];
             update_post_meta($orderid, 'number_of_packages',$numberofpackages);
             wp_die();
+        }
+        public function osc_orian_status_cb() {
+            global $post;
+            $orderid = $post->ID;
+            $order = wc_get_order($orderid);
+            $orian_status = get_post_meta($orderid, '_orian_sent',true);
+            $box_styling = "color:white;padding:30px;text-align:center;font-size:20pt;";
+            if (!$orian_status) {
+                ?>
+                <div style="<?php echo $box_styling; ?>background-color:grey;">Not Sent</div>
+                <?php
+            } else {
+                if ($orian_status === "success") {
+                    ?>
+                <div style="<?php echo $box_styling; ?>background-color:green;">Sent Success</div>
+                <?php
+                } elseif ($orian_status === "failure") {
+                    ?>
+                <div style="<?php echo $box_styling; ?>background-color:red;">Failed to Send</div>
+                <?php
+                }
+            }
         }
         public function osc_orian_meta_cb() {
             global $post;

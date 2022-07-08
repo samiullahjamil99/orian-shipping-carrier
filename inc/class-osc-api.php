@@ -379,10 +379,13 @@ final class OSC_API {
                 $xml = simplexml_load_string($response_body);
                 $success = (string) $xml->RESPONSE->SUCCESS;
                 $return_response['success'] = $success;
-                if ($success === "false") {
+                if ($success === "true") {
+                    update_post_meta($orderid,'_orian_sent','success');
+                } else {
                     $error = (string) $xml->RESPONSE->RESPONSEERROR;
                     $return_response['error'] = $error;
                     update_post_meta($orderid,'Orian Error', $error);
+                    update_post_meta($orderid,'_orian_sent','failure');
                 }
               } elseif ( $response['response']['code'] == 401 && $this->firsttimecall) {
                   $this->delete_auth();
