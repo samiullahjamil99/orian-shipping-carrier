@@ -97,7 +97,7 @@ if (!class_exists('OSC_Meta_Boxes')) {
                 </tbody>
             </table>
             <div style="margin-top:10px;">
-                <a href="javascript:void(0)" onclick="osc_pdf_generate(this,<?php echo $orderid; ?>)">Generate PDF Labels</a>
+                <button type="button" onclick="osc_pdf_generate(this,<?php echo $orderid; ?>)" class="button">Generate PDF Labels</button>
             </div>
             <?php
         }
