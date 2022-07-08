@@ -10,7 +10,7 @@ if (!class_exists('OSC_Meta_Boxes')) {
         }
         public function osc_add_meta_boxes() {
             add_meta_box( 'osc_orian_meta', __('Orian Shipping','orian-shipping-carrier'), array($this,'osc_orian_meta_cb'), 'shop_order', 'side', 'core' );
-            add_meta_box( 'osc_orian_meta', __('Orian Order Status','orian-shipping-carrier'), array($this,'osc_orian_status_cb'), 'shop_order', 'side', 'high' );
+            add_meta_box( 'osc_orian_send_status', __('Orian Order Status','orian-shipping-carrier'), array($this,'osc_orian_status_cb'), 'shop_order', 'side', 'high' );
         }
         public function osc_ajax_update_packages_number() {
             $orderid = intval($_POST['orderid']);
@@ -51,7 +51,13 @@ if (!class_exists('OSC_Meta_Boxes')) {
                 $numberofpackages = 1;
             else
                 $numberofpackages = intval($numberofpackages);
+            $pudo_shipping = false;
+            foreach($order->get_items("shipping") as $item_key => $item) {
+                if ($item->get_method_id() === orian_shipping()->pudo_method_id)
+                    $pudo_shipping = true;
+            }
             ?>
+            <?php if (!$pudo_shipping): ?>
             <div id="numberofpackagesbox" style="display:flex;justify-content:space-between;align-items:center;">
                 <label for="numberofpackages">Number of Packages</label>
                 <select name="numberofpackages" id="numberofpackages" onchange="update_number_of_packages(this, <?php echo $orderid; ?>)">
@@ -60,6 +66,7 @@ if (!class_exists('OSC_Meta_Boxes')) {
                     <?php endfor; ?>
                 </select>
             </div>
+            <?php endif; ?>
             <h3 style="text-decoration:underline;"><?php _e('Packages Status','orian-shipping-carrier'); ?></h3>
             <table style="width:100%;text-align:left;">
                 <thead>
