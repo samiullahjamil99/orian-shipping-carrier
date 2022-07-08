@@ -1,0 +1,19 @@
+.wp-list-table tr.order-late {
+    background-color: red;
+    color:white;
+}
+.wp-list-table tr.order-late * {
+    color:white;
+}
+.wp-list-table tr.order-late .order-status.status-processing {
+    background-color: black;
+}
+.wp-list-table tr .sla-time {
+    padding:10px;
+    border-radius: 5px;
+    background-color: white;
+    color:black;
+}
+.wp-list-table tr.due-soon .sla-time {
+    background-color:orange;
+}

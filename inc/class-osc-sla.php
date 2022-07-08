@@ -32,10 +32,78 @@ if (!class_exists("OSC_SLA")) {
             add_filter( 'woocommerce_checkout_fields' , array($this,'custom_override_city_fields') );
             add_action( 'wp_footer',array($this,'custom_script_for_sla') );
             }
+            add_filter( 'manage_edit-shop_order_columns', array($this, 'orders_sla_column'), 20);
+            add_action( 'manage_shop_order_posts_custom_column', array($this, 'orders_sla_column_info') );
+            if (is_admin())
+            add_filter( 'post_class', array($this,'add_custom_class'), 10, 3 );
         }
-        public function business_days_to_date($days) {
+        public function add_custom_class($classes, $class, $post_id ) {
+            $currentScreen = get_current_screen();
+            if( $currentScreen->id === "edit-shop_order" ) {
+                $now = new DateTime("now",$this->timezone);
+                $enddate = $this->get_sla_end_datetime($post_id);
+                $diff = $now->diff($enddate);
+                if ($now < $enddate && $diff->format("%d") === "12")
+                    $classes[] = 'due-soon';
+                elseif ($now > $enddate)
+                    $classes[] = 'order-late';
+            }
+            return $classes;
+        }
+        public function orders_sla_column($cols) {
+            $cols['sla_details'] = __('SLA','orian-shipping-carrier');
+            return $cols;
+        }
+        public function orders_sla_column_info($col) {
+            global $post;
+            if ('sla_details' === $col) {
+                $now = new DateTime("now",$this->timezone);
+                $enddate = $this->get_sla_end_datetime($post->ID);
+                $diff = $now->diff($enddate);
+                if ($now < $enddate)
+                echo '<p class="sla-time">'.$diff->format('%d days %h hours %i minutes').' Remaining</p>';
+                else
+                echo '<p class="sla-time">'.$diff->format('%d days %h hours %i minutes').' Late</p>';
+            }
+        }
+        public function get_sla_end_datetime($orderid) {
+            $order = wc_get_order($orderid);
+            $order_details = $order->get_data();
+            $order_date = $order->get_date_created();
+            $pudo_shipping = false;
+            foreach($order->get_items("shipping") as $item_key => $item) {
+                if ($item->get_method_id() === orian_shipping()->pudo_method_id)
+                $pudo_shipping = true;
+            }
+            $sladays = get_post_meta($orderid,'sla',true);
+            $sla = array();
+            if (!$sladays) {
+                if ($pudo_shipping) {
+                    $sladays = $this->pudo_sla;
+                } else {
+                    $selected_city = $order_details['billing']['city'];
+                    $selected_city_far = array($selected_city,"0");
+                    if ($this->orian_cities) {
+                        if (in_array($selected_city_far,$this->orian_cities)) {
+                            $sladays = $this->home_far_sla;
+                        } else {
+                            $sladays = $this->home_regular_sla;
+                        }
+                    } else {
+                        $sladays = $this->home_regular_sla;
+                    }
+                }
+            }
+            $sla = $this->business_days_to_date($sladays,$order_date);
+            $enddate = $sla[2];
+            return $enddate;
+        }
+        public function business_days_to_date($days, $orderdate = null) {
             $response = array();
+            if ($orderdate === null)
             $now = new DateTime("now",$this->timezone);
+            else
+            $now = new DateTime($orderdate);
             $response[0] = $this->date_sla_format($now);
             $nextday = $now;
             $endtime = new DateTime($this->businessday_endtime, $this->timezone);
@@ -45,7 +113,8 @@ if (!class_exists("OSC_SLA")) {
                 $firstday = 2;
             }
             for($i = 1; $i <= $days; $i++) {
-                $nextday = new DateTime("+$i days", $this->timezone);
+                //$nextday = new DateTime("+$i days", $this->timezone);
+                $nextday->modify("+1 days");
                 if ($nextday->format('w') === "5" || $nextday->format('w') === "6" || in_array($nextday->format('d/m/Y'),$this->nonbusiness_days)) {
                     $days++;
                     $firstday++;
@@ -54,6 +123,7 @@ if (!class_exists("OSC_SLA")) {
                     $response[0] = $this->date_sla_format($nextday);
             }
             $response[1] = $this->date_sla_format($nextday);
+            $response[2] = $nextday;
             return $response;
         }
         public function date_sla_format($date) {
@@ -69,7 +139,7 @@ if (!class_exists("OSC_SLA")) {
             $dayofweek = intval($date->format('w'));
             return $weekdays[$dayofweek] . ' ' . $date->format('d/m');
         }
-        public function get_delivery_date($sla_type) {
+        public function get_delivery_date($sla_type,$orderdate = null) {
             $delivery_dates = array();
             switch ($sla_type) {
                 case 'home':
@@ -84,7 +154,7 @@ if (!class_exists("OSC_SLA")) {
             }
             if (isset($numberofdays)) {
             $numberofdays = intval($numberofdays);
-            $delivery_dates = $this->business_days_to_date($numberofdays);
+            $delivery_dates = $this->business_days_to_date($numberofdays, $orderdate);
             }
             return $delivery_dates;
         }
@@ -109,7 +179,7 @@ if (!class_exists("OSC_SLA")) {
         public function custom_script_for_sla() {
             $my_orian_cities = array();
             foreach($this->orian_cities as $orian_city) {
-                $my_orian_cities[$orian_city[0]] = $orian_city[0];
+                $my_orian_cities[$orian_city[0]] = $orian_city[1];
             }
             ?>
             <script>

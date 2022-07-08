@@ -125,6 +125,32 @@ function osc_pudo_update_meta( $order_id ) {
 	if ( ! empty( $_POST['pudo_details'] ) ) {
 		update_post_meta( $order_id, 'pudo_details', $_POST['pudo_details'] );
 	}
+	$pudo_shipping = false;
+	$order = wc_get_order($order_id);
+	$order_details = $order->get_data();
+    foreach($order->get_items("shipping") as $item_key => $item) {
+        if ($item->get_method_id() === orian_shipping()->pudo_method_id)
+            $pudo_shipping = true;
+    }
+    $sla = 0;
+    if ($pudo_shipping) {
+        $sla = orian_shipping()->sla->pudo_sla;
+    } else {
+        $selected_city = $order_details['billing']['city'];
+        $selected_city_far = array($selected_city,"0");
+        if (orian_shipping()->sla->orian_cities) {
+            if (in_array($selected_city_far,orian_shipping()->sla->orian_cities)) {
+                $sla = orian_shipping()->sla->home_far_sla;
+            } else {
+				$sla = orian_shipping()->sla->home_regular_sla;
+            }
+        } else {
+			$sla = orian_shipping()->sla->home_regular_sla;
+        }
+    }
+	if ($sla !== 0) {
+		update_post_meta($order_id, 'sla', $sla);
+	}
 }
 
 add_action( 'init', 'osc_load_textdomain' );
