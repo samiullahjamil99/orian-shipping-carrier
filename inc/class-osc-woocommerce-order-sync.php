@@ -61,6 +61,26 @@ if (!class_exists('OSC_Woocommerce_Order_Sync')) {
                     }
                 }
             }
+            $processingorders = wc_get_orders(array(
+                'limit' => -1,
+                'status' => array('processing'),
+            ));
+            $orders = array_merge($processingorders);
+            foreach($orders as $order) {
+                $enddate = orian_shipping()->sla->get_sla_end_datetime($order->get_id);
+                $now = new DateTime("now",$this->timezone);
+                $users = get_users(array(
+                    'role__in' => array('Administrator','Shop manager')
+                ));
+                if ($now > $enddate) {
+                    foreach ( $users as $user ) {
+                        $to = $user->user_email;
+                        $subject = printf('Pay attention! SLA of order number: %1$s passed!',$order->get_id());
+                        $message = __("The Order SLA has passed and not delivered yet","orian-shipping-carrier");
+                        wp_mail($to, $subject, $message );
+                    }
+                }
+            }
         }
     }
 }

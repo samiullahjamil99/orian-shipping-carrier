@@ -43,10 +43,13 @@ if (!class_exists("OSC_SLA")) {
                 $now = new DateTime("now",$this->timezone);
                 $enddate = $this->get_sla_end_datetime($post_id);
                 $diff = $now->diff($enddate);
+                $order = wc_get_order($post_id);
+                if ($order->get_status() !== "osc-delivered") {
                 if ($now < $enddate && $diff->format("%d") === "0")
                     $classes[] = 'due-soon';
                 elseif ($now > $enddate)
                     $classes[] = 'order-late';
+                }
             }
             return $classes;
         }
