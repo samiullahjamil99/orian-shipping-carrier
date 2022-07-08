@@ -195,18 +195,18 @@ final class OSC_API {
         $source_contact1phone = $this->orian_options['source_contact1phone'];
 
         $billing_business_name_invoice = get_post_meta($orderid,'billing_business_name_invoice',true);
-        $billing_business_name = get_post_meta($orderid,'billing_business_name',true);
+        $billing_business_name = get_post_meta($orderid,'sitename_business_type_target',true);
         $billing_business_type_address = get_post_meta($orderid,'billing_business_type_address',true);
         $billing_apartment = get_post_meta($orderid,'billing_apartment',true);
         $billing_floor = get_post_meta($orderid,'billing_floor',true);
         $billing_intercom_code = get_post_meta($orderid,'billing_intercom_code',true);
         $shipping_remarks = get_post_meta($orderid,'shipping_remarks',true);
         $sitename = $order_details['billing']['first_name'] . ' ' . $order_details['billing']['last_name'];
-        if ($billing_business_name_invoice === '1')
-        $sitename = $billing_business_name;
         $addresstype = "03";
-        if ($billing_business_type_address === '1')
+        if ($billing_business_type_address === '1') {
         $addresstype = "02";
+        $sitename = $billing_business_name;
+        }
         $deliveryremarks = "";
         if ($billing_floor && !empty($billing_floor))
         $deliveryremarks .= "קומה:" . $billing_floor . ", ";
@@ -361,7 +361,7 @@ final class OSC_API {
                 <CONTACTID/>
                 <STREET1>" . $order_details['billing']['address_1'] . "</STREET1>
                 <STREET2/>
-                <FLOOR/>
+                <FLOOR>" . $billing_floor . "</FlOOR>
                 <CITY>" . $order_details['billing']['city'] . "</CITY>
                 <ORIGINALADDRESS/>
                 <SITENAME>$sitename</SITENAME>
