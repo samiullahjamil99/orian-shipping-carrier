@@ -9,7 +9,8 @@ if (!class_exists('OSC_Woocommerce_Order_Status')) {
             'lost' => 'wc-osc-lost',
             'offloaded' => 'wc-osc-offloaded',
             'pickedup' => 'wc-osc-pickedup',
-            'canceled' => 'wc-cancelled'
+            'canceled' => 'wc-osc-cancelled',
+            'dropedatpudo' => 'wc-osc-dropedatpudo',
         );
         public function __construct() {
             $this->init();
@@ -22,6 +23,8 @@ if (!class_exists('OSC_Woocommerce_Order_Status')) {
                 'wc-osc-lost' => "Lost",
                 'wc-osc-offloaded' => "Offloaded",
                 'wc-osc-pickedup' => "Picked Up",
+                'wc-osc-dropedatpudo' => "Available at Pudo",
+                'wc-osc-cancelled' => "Shipping Cancelled",
             );
             add_action( 'init', array($this,'register_order_statuses') );
             add_filter( 'wc_order_statuses', array($this,'add_order_statuses') );
@@ -43,6 +46,7 @@ if (!class_exists('OSC_Woocommerce_Order_Status')) {
             foreach ( $this->statuses as $key => $status ) {
                 $output_statuses[ $key ] = __($status,'orian-shipping-carrier');
             }
+            unset( $output_statuses['wc-completed'] );
             return $output_statuses;
         }
         public function compare_carrier_order_status($carrier_order) {

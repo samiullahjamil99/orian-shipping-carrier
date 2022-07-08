@@ -1,12 +1,15 @@
-.wp-list-table tr.order-late {
+.wp-list-table tr.order-late, .wp-list-table tr.status-wc-osc-lost {
     background-color: red;
     color:white;
 }
-.wp-list-table tr.order-late * {
+.wp-list-table tr.order-late *, .wp-list-table tr.status-wc-osc-lost * {
     color:white;
 }
-.wp-list-table tr.order-late .order-status.status-processing {
+.wp-list-table tr.order-late .order-status.status-processing, .wp-list-table tr.status-wc-osc-lost .order-status.status-osc-lost {
     background-color: black;
+}
+.wp-list-table tr.status-wc-osc-delivered {
+    background-color:lightgreen;
 }
 .wp-list-table tr .sla-time {
     padding:10px;
