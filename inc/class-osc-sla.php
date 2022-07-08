@@ -43,7 +43,7 @@ if (!class_exists("OSC_SLA")) {
                 $now = new DateTime("now",$this->timezone);
                 $enddate = $this->get_sla_end_datetime($post_id);
                 $diff = $now->diff($enddate);
-                if ($now < $enddate && $diff->format("%d") === "12")
+                if ($now < $enddate && $diff->format("%d") === "0")
                     $classes[] = 'due-soon';
                 elseif ($now > $enddate)
                     $classes[] = 'order-late';

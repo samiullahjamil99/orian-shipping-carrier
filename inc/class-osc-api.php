@@ -99,6 +99,29 @@ final class OSC_API {
                         $mypudo['contactid'] = (string) $pudo->CONTACTID;
                         $mypudo['pudocity'] = (string) $pudo->PUDOCITY;
                         $mypudo['pudoaddress'] = (string) $pudo->PUDOADDRESS;
+                        $sunopen = (string) $pudo->SUNOPEN;
+                        $sunclose = (string) $pudo->SUNCLOSE;
+                        $monopen = (string) $pudo->MONOPEN;
+                        $monclose = (string) $pudo->MONCLOSE;
+                        $tueopen = (string) $pudo->TUEOPEN;
+                        $tueclose = (string) $pudo->TUECLOSE;
+                        $wedopen = (string) $pudo->WEDOPEN;
+                        $wedclose = (string) $pudo->WEDCLOSE;
+                        $thuopen = (string) $pudo->THUOPEN;
+                        $thuclose = (string) $pudo->THUCLOSE;
+                        $friopen = (string) $pudo->FRIOPEN;
+                        $friclose = (string) $pudo->FRICLOSE;
+                        $satopen = (string) $pudo->SATOPEN;
+                        $satclose = (string) $pudo->SATCLOSE;
+                        $mypudo['workinghours'] = array(
+                            array($sunopen,$sunclose),
+                            array($monopen,$monclose),
+                            array($tueopen,$tueclose),
+                            array($wedopen,$wedclose),
+                            array($thuopen,$thuclose),
+                            array($friopen,$friclose),
+                            array($satopen,$satclose),
+                        );
                         $pudos[] = $mypudo;
                     }
                     $return_response['data'] = $pudos;

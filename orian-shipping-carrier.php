@@ -80,8 +80,8 @@ function osc_pudo_script() {
 		sort($pudo_cities);
 	?>
 	<script>
-		var pudo_cities = <?php echo json_encode($pudo_cities); ?>;
-		var pudo_ids = <?php echo json_encode($pudo_ids); ?>;
+		var pudo_cities = <?php echo json_encode($pudo_cities,JSON_UNESCAPED_UNICODE); ?>;
+		var pudo_ids = <?php echo json_encode($pudo_ids,JSON_UNESCAPED_UNICODE); ?>;
 		var pudo_points = [];
 		//console.log(pudo_ids['city1']);
 		//console.log(pudo_ids);
@@ -105,7 +105,39 @@ function osc_pudo_script() {
 				for(var i = 0; i < pudo_points.length; i++) {
 					var pudocontactid = pudo_points[i]['contactid'];
 					if (pointval == pudocontactid) {
-						jQuery("#selectedpudodetails").html(pudo_points[i]['pudoaddress']);
+						var pudotype = "";
+						if (pudo_points[i]['pudotype'] == 1)
+						pudotype = "Store";
+						else if (pudo_points[i]['pudotype'] == 2)
+						pudotype = "Locker";
+						var accessibility = "";
+						if (pudo_points[i]['accessibility'] === "True")
+							accessibility = "Yes";
+						else
+							accessibility = "No";
+						var pudo_details = '<p><?php _e("Pudo Name","orian-shipping-carrier"); ?>: '+pudo_points[i]['pudoname']+'</p>';
+						pudo_details += '<p><?php _e("Pudo Address","orian-shipping-carrier"); ?>: '+pudo_points[i]['pudoaddress']+'</p>';
+						pudo_details += '<p><?php _e("Pudo City","orian-shipping-carrier"); ?>: '+pudo_points[i]['pudocity']+'</p>';
+						pudo_details += '<p><?php _e("Pudo Type","orian-shipping-carrier"); ?>: '+pudotype+'</p>';
+						if (pudotype === "Store") {
+							var workinghours = "";
+							var workinghoursarr = pudo_points[i]['workinghours'];
+							var days = [
+								'<?php _e("Sunday","orian-shipping-carrier"); ?>',
+								'<?php _e("Monday","orian-shipping-carrier"); ?>',
+								'<?php _e("Tuesday","orian-shipping-carrier"); ?>',
+								'<?php _e("Wednesday","orian-shipping-carrier"); ?>',
+								'<?php _e("Thursday","orian-shipping-carrier"); ?>',
+								'<?php _e("Friday","orian-shipping-carrier"); ?>',
+								'<?php _e("Saturday","orian-shipping-carrier"); ?>',
+							];
+							for (var i = 0; i < workinghoursarr.length; i++) {
+								workinghours += "<br>"+days[i] + ": " + workinghoursarr[i][0] + " - " + workinghours[i][1];
+							}
+							pudo_details += '<p><?php _e("Working Hours","orian-shipping-carrier"); ?>: '+workinghours+'</p>';
+						}
+						pudo_details += '<p><?php _e("Accessibility","orian-shipping-carrier"); ?>: '+accessibility+'</p>';
+						jQuery("#selectedpudodetails").html(pudo_details);
 						jQuery("#pudo_details").val(JSON.stringify(pudo_points[i]));
 					}
 				}
