@@ -31,7 +31,7 @@ if (!class_exists('OSC_Woocommerce_Order_Sync')) {
         public function osc_order_sync_callback() {
             $orders = wc_get_orders(array(
                 'limit' => -1,
-                'status' => array('osc-new','osc-loaded','osc-offloaded','osc-pickedup'),
+                'status' => array('osc-new','osc-loaded','osc-offloaded','osc-pickedup','osc-lost'),
             ));
             foreach($orders as $order) {
                 $number_of_packages = get_post_meta($order->get_id(),'number_of_packages',true);
@@ -65,14 +65,16 @@ if (!class_exists('OSC_Woocommerce_Order_Sync')) {
                 'limit' => -1,
                 'status' => array('processing'),
             ));
-            $orders = array_merge($processingorders);
+            $orders = array_merge($orders,$processingorders);
             foreach($orders as $order) {
-                $enddate = orian_shipping()->sla->get_sla_end_datetime($order->get_id);
+                $enddate = orian_shipping()->sla->get_sla_end_datetime($order->get_id());
                 $now = new DateTime("now",$this->timezone);
                 $users = get_users(array(
                     'role__in' => array('Administrator','Shop manager')
                 ));
-                if ($now > $enddate) {
+                $sla_email_sent = get_post_meta($order->get_id(),'_osc_sla_email_sent',true);
+                if ($now > $enddate && !$sla_email_sent) {
+                    update_post_meta($order->get_id(),'_osc_sla_email_sent','yes');
                     foreach ( $users as $user ) {
                         $to = $user->user_email;
                         $subject = printf('Pay attention! SLA of order number: %1$s passed!',$order->get_id());

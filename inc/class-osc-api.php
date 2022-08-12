@@ -199,21 +199,23 @@ final class OSC_API {
         $billing_business_type_address = get_post_meta($orderid,'billing_business_type_address',true);
         $billing_apartment = get_post_meta($orderid,'billing_apartment',true);
         $billing_floor = get_post_meta($orderid,'billing_floor',true);
+        if (!$billing_floor)
+            $billing_floor = "";
         $billing_intercom_code = get_post_meta($orderid,'billing_intercom_code',true);
         $shipping_remarks = get_post_meta($orderid,'shipping_remarks',true);
         $sitename = $order_details['billing']['first_name'] . ' ' . $order_details['billing']['last_name'];
         $addresstype = "03";
-        if ($billing_business_type_address === '1') {
-        $addresstype = "02";
-        $sitename = $billing_business_name;
+        if ($billing_business_type_address === '1' && $billing_business_name) {
+            $addresstype = "02";
+            $sitename = $billing_business_name;
         }
         $deliveryremarks = "";
         if ($billing_floor && !empty($billing_floor))
-        $deliveryremarks .= "קומה:" . $billing_floor . ", ";
+        $deliveryremarks .= "קומה: " . $billing_floor . ", ";
         if ($billing_apartment && !empty($billing_apartment))
-        $deliveryremarks .= "דירה:" . $billing_apartment . ", ";
+        $deliveryremarks .= "דירה: " . $billing_apartment . ", ";
         if ($billing_intercom_code && !empty($billing_intercom_code))
-        $deliveryremarks .= "קוד לאינטרקום:". $billing_intercom_code . ", ";
+        $deliveryremarks .= "קוד לאינטרקום: ". $billing_intercom_code . ", ";
         if (!empty($shipping_remarks))
         $deliveryremarks .= $shipping_remarks;
         $packages_xml = '<PACKAGE>
@@ -361,7 +363,7 @@ final class OSC_API {
                 <CONTACTID/>
                 <STREET1>" . $order_details['billing']['address_1'] . "</STREET1>
                 <STREET2/>
-                <FLOOR>" . $billing_floor . "</FlOOR>
+                <FLOOR>" . $billing_floor . "</FLOOR>
                 <CITY>" . $order_details['billing']['city'] . "</CITY>
                 <ORIGINALADDRESS/>
                 <SITENAME>$sitename</SITENAME>
@@ -612,10 +614,13 @@ final class OSC_API {
                 $xml = simplexml_load_string($response_body);
                 $success = (string) $xml->RESPONSE->SUCCESS;
                 $return_response['success'] = $success;
-                if ($success === "false") {
+                if ($success === "true") {
+                    update_post_meta($orderid,'_orian_sent','success');
+                } else {
                     $error = (string) $xml->RESPONSE->RESPONSEERROR;
                     $return_response['error'] = $error;
                     update_post_meta($orderid,'Orian Error', $error);
+                    update_post_meta($orderid,'_orian_sent','failure');
                 }
               } elseif ( $response['response']['code'] == 401 && $this->firsttimecall) {
                   $this->delete_auth();

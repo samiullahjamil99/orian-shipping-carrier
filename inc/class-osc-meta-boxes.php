@@ -84,6 +84,8 @@ if (!class_exists('OSC_Meta_Boxes')) {
                     $packagenumber = 2;
                     if ($package_statuses):
                         foreach($package_statuses as $package_status):
+                        if ($packagenumber > $numberofpackages)
+							break;
                         ?>
                         <tr>
                             <td>KKO<?php echo $orderid; ?>P<?php echo $packagenumber; ?></td>
