@@ -9,3 +9,7 @@ function update_number_of_packages(elem, orderid) {
         jQuery('#numberofpackagesbox').unblock();
     });
 }
+function osc_order_send() {
+    jQuery(".order_actions select[name=wc_order_action]").val("osc_send_order_to_carrier");
+    jQuery(".order_actions .wc-reload").trigger("click");
+}

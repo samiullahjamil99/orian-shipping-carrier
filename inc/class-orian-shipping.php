@@ -45,10 +45,10 @@ if (!class_exists('Orian_Shipping')) {
             $this->meta_boxes = new OSC_Meta_Boxes();
         }
         public function admin_scripts() {
-            wp_enqueue_script( 'order-actions', plugin_dir_url(OSC_PLUGIN_FILE) . 'assets/js/order-actions.js', array( 'jquery' ) );
+            wp_enqueue_script( 'order-actions', plugin_dir_url(OSC_PLUGIN_FILE) . 'assets/js/order-actions.js', array( 'jquery' ),'1.0.1' );
             wp_localize_script( 'order-actions', 'ajax_object',
             array( 'ajax_url' => admin_url( 'admin-ajax.php' ) ) );
-            wp_enqueue_style( 'orders-page', plugin_dir_url(OSC_PLUGIN_FILE) . 'assets/css/orders-page.css', array() );
+            wp_enqueue_style( 'orders-page', plugin_dir_url(OSC_PLUGIN_FILE) . 'assets/css/orders-page.css', array(),'1.0.1' );
         }
         public function osc_shipping_init() {
             include_once dirname(OSC_PLUGIN_FILE) . '/inc/shipping-methods/class-osc-delivery-shipping.php';

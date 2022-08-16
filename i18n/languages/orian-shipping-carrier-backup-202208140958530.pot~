@@ -11,7 +11,7 @@ msgstr ""
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-"POT-Creation-Date: 2022-08-14 11:48+0000\n"
+"POT-Creation-Date: 2022-08-14 09:13+0000\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "X-Generator: Loco https://localise.biz/\n"
 "X-Domain: orian-shipping-carrier\n"
@@ -26,12 +26,8 @@ msgstr ""
 msgid "%d days %h hours %i minutes Remaining"
 msgstr ""
 
-#: orian-shipping-carrier.php:157
+#: orian-shipping-carrier.php:150
 msgid "Accessibility"
-msgstr ""
-
-#: inc/osc-admin.php:5
-msgid "API Credentials"
 msgstr ""
 
 #: inc/class-osc-woocommerce-order-status.php:87
@@ -46,35 +42,11 @@ msgid_plural "Available at Pudo <span class=\"count\">(%s)</span>"
 msgstr[0] ""
 msgstr[1] ""
 
-#: inc/osc-admin.php:14
-msgid "Business Day End Time"
-msgstr ""
-
-#: inc/osc-admin.php:207
-msgid "Cities data is uploaded. Upload a new file to update it."
-msgstr ""
-
-#: inc/osc-admin.php:19
-msgid "CITY"
-msgstr ""
-
 #: inc/class-osc-sla.php:207
 #, php-format
 msgid ""
 "City is far destination please except delivery time of up to %1$s Business "
 "Days."
-msgstr ""
-
-#: inc/osc-admin.php:10
-msgid "Consignee"
-msgstr ""
-
-#: inc/osc-admin.php:20
-msgid "CONTACT1NAME"
-msgstr ""
-
-#: inc/osc-admin.php:21
-msgid "CONTACT1PHONE"
 msgstr ""
 
 #: inc/class-osc-woocommerce-order-status.php:107
@@ -109,11 +81,11 @@ msgstr ""
 msgid "Failed"
 msgstr ""
 
-#: orian-shipping-carrier.php:147 inc/class-osc-sla.php:149
+#: orian-shipping-carrier.php:140 inc/class-osc-sla.php:149
 msgid "Friday"
 msgstr ""
 
-#: inc/class-osc-meta-boxes.php:110 inc/class-osc-pdf-labels.php:31
+#: inc/class-osc-meta-boxes.php:110
 msgid "Generate PDF Labels"
 msgstr ""
 
@@ -121,24 +93,8 @@ msgstr ""
 msgid "Home Delivery"
 msgstr ""
 
-#: inc/osc-admin.php:25
-msgid "Home Delivery Far Destination SLA"
-msgstr ""
-
-#: inc/osc-admin.php:24
-msgid "Home Delivery SLA"
-msgstr ""
-
 #. Author URI of the plugin
 msgid "https://www.samiullahjaml.com/about-me/"
-msgstr ""
-
-#: inc/osc-admin.php:212
-msgid "Import Data"
-msgstr ""
-
-#: inc/osc-admin.php:142 inc/osc-admin.php:143
-msgid "Import SLA Details"
 msgstr ""
 
 #: inc/class-osc-meta-boxes.php:164
@@ -169,7 +125,7 @@ msgid_plural "Lost <span class=\"count\">(%s)</span>"
 msgstr[0] ""
 msgstr[1] ""
 
-#: orian-shipping-carrier.php:143 inc/class-osc-sla.php:145
+#: orian-shipping-carrier.php:136 inc/class-osc-sla.php:145
 msgid "Monday"
 msgstr ""
 
@@ -184,10 +140,6 @@ msgid "New <span class=\"count\">(%s)</span>"
 msgid_plural "New <span class=\"count\">(%s)</span>"
 msgstr[0] ""
 msgstr[1] ""
-
-#: inc/osc-admin.php:13
-msgid "Non Business Days"
-msgstr ""
 
 #: inc/class-osc-pdf-labels.php:146 inc/class-osc-pdf-labels.php:150
 #: inc/class-osc-pdf-labels.php:154 inc/class-osc-pdf-labels.php:163
@@ -218,28 +170,12 @@ msgstr[1] ""
 msgid "Order Creation in Orian"
 msgstr ""
 
-#: inc/osc-admin.php:12
-msgid "Order Sync Time (In Minutes)"
-msgstr ""
-
 #: inc/class-osc-meta-boxes.php:40
 msgid "Order was opened successfully in carrier systems"
 msgstr ""
 
 #: inc/class-osc-meta-boxes.php:35
 msgid "Order wasn't opened at carrier yet"
-msgstr ""
-
-#: inc/osc-admin.php:132
-msgid "Orian"
-msgstr ""
-
-#: inc/osc-admin.php:9
-msgid "Orian Main Settings"
-msgstr ""
-
-#: inc/osc-admin.php:133
-msgid "Orian Options"
 msgstr ""
 
 #: inc/class-osc-meta-boxes.php:146
@@ -254,14 +190,6 @@ msgstr ""
 msgid "Orian Shipping Carrier"
 msgstr ""
 
-#: inc/osc-admin.php:22
-msgid "Orian SLA Settings"
-msgstr ""
-
-#: inc/osc-admin.php:16
-msgid "Orian Source Settings"
-msgstr ""
-
 #: inc/class-osc-meta-boxes.php:91
 msgid "Package Id"
 msgstr ""
@@ -270,16 +198,8 @@ msgstr ""
 msgid "Packages Status"
 msgstr ""
 
-#: inc/osc-admin.php:7
-msgid "Password"
-msgstr ""
-
 #: inc/class-osc-meta-boxes.php:117
 msgid "PDF Label is Printed"
-msgstr ""
-
-#: inc/osc-admin.php:15
-msgid "PDF Label Logo"
 msgstr ""
 
 #: inc/class-osc-meta-boxes.php:108
@@ -322,10 +242,6 @@ msgid_plural "Picked Up (Pudo) <span class=\"count\">(%s)</span>"
 msgstr[0] ""
 msgstr[1] ""
 
-#: inc/osc-admin.php:23
-msgid "Pickup Location SLA"
-msgstr ""
-
 #: inc/class-osc-meta-boxes.php:172
 msgid "Printed"
 msgstr ""
@@ -334,53 +250,35 @@ msgstr ""
 msgid "Pudo"
 msgstr ""
 
-#: orian-shipping-carrier.php:135
+#: orian-shipping-carrier.php:128
 msgid "Pudo Address"
 msgstr ""
 
-#: orian-shipping-carrier.php:136
+#: orian-shipping-carrier.php:129
 msgid "Pudo City"
 msgstr ""
 
-#: orian-shipping-carrier.php:69
-msgid ""
-"Pudo Location not selected. Please select a location or choose a different "
-"shipping method."
-msgstr ""
-
-#: orian-shipping-carrier.php:134
+#: orian-shipping-carrier.php:127
 msgid "Pudo Name"
 msgstr ""
 
-#: orian-shipping-carrier.php:137
+#: orian-shipping-carrier.php:130
 msgid "Pudo Type"
-msgstr ""
-
-#: inc/osc-admin.php:11
-msgid "REFERENCEORDER2"
-msgstr ""
-
-#: inc/osc-admin.php:118 inc/osc-admin.php:124
-msgid "Remove image"
 msgstr ""
 
 #. Author of the plugin
 msgid "Samiullah Jamil"
 msgstr ""
 
-#: orian-shipping-carrier.php:148 inc/class-osc-sla.php:150
+#: orian-shipping-carrier.php:141 inc/class-osc-sla.php:150
 msgid "Saturday"
-msgstr ""
-
-#: inc/osc-admin.php:160
-msgid "Save Settings"
 msgstr ""
 
 #: orian-shipping-carrier.php:43 inc/class-osc-sla.php:185
 msgid "Select City"
 msgstr ""
 
-#: orian-shipping-carrier.php:48 orian-shipping-carrier.php:113
+#: orian-shipping-carrier.php:48 orian-shipping-carrier.php:106
 msgid "Select Pudo"
 msgstr ""
 
@@ -397,22 +295,6 @@ msgstr ""
 msgid "Sent"
 msgstr ""
 
-#: inc/osc-admin.php:44
-msgid "Set main details for the Orian"
-msgstr ""
-
-#: inc/osc-admin.php:56
-msgid "Set SLA for following options"
-msgstr ""
-
-#: inc/osc-admin.php:50
-msgid "Set Source details for the Orian"
-msgstr ""
-
-#: inc/osc-admin.php:38
-msgid "Set these API Credentials to Integrate Orian to WooCommerce"
-msgstr ""
-
 #: inc/class-osc-woocommerce-order-status.php:95
 #: inc/class-osc-woocommerce-order-status.php:114
 msgid "Shipping Cancelled"
@@ -425,10 +307,6 @@ msgid_plural "Shipping Cancelled <span class=\"count\">(%s)</span>"
 msgstr[0] ""
 msgstr[1] ""
 
-#: inc/osc-admin.php:17
-msgid "SITENAME"
-msgstr ""
-
 #: inc/class-osc-sla.php:57 inc/class-osc-meta-boxes.php:121
 msgid "SLA"
 msgstr ""
@@ -437,11 +315,7 @@ msgstr ""
 msgid "Status"
 msgstr ""
 
-#: inc/osc-admin.php:18
-msgid "STREET1"
-msgstr ""
-
-#: orian-shipping-carrier.php:142 inc/class-osc-sla.php:144
+#: orian-shipping-carrier.php:135 inc/class-osc-sla.php:144
 msgid "Sunday"
 msgstr ""
 
@@ -462,26 +336,18 @@ msgid ""
 "This plugin is developed integrate Orian Shipping Carrier API to Woocommerce."
 msgstr ""
 
-#: orian-shipping-carrier.php:146 inc/class-osc-sla.php:148
+#: orian-shipping-carrier.php:139 inc/class-osc-sla.php:148
 msgid "Thursday"
 msgstr ""
 
-#: orian-shipping-carrier.php:144 inc/class-osc-sla.php:146
+#: orian-shipping-carrier.php:137 inc/class-osc-sla.php:146
 msgid "Tuesday"
 msgstr ""
 
-#: inc/osc-admin.php:123
-msgid "Upload image"
-msgstr ""
-
-#: inc/osc-admin.php:6
-msgid "Username"
-msgstr ""
-
-#: orian-shipping-carrier.php:145 inc/class-osc-sla.php:147
+#: orian-shipping-carrier.php:138 inc/class-osc-sla.php:147
 msgid "Wednesday"
 msgstr ""
 
-#: orian-shipping-carrier.php:153 orian-shipping-carrier.php:155
+#: orian-shipping-carrier.php:146 orian-shipping-carrier.php:148
 msgid "Working Hours"
 msgstr ""

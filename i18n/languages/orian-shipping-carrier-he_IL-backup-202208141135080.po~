@@ -11,7 +11,7 @@ msgstr ""
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "POT-Creation-Date: 2022-06-21T13:15:49+05:00\n"
-"PO-Revision-Date: 2022-08-14 11:49+0000\n"
+"PO-Revision-Date: 2022-08-14 09:59+0000\n"
 "X-Generator: Loco https://localise.biz/\n"
 "X-Domain: orian-shipping-carrier\n"
 "Language: he_IL\n"
@@ -30,10 +30,6 @@ msgstr "%d ימים %h שעות %i דקות נותרו"
 msgid "Accessibility"
 msgstr "נְגִישׁוּת"
 
-#: inc/osc-admin.php:5
-msgid "API Credentials"
-msgstr "אישורי API"
-
 #: inc/class-osc-woocommerce-order-status.php:87
 #: inc/class-osc-woocommerce-order-status.php:113
 msgid "Available at Pudo"
@@ -46,36 +42,12 @@ msgid_plural "Available at Pudo <span class=\"count\">(%s)</span>"
 msgstr[0] "להשיג בפודו <span class=\"count\">(%s)</span>"
 msgstr[1] "להשיג בפודו <span class=\"count\">(%s)</span>"
 
-#: inc/osc-admin.php:14
-msgid "Business Day End Time"
-msgstr "שעת סיום יום עסקים"
-
-#: inc/osc-admin.php:207
-msgid "Cities data is uploaded. Upload a new file to update it."
-msgstr "נתוני ערים מועלים. העלה קובץ חדש כדי לעדכן אותו."
-
-#: inc/osc-admin.php:19
-msgid "CITY"
-msgstr ""
-
 #: inc/class-osc-sla.php:207
 #, php-format
 msgid ""
 "City is far destination please except delivery time of up to %1$s Business "
 "Days."
 msgstr "העיר רחוקה היעד בבקשה למעט זמן אספקה ​​של עד %1$s ימי עסקים."
-
-#: inc/osc-admin.php:10
-msgid "Consignee"
-msgstr ""
-
-#: inc/osc-admin.php:20
-msgid "CONTACT1NAME"
-msgstr ""
-
-#: inc/osc-admin.php:21
-msgid "CONTACT1PHONE"
-msgstr ""
 
 #: inc/class-osc-woocommerce-order-status.php:107
 msgid "Delivered"
@@ -123,25 +95,9 @@ msgstr "צור תוויות PDF"
 msgid "Home Delivery"
 msgstr "משלוח עד הבית"
 
-#: inc/osc-admin.php:25
-msgid "Home Delivery Far Destination SLA"
-msgstr "SLA של משלוח עד הבית ליעד רחוק"
-
-#: inc/osc-admin.php:24
-msgid "Home Delivery SLA"
-msgstr "SLA של משלוחים עד הבית"
-
 #. Author URI of the plugin
 msgid "https://www.samiullahjaml.com/about-me/"
 msgstr "https://www.samiullahjaml.com/about-me"
-
-#: inc/osc-admin.php:212
-msgid "Import Data"
-msgstr "ייבוא ​​נתונים"
-
-#: inc/osc-admin.php:142 inc/osc-admin.php:143
-msgid "Import SLA Details"
-msgstr "ייבוא ​​פרטי SLA"
 
 #: inc/class-osc-meta-boxes.php:164
 msgid "Label Print Status"
@@ -187,10 +143,6 @@ msgid_plural "New <span class=\"count\">(%s)</span>"
 msgstr[0] "חָדָשׁ <span class=\"count\">(%s)</span>"
 msgstr[1] "חָדָשׁ <span class=\"count\">(%s)</span>"
 
-#: inc/osc-admin.php:13
-msgid "Non Business Days"
-msgstr "לא ימי עסקים"
-
 #: inc/class-osc-pdf-labels.php:146 inc/class-osc-pdf-labels.php:150
 #: inc/class-osc-pdf-labels.php:154 inc/class-osc-pdf-labels.php:163
 msgid "none"
@@ -220,10 +172,6 @@ msgstr[1] "הורידו <span class=\"count\">(%s)</span>"
 msgid "Order Creation in Orian"
 msgstr "יצירת סדר באוריין"
 
-#: inc/osc-admin.php:12
-msgid "Order Sync Time (In Minutes)"
-msgstr "זמן סנכרון הזמנה (בדקות)"
-
 #: inc/class-osc-meta-boxes.php:40
 msgid "Order was opened successfully in carrier systems"
 msgstr "ההזמנה נפתחה בהצלחה במערכות הספק"
@@ -231,18 +179,6 @@ msgstr "ההזמנה נפתחה בהצלחה במערכות הספק"
 #: inc/class-osc-meta-boxes.php:35
 msgid "Order wasn't opened at carrier yet"
 msgstr "ההזמנה עדיין לא נפתחה אצל הספק"
-
-#: inc/osc-admin.php:132
-msgid "Orian"
-msgstr "Orian"
-
-#: inc/osc-admin.php:9
-msgid "Orian Main Settings"
-msgstr "הגדרות עיקריות של Orian"
-
-#: inc/osc-admin.php:133
-msgid "Orian Options"
-msgstr "אוריאן אופציות"
 
 #: inc/class-osc-meta-boxes.php:146
 msgid "Orian Order Status"
@@ -256,14 +192,6 @@ msgstr "אוריין ספנות"
 msgid "Orian Shipping Carrier"
 msgstr "Orian Shipping Carrier"
 
-#: inc/osc-admin.php:22
-msgid "Orian SLA Settings"
-msgstr "הגדרות SLA של Orian"
-
-#: inc/osc-admin.php:16
-msgid "Orian Source Settings"
-msgstr "הגדרות מקור Orian"
-
 #: inc/class-osc-meta-boxes.php:91
 msgid "Package Id"
 msgstr "מזהה חבילה"
@@ -272,17 +200,9 @@ msgstr "מזהה חבילה"
 msgid "Packages Status"
 msgstr "סטטוס חבילות"
 
-#: inc/osc-admin.php:7
-msgid "Password"
-msgstr "סיסמה"
-
 #: inc/class-osc-meta-boxes.php:117
 msgid "PDF Label is Printed"
 msgstr "תווית PDF מודפסת"
-
-#: inc/osc-admin.php:15
-msgid "PDF Label Logo"
-msgstr "לוגו תווית PDF"
 
 #: inc/class-osc-meta-boxes.php:108
 #| msgid "PDF Label"
@@ -325,10 +245,6 @@ msgid_plural "Picked Up (Pudo) <span class=\"count\">(%s)</span>"
 msgstr[0] "איסוף (פודו) <span class=\"count\">(%s)</span>"
 msgstr[1] "איסוף (פודו) <span class=\"count\">(%s)</span>"
 
-#: inc/osc-admin.php:23
-msgid "Pickup Location SLA"
-msgstr "SLA של מיקום איסוף"
-
 #: inc/class-osc-meta-boxes.php:172
 msgid "Printed"
 msgstr "מודפס"
@@ -359,14 +275,6 @@ msgstr "שם פודו"
 msgid "Pudo Type"
 msgstr "סוג פודו"
 
-#: inc/osc-admin.php:11
-msgid "REFERENCEORDER2"
-msgstr ""
-
-#: inc/osc-admin.php:118 inc/osc-admin.php:124
-msgid "Remove image"
-msgstr "הסר תמונה"
-
 #. Author of the plugin
 msgid "Samiullah Jamil"
 msgstr "Samiullah Jamil"
@@ -374,10 +282,6 @@ msgstr "Samiullah Jamil"
 #: orian-shipping-carrier.php:148 inc/class-osc-sla.php:150
 msgid "Saturday"
 msgstr "יום שבת"
-
-#: inc/osc-admin.php:160
-msgid "Save Settings"
-msgstr "שמור הגדרות"
 
 #: orian-shipping-carrier.php:43 inc/class-osc-sla.php:185
 msgid "Select City"
@@ -400,22 +304,6 @@ msgstr "שלח הזמנות למוביל"
 msgid "Sent"
 msgstr "נשלח"
 
-#: inc/osc-admin.php:44
-msgid "Set main details for the Orian"
-msgstr "הגדר פרטים עיקריים עבור האוריאן"
-
-#: inc/osc-admin.php:56
-msgid "Set SLA for following options"
-msgstr "הגדר SLA עבור האפשרויות הבאות"
-
-#: inc/osc-admin.php:50
-msgid "Set Source details for the Orian"
-msgstr "הגדר פרטי מקור עבור האוריאן"
-
-#: inc/osc-admin.php:38
-msgid "Set these API Credentials to Integrate Orian to WooCommerce"
-msgstr "Set these API Credentials to Integrate Orian to WooCommerce"
-
 #: inc/class-osc-woocommerce-order-status.php:95
 #: inc/class-osc-woocommerce-order-status.php:114
 msgid "Shipping Cancelled"
@@ -428,10 +316,6 @@ msgid_plural "Shipping Cancelled <span class=\"count\">(%s)</span>"
 msgstr[0] "המשלוח בוטל <span class=\"count\">(%s)</span>"
 msgstr[1] "המשלוח בוטל <span class=\"count\">(%s)</span>"
 
-#: inc/osc-admin.php:17
-msgid "SITENAME"
-msgstr ""
-
 #: inc/class-osc-sla.php:57 inc/class-osc-meta-boxes.php:121
 msgid "SLA"
 msgstr "SLA"
@@ -439,10 +323,6 @@ msgstr "SLA"
 #: inc/class-osc-meta-boxes.php:92
 msgid "Status"
 msgstr "סטָטוּס"
-
-#: inc/osc-admin.php:18
-msgid "STREET1"
-msgstr ""
 
 #: orian-shipping-carrier.php:142 inc/class-osc-sla.php:144
 msgid "Sunday"
@@ -475,14 +355,6 @@ msgstr "יוֹם חֲמִישִׁי"
 #: orian-shipping-carrier.php:144 inc/class-osc-sla.php:146
 msgid "Tuesday"
 msgstr "יוֹם שְׁלִישִׁי"
-
-#: inc/osc-admin.php:123
-msgid "Upload image"
-msgstr "העלאת תמונה"
-
-#: inc/osc-admin.php:6
-msgid "Username"
-msgstr "שם משתמש"
 
 #: orian-shipping-carrier.php:145 inc/class-osc-sla.php:147
 msgid "Wednesday"

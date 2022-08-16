@@ -64,9 +64,9 @@ if (!class_exists("OSC_SLA")) {
                 $enddate = $this->get_sla_end_datetime($post->ID);
                 $diff = $now->diff($enddate);
                 if ($now < $enddate)
-                echo '<p class="sla-time">'.$diff->format('%d days %h hours %i minutes').' Remaining</p>';
+                    echo '<p class="sla-time">'.$diff->format(__('%d days %h hours %i minutes Remaining','orian-shipping-carrier')).'</p>';
                 else
-                echo '<p class="sla-time">'.$diff->format('%d days %h hours %i minutes').' Late</p>';
+                    echo '<p class="sla-time">'.$diff->format(__('%d days %h hours %i minutes Late','orian-shipping-carrier')).'</p>';
             }
         }
         public function get_sla_end_datetime($orderid) {
@@ -110,10 +110,20 @@ if (!class_exists("OSC_SLA")) {
             $response[0] = $this->date_sla_format($now);
             $nextday = $now;
             $endtime = new DateTime($this->businessday_endtime, $this->timezone);
+            $now_nonbusiness = false;
+            if ($nextday->format('w') === "5" || $nextday->format('w') === "6" || in_array($nextday->format('d/m/Y'),$this->nonbusiness_days)) {
+                $now_nonbusiness = true;
+            }
             $firstday = 1;
+            if ($now_nonbusiness) {
+                $days++;
+                $firstday = 2;
+            }
             if ($now > $endtime) {
                 $days++;
                 $firstday = 2;
+                if ($now_nonbusiness)
+                    $firstday = 3;
             }
             for($i = 1; $i <= $days; $i++) {
                 //$nextday = new DateTime("+$i days", $this->timezone);

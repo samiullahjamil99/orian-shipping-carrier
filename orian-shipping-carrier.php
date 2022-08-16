@@ -56,10 +56,17 @@ function osc_pudo_fields_html() {
 	<?php
 	endif;
 }
-add_action('woocommerce_checkout_process', 'osc_verify_pudo_fields');
-function osc_verify_pudo_fields() {
-	if ($_POST["pudo_shipping"] && ! $_POST["pudo_point"])
-		wc_add_notice( __( 'Pudo Location not selected. Please select a location or choose a different shipping method.','orian-shipping-method' ), 'error' );
+add_filter('woocommerce_checkout_posted_data','osc_add_pudo_data_to_validation');
+function osc_add_pudo_data_to_validation($data) {
+	$data["pudo_shipping"] = $_POST["pudo_shipping"];
+	$data["pudo_point"] = $_POST["pudo_point"];
+	return $data;
+}
+add_action('woocommerce_after_checkout_validation', 'osc_verify_pudo_fields',10,2);
+add_action('woocommerce_goya_child_shipping_validation', 'osc_verify_pudo_fields',10,2);
+function osc_verify_pudo_fields(&$data, &$errors) {
+	if ($data["pudo_shipping"] && ! $data["pudo_point"] && ! $data["billing_validate"])
+		$errors->add( 'pudo', __( 'Pudo Location not selected. Please select a location or choose a different shipping method.', 'orian-shipping-carrier' ) );
 }
 
 function osc_pudo_script() {
@@ -86,6 +93,9 @@ function osc_pudo_script() {
 		sort($pudo_cities);
 	?>
 	<script>
+		jQuery(document).on('select2:open', (e) => {
+			setTimeout(function() {jQuery('.select2-search__field').focus();},500);
+      	});
 		var pudo_cities = <?php echo json_encode($pudo_cities,JSON_UNESCAPED_UNICODE); ?>;
 		var pudo_ids = <?php echo json_encode($pudo_ids,JSON_UNESCAPED_UNICODE); ?>;
 		var pudo_points = [];
@@ -100,7 +110,7 @@ function osc_pudo_script() {
 			jQuery("#pudocityselect").on('change',function() {
 				jQuery("#selectedpudodetails").html('');
 				pudo_points = pudo_ids[jQuery(this).val()];
-				jQuery("#pudopointselect").html('<option value="" disabled selected>Select Pudo</option>');
+				jQuery("#pudopointselect").html('<option value="" disabled selected><?php echo __("Select Pudo","orian-shipping-carrier"); ?></option>');
 				for(var i = 0; i < pudo_points.length; i++) {
 					jQuery("#pudopointselect").append('<option value="'+pudo_points[i]['contactid']+'">'+pudo_points[i]['pudoname']+' - '+pudo_points[i]['pudoaddress']+'</option>');
 				}
@@ -141,6 +151,8 @@ function osc_pudo_script() {
 								workinghours += "<br>"+days[i] + ": " + workinghoursarr[i][0] + " - " + workinghours[i][1];
 							}
 							pudo_details += '<p><?php _e("Working Hours","orian-shipping-carrier"); ?>: '+workinghours+'</p>';
+						} else {
+							pudo_details += '<p><?php _e("Working Hours","orian-shipping-carrier"); ?>: 24/7</p>';
 						}
 						pudo_details += '<p><?php _e("Accessibility","orian-shipping-carrier"); ?>: '+accessibility+'</p>';
 						jQuery("#selectedpudodetails").html(pudo_details);

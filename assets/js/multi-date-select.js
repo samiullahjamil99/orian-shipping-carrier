@@ -80,6 +80,7 @@ function renderCalender(el,month = null,year = null) {
     var daysinmonth = daysInMonths[currentMonthNum];
     if (currentYear % 4 == 0 && currentMonthNum == 1)
         daysinmonth = 29;
+    var tempday = firstOfMonthD.getDay();
     for (var i = 1; i <= daysinmonth; i++) {
         var day = document.createElement('li');
         day.innerHTML = i;
@@ -88,6 +89,14 @@ function renderCalender(el,month = null,year = null) {
         var dateIndex = selectedDates.indexOf(day.dataset.full);
         if (dateIndex > -1)
             day.classList.add("selected");
+        if (tempday == 5 || tempday == 6) {
+            day.classList.add("selected");
+            day.classList.add("disabled");
+        }
+        tempday++;
+        if (tempday > 6)
+            tempday = 0;
+        if (!day.classList.contains("disabled")) {
         day.addEventListener("click",function() {
             var selectedIndex = selectedDates.indexOf(this.dataset.full);
             if (selectedIndex > -1) {
@@ -100,6 +109,7 @@ function renderCalender(el,month = null,year = null) {
             el.dataset.selected = selectedDates;
             document.getElementById("nonbusiness_days").value = selectedDates.toString();
         });
+        }
     }
 }
 jQuery(document).ready(function() {

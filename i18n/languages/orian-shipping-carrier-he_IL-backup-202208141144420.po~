@@ -11,7 +11,7 @@ msgstr ""
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "POT-Creation-Date: 2022-06-21T13:15:49+05:00\n"
-"PO-Revision-Date: 2022-08-14 11:49+0000\n"
+"PO-Revision-Date: 2022-08-14 11:41+0000\n"
 "X-Generator: Loco https://localise.biz/\n"
 "X-Domain: orian-shipping-carrier\n"
 "Language: he_IL\n"
@@ -123,10 +123,6 @@ msgstr "צור תוויות PDF"
 msgid "Home Delivery"
 msgstr "משלוח עד הבית"
 
-#: inc/osc-admin.php:25
-msgid "Home Delivery Far Destination SLA"
-msgstr "SLA של משלוח עד הבית ליעד רחוק"
-
 #: inc/osc-admin.php:24
 msgid "Home Delivery SLA"
 msgstr "SLA של משלוחים עד הבית"
@@ -134,10 +130,6 @@ msgstr "SLA של משלוחים עד הבית"
 #. Author URI of the plugin
 msgid "https://www.samiullahjaml.com/about-me/"
 msgstr "https://www.samiullahjaml.com/about-me"
-
-#: inc/osc-admin.php:212
-msgid "Import Data"
-msgstr "ייבוא ​​נתונים"
 
 #: inc/osc-admin.php:142 inc/osc-admin.php:143
 msgid "Import SLA Details"
@@ -260,10 +252,6 @@ msgstr "Orian Shipping Carrier"
 msgid "Orian SLA Settings"
 msgstr "הגדרות SLA של Orian"
 
-#: inc/osc-admin.php:16
-msgid "Orian Source Settings"
-msgstr "הגדרות מקור Orian"
-
 #: inc/class-osc-meta-boxes.php:91
 msgid "Package Id"
 msgstr "מזהה חבילה"
@@ -274,7 +262,7 @@ msgstr "סטטוס חבילות"
 
 #: inc/osc-admin.php:7
 msgid "Password"
-msgstr "סיסמה"
+msgstr "Password"
 
 #: inc/class-osc-meta-boxes.php:117
 msgid "PDF Label is Printed"

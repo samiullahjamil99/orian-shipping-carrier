@@ -31,11 +31,27 @@
     transform: rotate(45deg);
     left:0;
 }
+.rtl .multi-date-select a.prev-month::after {
+    border-bottom: 2px solid white;
+    border-right: 2px solid white;
+    border-left:none;
+    transform: rotate(-45deg);
+    right:0;
+    left:auto;
+}
 .multi-date-select a.next-month::after {
     border-bottom: 2px solid white;
     border-right: 2px solid white;
     transform: rotate(-45deg);
     right:0;
+}
+.rtl .multi-date-select a.next-month::after {
+    border-bottom: 2px solid white;
+    border-left: 2px solid white;
+    border-right:none;
+    transform: rotate(45deg);
+    left:0;
+    right:auto;
 }
 .multi-date-select h1.month {
     text-align: center;

@@ -8,8 +8,15 @@ function osc_pdf_generate(clickel,orderid) {
         if (response) {
         var pdfWindow = window.open("");
         pdfWindow.document.write(
-            "<iframe width='100%' height='100%' src='data:application/pdf;base64, "+response+"'></iframe>"
+            "<title>Orian Labels</title><iframe width='100%' height='100%' src='data:application/pdf;base64, "+response+"'></iframe>"
         );
+        /*var pdfWindowLink = document.createElement('a');
+        document.body.appendChild(pdfWindowLink);
+        pdfWindowLink.href = "data:application/pdf;base64, "+response;
+        pdfWindowLink.target = "_blank";
+        pdfWindowLink.click();
+        document.body.removeChild(pdfWindowLink);*/
+        window.location.reload();
         }
         jQuery(clickel).unblock();
     });
@@ -29,8 +36,15 @@ function osc_pdf_generate_bulk(clickel) {
         if (response) {
         var pdfWindow = window.open("");
         pdfWindow.document.write(
-            "<iframe width='100%' height='100%' src='data:application/pdf;base64, "+response+"'></iframe>"
+            "<title>Orian Labels</title><iframe width='100%' height='100%' src='data:application/pdf;base64, "+response+"'></iframe>"
         );
+        /*var pdfWindowLink = document.createElement('a');
+        document.body.appendChild(pdfWindowLink);
+        pdfWindowLink.href = "data:application/pdf;base64, "+response;
+        pdfWindowLink.target = "_blank";
+        pdfWindowLink.click();
+        document.body.removeChild(pdfWindowLink);*/
+        window.location.reload();
         }
         jQuery(clickel).unblock();
     });

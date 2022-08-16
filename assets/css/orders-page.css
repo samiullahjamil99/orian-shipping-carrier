@@ -1,21 +1,31 @@
-.wp-list-table tr.order-late, .wp-list-table tr.status-wc-osc-lost {
+.wp-list-table tr.order-late .sla-time, .wp-list-table tr.status-wc-osc-lost {
     background-color: red;
     color:white;
 }
-.wp-list-table tr.order-late *, .wp-list-table tr.status-wc-osc-lost * {
+.wp-list-table tr.status-wc-osc-lost * {
     color:white;
 }
-.wp-list-table tr.order-late .order-status.status-processing, .wp-list-table tr.status-wc-osc-lost .order-status.status-osc-lost {
+.wp-list-table tr.status-wc-osc-lost .sla-time {
+    background-color: white;
+    color:black;
+}
+.wp-list-table tr.status-wc-osc-lost .order-status {
     background-color: black;
 }
+.wp-list-table tr.status-wc-osc-delivered .sla-time {
+    display: none;
+}
 .wp-list-table tr.status-wc-osc-delivered {
-    background-color:lightgreen;
+    background-color: lightgreen;
+}
+.wp-list-table tr.status-wc-osc-delivered * {
+    color: #3c7b2f;
 }
 .wp-list-table tr .sla-time {
     padding:10px;
     border-radius: 5px;
-    background-color: white;
-    color:black;
+    background-color: lightgreen;
+    color:#3c7b2f;
 }
 .wp-list-table tr.due-soon .sla-time {
     background-color:orange;

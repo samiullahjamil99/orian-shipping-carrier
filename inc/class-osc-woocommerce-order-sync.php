@@ -20,6 +20,7 @@ if (!class_exists('OSC_Woocommerce_Order_Sync')) {
                     wp_unschedule_event( $timestamp, 'osc_order_sync_hook' );
                 }
             }
+            register_deactivation_hook( OSC_PLUGIN_FILE, array($this,'osc_sync_deactivate') ); 
         }
         public function osc_add_cron_interval($schedules) {
             $schedules['custom_minutes'] = array(
@@ -35,24 +36,35 @@ if (!class_exists('OSC_Woocommerce_Order_Sync')) {
             ));
             foreach($orders as $order) {
                 $number_of_packages = get_post_meta($order->get_id(),'number_of_packages',true);
+                $packages_statuses = get_post_meta($order->get_id(),'_osc_packages_statues',true);
+                $pudo_shipping = false;
+                foreach($order->get_items("shipping") as $item_key => $item) {
+                    if ($item->get_method_id() === orian_shipping()->pudo_method_id)
+                        $pudo_shipping = true;
+                }
+                $new_packages_statuses = $packages_statuses;
                 $carrier_response = orian_shipping()->api->get_transportation_order_status($order->get_id());
                 if ($carrier_response['status'] == 200) {
-                    $woocommerce_status = orian_shipping()->order_status->compare_carrier_order_status($carrier_response['package_status']);
-                    if ($woocommerce_status && $woocommerce_status !== "wc-".$order->get_status())
-                    $order->update_status($woocommerce_status);
+                    $woocommerce_status = orian_shipping()->order_status->compare_carrier_order_status($carrier_response['package_status'],$pudo_shipping);
+                    if ($woocommerce_status && $woocommerce_status !== "wc-".$order->get_status()) {
+                        $order->update_status($woocommerce_status);
+                        $woocommerce_status_array = explode('-',$woocommerce_status,2);
+                        $woocommerce_status = $woocommerce_status_array[1];
+                        $new_packages_statuses[0] = $woocommerce_status;
+                    }
                 }
                 if ($number_of_packages && intval($number_of_packages) > 1) {
-                    $packages_statuses = get_post_meta($order->get_id(),'_osc_packages_statues',true);
-                    $new_packages_statuses = $packages_statuses;
+
                     if ($packages_statuses) {
                         for ($i = 2; $i <= $number_of_packages; $i++) {
+                            $packages_status = $packages_statuses[$i];
                             $carrier_response = orian_shipping()->api->get_transportation_order_status($order->get_id(),$i);
                             if ($carrier_response['status'] == 200) {
-                                $woocommerce_status = orian_shipping()->order_status->compare_carrier_order_status($carrier_response['package_status']);
+                                $woocommerce_status = orian_shipping()->order_status->compare_carrier_order_status($carrier_response['package_status'],$pudo_shipping);
                                 if ($woocommerce_status && $woocommerce_status !== 'wc-'.$packages_status) {
                                     $woocommerce_status_array = explode('-',$woocommerce_status,2);
                                     $woocommerce_status = $woocommerce_status_array[1];
-                                    $new_packages_statuses[$i - 2] = $woocommerce_status;
+                                    $new_packages_statuses[$i - 1] = $woocommerce_status;
                                 }
                             }
                             $packages_status_index++;
@@ -68,7 +80,7 @@ if (!class_exists('OSC_Woocommerce_Order_Sync')) {
             $orders = array_merge($orders,$processingorders);
             foreach($orders as $order) {
                 $enddate = orian_shipping()->sla->get_sla_end_datetime($order->get_id());
-                $now = new DateTime("now",$this->timezone);
+                $now = new DateTime("now",orian_shipping()->sla->timezone);
                 $users = get_users(array(
                     'role__in' => array('Administrator','Shop manager')
                 ));
@@ -83,6 +95,10 @@ if (!class_exists('OSC_Woocommerce_Order_Sync')) {
                     }
                 }
             }
+        }
+        public function osc_sync_deactivate() {
+            $timestamp = wp_next_scheduled( 'osc_order_sync_hook' );
+            wp_unschedule_event( $timestamp, 'osc_order_sync_hook' );
         }
     }
 }

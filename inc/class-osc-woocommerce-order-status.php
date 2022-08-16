@@ -1,14 +1,13 @@
 <?php
 if (!class_exists('OSC_Woocommerce_Order_Status')) {
     class OSC_Woocommerce_Order_Status {
-        public $statuses;
         public $orian_statuses = array(
             'new' => 'wc-osc-new',
             'loaded' => 'wc-osc-loaded',
-            'delivered' => 'wc-osc-delivered',
+            'delivered' => array('home'=>'wc-osc-delivered','pudo'=>'wc-osc-customer-pickedup'),
             'lost' => 'wc-osc-lost',
             'offloaded' => 'wc-osc-offloaded',
-            'pickedup' => 'wc-osc-pickedup',
+            'pickedup' => array('home'=>'wc-osc-pickedup-home','pudo' =>'wc-osc-pickedup-pudo'),
             'canceled' => 'wc-osc-cancelled',
             'dropedatpudo' => 'wc-osc-dropedatpudo',
         );
@@ -16,45 +15,121 @@ if (!class_exists('OSC_Woocommerce_Order_Status')) {
             $this->init();
         }
         public function init() {
-            $this->statuses = array(
-                'wc-osc-new' => "New",
-                'wc-osc-loaded' => "Loaded",
-                'wc-osc-delivered' => "Delivered",
-                'wc-osc-lost' => "Lost",
-                'wc-osc-offloaded' => "Offloaded",
-                'wc-osc-pickedup' => "Picked Up",
-                'wc-osc-dropedatpudo' => "Available at Pudo",
-                'wc-osc-cancelled' => "Shipping Cancelled",
-            );
             add_action( 'init', array($this,'register_order_statuses') );
             add_filter( 'wc_order_statuses', array($this,'add_order_statuses') );
         }
         public function register_order_statuses() {
-            foreach($this->statuses as $status_key => $status_label) {
-                register_post_status( $status_key, array(
-                    'label'                     => __($status_label,'orian-shipping-carrier'),
-                    'public'                    => true,
-                    'show_in_admin_status_list' => true,
-                    'show_in_admin_all_list'    => true,
-                    'exclude_from_search'       => false,
-                    'label_count'               => _n_noop( $status_label . ' <span class="count">(%s)</span>', $status_label . ' <span class="count">(%s)</span>','orian-shipping-carrier' )
-                ) );
-            }
+            register_post_status( 'wc-osc-new', array(
+                'label'                     => __("New",'orian-shipping-carrier'),
+                'public'                    => true,
+                'show_in_admin_status_list' => true,
+                'show_in_admin_all_list'    => true,
+                'exclude_from_search'       => false,
+                'label_count'               => _n_noop( 'New <span class="count">(%s)</span>', 'New <span class="count">(%s)</span>','orian-shipping-carrier' )
+            ) );
+            register_post_status( 'wc-osc-loaded', array(
+                'label'                     => __("Loaded",'orian-shipping-carrier'),
+                'public'                    => true,
+                'show_in_admin_status_list' => true,
+                'show_in_admin_all_list'    => true,
+                'exclude_from_search'       => false,
+                'label_count'               => _n_noop( 'Loaded <span class="count">(%s)</span>', 'Loaded <span class="count">(%s)</span>','orian-shipping-carrier' )
+            ) );
+            register_post_status( 'wc-osc-delivered', array(
+                'label'                     => __("Delivered to Home",'orian-shipping-carrier'),
+                'public'                    => true,
+                'show_in_admin_status_list' => true,
+                'show_in_admin_all_list'    => true,
+                'exclude_from_search'       => false,
+                'label_count'               => _n_noop( 'Delivered to Home <span class="count">(%s)</span>', 'Delivered to Home <span class="count">(%s)</span>','orian-shipping-carrier' )
+            ) );
+            register_post_status( 'wc-osc-customer-pickedup', array(
+                'label'                     => __("Picked from Pudo",'orian-shipping-carrier'),
+                'public'                    => true,
+                'show_in_admin_status_list' => true,
+                'show_in_admin_all_list'    => true,
+                'exclude_from_search'       => false,
+                'label_count'               => _n_noop( 'Picked from Pudo <span class="count">(%s)</span>', 'Picked from Pudo <span class="count">(%s)</span>','orian-shipping-carrier' )
+            ) );
+            register_post_status( 'wc-osc-lost', array(
+                'label'                     => __("Lost",'orian-shipping-carrier'),
+                'public'                    => true,
+                'show_in_admin_status_list' => true,
+                'show_in_admin_all_list'    => true,
+                'exclude_from_search'       => false,
+                'label_count'               => _n_noop( 'Lost <span class="count">(%s)</span>', 'Lost <span class="count">(%s)</span>','orian-shipping-carrier' )
+            ) );
+            register_post_status( 'wc-osc-offloaded', array(
+                'label'                     => __("Offloaded",'orian-shipping-carrier'),
+                'public'                    => true,
+                'show_in_admin_status_list' => true,
+                'show_in_admin_all_list'    => true,
+                'exclude_from_search'       => false,
+                'label_count'               => _n_noop( 'Offloaded <span class="count">(%s)</span>', 'Offloaded <span class="count">(%s)</span>','orian-shipping-carrier' )
+            ) );
+            register_post_status( 'wc-osc-pickedup-pudo', array(
+                'label'                     => __("Picked Up (Pudo)",'orian-shipping-carrier'),
+                'public'                    => true,
+                'show_in_admin_status_list' => true,
+                'show_in_admin_all_list'    => true,
+                'exclude_from_search'       => false,
+                'label_count'               => _n_noop( 'Picked Up (Pudo) <span class="count">(%s)</span>', 'Picked Up (Pudo) <span class="count">(%s)</span>','orian-shipping-carrier' )
+            ) );
+            register_post_status( 'wc-osc-pickedup-home', array(
+                'label'                     => __("Picked Up (Home Delivery)",'orian-shipping-carrier'),
+                'public'                    => true,
+                'show_in_admin_status_list' => true,
+                'show_in_admin_all_list'    => true,
+                'exclude_from_search'       => false,
+                'label_count'               => _n_noop( 'Picked Up (Home Delivery) <span class="count">(%s)</span>', 'Picked Up (Home Delivery) <span class="count">(%s)</span>','orian-shipping-carrier' )
+            ) );
+            register_post_status( 'wc-osc-dropedatpudo', array(
+                'label'                     => __("Available at Pudo",'orian-shipping-carrier'),
+                'public'                    => true,
+                'show_in_admin_status_list' => true,
+                'show_in_admin_all_list'    => true,
+                'exclude_from_search'       => false,
+                'label_count'               => _n_noop( 'Available at Pudo <span class="count">(%s)</span>', 'Available at Pudo <span class="count">(%s)</span>','orian-shipping-carrier' )
+            ) );
+            register_post_status( 'wc-osc-cancelled', array(
+                'label'                     => __("Shipping Cancelled",'orian-shipping-carrier'),
+                'public'                    => true,
+                'show_in_admin_status_list' => true,
+                'show_in_admin_all_list'    => true,
+                'exclude_from_search'       => false,
+                'label_count'               => _n_noop( 'Shipping Cancelled <span class="count">(%s)</span>', 'Shipping Cancelled <span class="count">(%s)</span>','orian-shipping-carrier' )
+            ) );
         }
         public function add_order_statuses( $order_statuses) {
             $output_statuses = $order_statuses;
-            foreach ( $this->statuses as $key => $status ) {
-                $output_statuses[ $key ] = __($status,'orian-shipping-carrier');
-            }
+            $output_statuses['wc-osc-new'] = __('New','orian-shipping-carrier');
+            $output_statuses['wc-osc-loaded'] = __('Loaded','orian-shipping-carrier');
+            $output_statuses['wc-osc-delivered'] = __('Delivered','orian-shipping-carrier');
+            $output_statuses['wc-osc-customer-pickedup'] = __('Picked from Pudo','orian-shipping-carrier');
+            $output_statuses['wc-osc-lost'] = __('Lost','orian-shipping-carrier');
+            $output_statuses['wc-osc-offloaded'] = __('Offloaded','orian-shipping-carrier');
+            $output_statuses['wc-osc-pickedup-home'] = __('Picked Up (Home Delivery)','orian-shipping-carrier');
+            $output_statuses['wc-osc-pickedup-pudo'] = __('Picked Up (Pudo)','orian-shipping-carrier');
+            $output_statuses['wc-osc-dropedatpudo'] = __('Available at Pudo','orian-shipping-carrier');
+            $output_statuses['wc-osc-cancelled'] = __('Shipping Cancelled','orian-shipping-carrier');
             unset( $output_statuses['wc-completed'] );
             return $output_statuses;
         }
-        public function compare_carrier_order_status($carrier_order) {
+        public function compare_carrier_order_status($carrier_order,$pudo = false) {
             $lowercase_carrier_order = strtolower($carrier_order);
-            if (array_key_exists($lowercase_carrier_order,$this->orian_statuses))
-            return $this->orian_statuses[$lowercase_carrier_order];
-            else
-            return false;
+            if (array_key_exists($lowercase_carrier_order,$this->orian_statuses)) {
+                if ($lowercase_carrier_order === 'delivered' || $lowercase_carrier_order === 'pickedup') {
+                    if ($pudo)
+                        return $this->orian_statuses[$lowercase_carrier_order]['pudo'];
+                    else
+                        return $this->orian_statuses[$lowercase_carrier_order]['home'];
+                } else {
+                    return $this->orian_statuses[$lowercase_carrier_order];
+                }
+            }
+            else {
+                return false;
+            }
         }
     }
 }
