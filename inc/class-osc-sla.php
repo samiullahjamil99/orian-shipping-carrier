@@ -110,6 +110,9 @@ if (!class_exists("OSC_SLA")) {
             $response[0] = $this->date_sla_format($now);
             $nextday = $now;
             $endtime = new DateTime($this->businessday_endtime, $this->timezone);
+            if ($now > $endtime) {
+                $nextday->modify("+1 days");
+            }
             $now_nonbusiness = false;
             if ($nextday->format('w') === "5" || $nextday->format('w') === "6" || in_array($nextday->format('d/m/Y'),$this->nonbusiness_days)) {
                 $now_nonbusiness = true;
@@ -117,23 +120,17 @@ if (!class_exists("OSC_SLA")) {
             $firstday = 1;
             if ($now_nonbusiness) {
                 $days++;
-                $firstday = 2;
-            }
-            if ($now > $endtime) {
-                $days++;
-                $firstday = 2;
-                if ($now_nonbusiness)
-                    $firstday = 3;
+                $firstday++;
             }
             for($i = 1; $i <= $days; $i++) {
                 //$nextday = new DateTime("+$i days", $this->timezone);
                 $nextday->modify("+1 days");
+                if ($i == $firstday)
+                    $response[0] = $this->date_sla_format($nextday);
                 if ($nextday->format('w') === "5" || $nextday->format('w') === "6" || in_array($nextday->format('d/m/Y'),$this->nonbusiness_days)) {
                     $days++;
                     $firstday++;
                 }
-                if ($i == $firstday)
-                    $response[0] = $this->date_sla_format($nextday);
             }
             $response[1] = $this->date_sla_format($nextday);
             $response[2] = $nextday;
