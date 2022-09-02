@@ -34,8 +34,12 @@ if (!class_exists('OSC_PDF_Labels')) {
             }
         }
         public function ajax_create_package_pdf() {
-            global $locale;
-            $locale = "he_IL";
+            //global $locale;
+            //$locale = "he_IL";
+            add_filter("plugin_locale",function($locale) {
+                $locale = "he_IL";
+                return $locale;
+            });
             load_plugin_textdomain( 'orian-shipping-carrier', false, dirname( plugin_basename(OSC_PLUGIN_FILE) ) . '/i18n/languages' );
             $orders = array();
             if ($_POST['orderid']) {
