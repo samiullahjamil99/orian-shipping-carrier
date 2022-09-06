@@ -12,6 +12,7 @@ final class OSC_API {
         $this->authtoken = get_option('orian_login_authtoken');
     }
     public function authorize_login() {
+        $this->delete_auth();
         $this->firsttimecall = false;
         $login_url = $this->api_url . "/Login";
         $username = $this->orian_options['username'];
@@ -140,8 +141,11 @@ final class OSC_API {
             $this->authorize_login();
         }
         if ($this->logged_in() && $order) {
+            $package_prefix = get_post_meta($orderid, '_osc_package_prefix',true);
+            if (!$package_prefix)
+                $package_prefix = orian_shipping()->legacy_package_prefix;
             $consignee = $this->orian_options['consignee'];
-            $packageid = "KKO" . $orderid;
+            $packageid = $package_prefix . $orderid;
             if ($packagenumber > 1)
             $packageid .= "P" . $packagenumber;
             $status_url = $this->api_url . '/GetPackageStatus?consignee=' . $consignee . '&package=' . $packageid;
@@ -219,7 +223,7 @@ final class OSC_API {
         if (!empty($shipping_remarks))
         $deliveryremarks .= $shipping_remarks;
         $packages_xml = '<PACKAGE>
-        <PACKAGEID>KKO'.$orderid.'</PACKAGEID>
+        <PACKAGEID>'.orian_shipping()->package_prefix . $orderid.'</PACKAGEID>
         <PACKAGEREFID></PACKAGEREFID>
         <PACKAGETYPE>02</PACKAGETYPE>
         <DOCUMENTTYPE>TRANSPORTATION</DOCUMENTTYPE>
@@ -228,7 +232,7 @@ final class OSC_API {
         </PACKAGE>';
         if ($numberofpackages > 1) {
             for ($i = 2; $i <= $numberofpackages; $i++) {
-                $packageid = 'KKO' . $orderid . 'P' . $i;
+                $packageid = orian_shipping()->package_prefix . $orderid . 'P' . $i;
                 $packages_xml .= '<PACKAGE>
         <PACKAGEID>'.$packageid.'</PACKAGEID>
         <PACKAGEREFID></PACKAGEREFID>
@@ -406,6 +410,7 @@ final class OSC_API {
                 $return_response['success'] = $success;
                 if ($success === "true") {
                     update_post_meta($orderid,'_orian_sent','success');
+                    update_post_meta($orderid,'_osc_package_prefix',orian_shipping()->package_prefix);
                 } else {
                     $error = (string) $xml->RESPONSE->RESPONSEERROR;
                     $return_response['error'] = $error;
@@ -419,6 +424,9 @@ final class OSC_API {
                 $return_response['data'] = $response['body'];
               }
           }
+        } else {
+            update_post_meta($orderid,'Orian Error', "Orian API Details are Incorrect.");
+            update_post_meta($orderid,'_orian_sent','failure');
         }
         return $return_response;
     }
@@ -442,7 +450,7 @@ final class OSC_API {
             $source_contact1phone = $this->orian_options['source_contact1phone'];
             $target_contactid = get_post_meta($orderid, 'pudo_point',true);
             $packages_xml = '<PACKAGE>
-            <PACKAGEID>KKO'.$orderid.'</PACKAGEID>
+            <PACKAGEID>'.orian_shipping()->package_prefix .$orderid.'</PACKAGEID>
             <PACKAGEREFID></PACKAGEREFID>
             <PACKAGETYPE>02</PACKAGETYPE>
             <DOCUMENTTYPE>TRANSPORTATION</DOCUMENTTYPE>
@@ -616,6 +624,7 @@ final class OSC_API {
                 $return_response['success'] = $success;
                 if ($success === "true") {
                     update_post_meta($orderid,'_orian_sent','success');
+                    update_post_meta($orderid,'_osc_package_prefix',orian_shipping()->package_prefix);
                 } else {
                     $error = (string) $xml->RESPONSE->RESPONSEERROR;
                     $return_response['error'] = $error;
@@ -629,6 +638,9 @@ final class OSC_API {
                 $return_response['data'] = $response['body'];
               }
           }
+        } else {
+            update_post_meta($orderid,'Orian Error', "Orian API Details are Incorrect.");
+            update_post_meta($orderid,'_orian_sent','failure');
         }
         return $return_response;
     }

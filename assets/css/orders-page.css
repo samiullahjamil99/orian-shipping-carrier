@@ -12,7 +12,11 @@
 .wp-list-table tr.status-wc-osc-lost .order-status {
     background-color: black;
 }
-.wp-list-table tr.status-wc-osc-delivered .sla-time {
+.wp-list-table tr.status-wc-osc-delivered .sla-time,
+.wp-list-table tr.status-wc-osc-picked .sla-time,
+.wp-list-table tr.status-wc-osc-cancelled .sla-time,
+.wp-list-table tr.status-wc-cancelled .sla-time,
+.wp-list-table tr.status-wc-pending .sla-time {
     display: none;
 }
 .wp-list-table tr.status-wc-osc-delivered {
@@ -29,4 +33,10 @@
 }
 .wp-list-table tr.due-soon .sla-time {
     background-color:orange;
+}
+.post-type-shop_order .wp-list-table thead th.column-packages_details {
+    width:59px;
+}
+.post-type-shop_order .wp-list-table thead th.column-sla_details {
+    width:135px;
 }

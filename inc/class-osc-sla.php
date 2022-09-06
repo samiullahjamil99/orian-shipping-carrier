@@ -72,7 +72,9 @@ if (!class_exists("OSC_SLA")) {
         public function get_sla_end_datetime($orderid) {
             $order = wc_get_order($orderid);
             $order_details = $order->get_data();
-            $order_date = $order->get_date_created();
+            $order_date = $order->get_date_paid();
+            if (!$order_date)
+                $order_date = $order->get_date_created();
             $pudo_shipping = false;
             foreach($order->get_items("shipping") as $item_key => $item) {
                 if ($item->get_method_id() === orian_shipping()->pudo_method_id)

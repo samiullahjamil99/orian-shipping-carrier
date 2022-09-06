@@ -64,6 +64,9 @@ if (!class_exists('OSC_Meta_Boxes')) {
                 if ($item->get_method_id() === orian_shipping()->pudo_method_id)
                     $pudo_shipping = true;
             }
+            $package_prefix = get_post_meta($order->get_id(), '_osc_package_prefix',true);
+            if (!$package_prefix)
+                $package_prefix = orian_shipping()->legacy_package_prefix;
             ?>
             <?php if ($order_status === "processing"): ?>
             <div style="margin:10px auto;">
@@ -84,8 +87,9 @@ if (!class_exists('OSC_Meta_Boxes')) {
                 <?php endif; ?>
             </div>
             <?php endif; ?>
+            <?php if ($package_statuses): ?>
             <h3 style="text-decoration:underline;"><?php _e('Packages Status','orian-shipping-carrier'); ?></h3>
-            <table style="width:100%;text-align:left;">
+            <table style="width:100%;" class="osc-status-table">
                 <thead>
                     <tr>
                         <th><?php _e('Package Id','orian-shipping-carrier'); ?></th>
@@ -93,17 +97,38 @@ if (!class_exists('OSC_Meta_Boxes')) {
                     </tr>
                 </thead>
                 <tbody>
+                    <?php if(orian_shipping()->isAssoc($package_statuses)): ?>
+                    <?php foreach($package_statuses as $key => $package_status):
+                        $package_status = $package_statuses[$key];
+                        $packagenumber = $i + 1;
+                        ?>
+                        <tr>
+                            <td><?php echo $key; ?></td>
+                            <td><?php echo $package_status ? $wc_statuses['wc-'.$package_status]: ''; ?></td>
+                        </tr>
+                    <?php endforeach; ?>
+                    <?php else: ?>
                     <?php for($i = 0; $i < $numberofpackages; $i++):
                         $package_status = $package_statuses[$i];
                         $packagenumber = $i + 1;
                         ?>
                         <tr>
-                            <td>KKO<?php echo $packagenumber > 1 ? $orderid . 'P' . $packagenumber : $orderid; ?></td>
+                            <td><?php echo $packagenumber > 1 ? $package_prefix . $orderid . 'P' . $packagenumber : $package_prefix . $orderid; ?></td>
                             <td><?php echo $package_status ? $wc_statuses['wc-'.$package_status]: ''; ?></td>
                         </tr>
                     <?php endfor; ?>
+                    <?php endif; ?>
                 </tbody>
             </table>
+            <style>
+                table.osc-status-table {
+                    text-align:left;
+                }
+                .rtl table.osc-status-table {
+                    text-align:right;
+                }
+            </style>
+            <?php endif; ?>
             <?php if (in_array($order_status,orian_shipping()->pdf_labels->allowed_statuses)): ?>
             <h3 style="text-decoration:underline;"><?php _e('PDF Labels','orian-shipping-carrier'); ?></h3>
             <div style="margin:10px auto;">
@@ -171,7 +196,7 @@ if (!class_exists('OSC_Meta_Boxes')) {
                 if ($pdf_status && $pdf_status === "yes")
                     echo "<div style='background-color:green;padding:10px;color:white;text-align:center;'>".__('Printed','orian-shipping-carrier')."</div>";
                 else
-                    echo "<div style='background-color:gray;padding:10px;color:white;text-align:center;'>".__('Not Sent','orian-shipping-carrier')."</div>";
+                    echo "<div style='background-color:gray;padding:10px;color:white;text-align:center;'>".__('Not Printed','orian-shipping-carrier')."</div>";
             }
         }
     }

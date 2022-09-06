@@ -1,7 +1,7 @@
 <?php
 if (!class_exists('OSC_PDF_Labels')) {
     class OSC_PDF_Labels {
-        public $allowed_statuses = array('processing','osc-new');
+        public $allowed_statuses = array('osc-new');
         public $pdf_file_properties = array(
             'title' => 'Order Label',
             'author' => 'Samiullah Jamil',
@@ -17,7 +17,7 @@ if (!class_exists('OSC_PDF_Labels')) {
             add_action( 'manage_posts_extra_tablenav', array($this,'admin_order_list_top_bar_button'), 20, 1 );
         }
         public function admin_pdf_scripts() {
-            wp_enqueue_script( 'pdf-generate', plugin_dir_url(OSC_PLUGIN_FILE) . 'assets/js/pdf-generate.js', array( 'jquery' ),'1.0.2' );
+            wp_enqueue_script( 'pdf-generate', plugin_dir_url(OSC_PLUGIN_FILE) . 'assets/js/pdf-generate.js', array( 'jquery' ),orian_shipping()->version );
             wp_localize_script( 'pdf-generate', 'ajax_object',
             array( 'ajax_url' => admin_url( 'admin-ajax.php' ) ) );
         }
@@ -111,8 +111,11 @@ if (!class_exists('OSC_PDF_Labels')) {
                 if ($pudodetails)
                     $billing_business_name = $pudodetails->pudoname;
                 $shipping_remarks = get_post_meta($orderid,'shipping_remarks',true);
+                $package_prefix = get_post_meta($orderid, '_osc_package_prefix',true);
+                if (!$package_prefix)
+                    $package_prefix = orian_shipping()->legacy_package_prefix;
                 for ($packagenumber = 1; $packagenumber <= intval($numberofpackages); $packagenumber++) {
-                    $packageid = "KKO" . $orderid;
+                    $packageid = $package_prefix . $orderid;
                     if ($packagenumber > 1)
                         $packageid .= "P".$packagenumber;
                     $pdf->AddPage();
@@ -197,10 +200,10 @@ if (!class_exists('OSC_PDF_Labels')) {
 		}
         public function add_pdf_main_section($pdf,$data = array()) {
             $pdf->SetFont('heebomedium', '', 15, '', false);
-            $html = "<p>עבור: ".$this->limit_pdf_string_characters($data['billing_business_name'], 29)."</p>";
+            $html = "<p>עבור: ".$this->limit_pdf_string_characters($data['billing_business_name'], 20)."</p>";
             $pdf->writeHTMLCell(0, 0, '', '34.5', $html, 0, 1, 0, true, '', true);
             $pdf->SetFont('heebo', '', 12, '', false);
-            $html = "<p>רחוב: ".$this->limit_pdf_string_characters($data['billing_address'], 37)."</p>";
+            $html = "<p>רחוב: ".$this->limit_pdf_string_characters($data['billing_address'], 36)."</p>";
             $pdf->writeHTMLCell(0, 0, '', '40.5', $html, 0, 1, 0, true, '', true);
             $html = "<p>עיר: ".$this->limit_pdf_string_characters($data['billing_city'], 37)."</p>";
             $pdf->writeHTMLCell(0, 0, '', '45.5', $html, 0, 1, 0, true, '', true);

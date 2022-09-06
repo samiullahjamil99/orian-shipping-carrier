@@ -9,6 +9,19 @@ if (!class_exists('OSC_Woocommerce_Order_Actions')) {
             add_action( 'woocommerce_order_action_osc_send_order_to_carrier', array($this, 'osc_process_carrier_order') );
             add_filter( 'bulk_actions-edit-shop_order', array($this, 'osc_bulk_actions') );
             add_action( 'admin_action_osc_send_orders', array($this,'bulk_process_send_orders') );
+            add_action( 'manage_posts_extra_tablenav', array($this,'admin_order_list_top_bar_button'), 20, 1 );
+        }
+        function admin_order_list_top_bar_button( $which ) {
+            global $typenow;
+
+            if ( 'shop_order' === $typenow && 'top' === $which && $_GET['post_status'] === "wc-processing" ) {
+                ?>
+                <div class="alignleft actions custom">
+                    <button type="button" onclick="osc_send_order_bulk(this)" name="orian_send_orders" style="height:32px;" class="button" value=""><?php
+                        _e( 'Send Orders to Carrier', 'orian-shipping-carrier' ); ?></button>
+                </div>
+                <?php
+            }
         }
         public function add_order_meta_box_actions($actions) {
             global $theorder;
@@ -34,14 +47,16 @@ if (!class_exists('OSC_Woocommerce_Order_Actions')) {
                     $numberofpackages = 1;
                 $response = osc_api()->generate_transportation_order($order->get_id(), $numberofpackages);
             }
-            if ($response['status'] == 200 && $response['success'] === "true")
-            $order->update_status("wc-osc-new");
-            if ($numberofpackages > 1) {
-                $extra_statuses = array();
-                for ($i = 1; $i < $numberofpackages; $i++) {
-                    $extra_statuses[] = 'osc-new';
+            if ($response['status'] == 200 && $response['success'] === "true") {
+                $order->update_status("wc-osc-new");
+                $orian_statuses = array();
+                for ($i = 1; $i <= $numberofpackages; $i++) {
+                    $packagename = orian_shipping()->package_prefix . $order->get_id();
+                    if ($i > 1)
+                        $packagename = orian_shipping()->package_prefix . $order->get_id().'P'.$i;
+                    $orian_statuses[$packagename] = 'osc-new';
                 }
-                update_post_meta($order->get_id(), '_osc_packages_statues',$extra_statuses);
+                update_post_meta($order->get_id(), '_osc_packages_statues',$orian_statuses);
             }
         }
         public function osc_bulk_actions( $bulk_actions ) {

@@ -4,7 +4,7 @@ if (!class_exists('OSC_Woocommerce_Order_Status')) {
         public $orian_statuses = array(
             'new' => 'wc-osc-new',
             'loaded' => 'wc-osc-loaded',
-            'delivered' => array('home'=>'wc-osc-delivered','pudo'=>'wc-osc-customer-pickedup'),
+            'delivered' => array('home'=>'wc-osc-delivered','pudo'=>'wc-osc-picked'),
             'lost' => 'wc-osc-lost',
             'offloaded' => 'wc-osc-offloaded',
             'pickedup' => array('home'=>'wc-osc-pickedup-home','pudo' =>'wc-osc-pickedup-pudo'),
@@ -43,7 +43,7 @@ if (!class_exists('OSC_Woocommerce_Order_Status')) {
                 'exclude_from_search'       => false,
                 'label_count'               => _n_noop( 'Delivered to Home <span class="count">(%s)</span>', 'Delivered to Home <span class="count">(%s)</span>','orian-shipping-carrier' )
             ) );
-            register_post_status( 'wc-osc-customer-pickedup', array(
+            register_post_status( 'wc-osc-picked', array(
                 'label'                     => __("Picked from Pudo",'orian-shipping-carrier'),
                 'public'                    => true,
                 'show_in_admin_status_list' => true,
@@ -104,8 +104,8 @@ if (!class_exists('OSC_Woocommerce_Order_Status')) {
             $output_statuses = $order_statuses;
             $output_statuses['wc-osc-new'] = __('New','orian-shipping-carrier');
             $output_statuses['wc-osc-loaded'] = __('Loaded','orian-shipping-carrier');
-            $output_statuses['wc-osc-delivered'] = __('Delivered','orian-shipping-carrier');
-            $output_statuses['wc-osc-customer-pickedup'] = __('Picked from Pudo','orian-shipping-carrier');
+            $output_statuses['wc-osc-delivered'] = __('Delivered to Home','orian-shipping-carrier');
+            $output_statuses['wc-osc-picked'] = __('Picked from Pudo','orian-shipping-carrier');
             $output_statuses['wc-osc-lost'] = __('Lost','orian-shipping-carrier');
             $output_statuses['wc-osc-offloaded'] = __('Offloaded','orian-shipping-carrier');
             $output_statuses['wc-osc-pickedup-home'] = __('Picked Up (Home Delivery)','orian-shipping-carrier');

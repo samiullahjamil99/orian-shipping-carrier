@@ -13,6 +13,7 @@ function orian_shipping_init() {
     add_settings_field( 'orian_nonbusiness_days', __('Non Business Days','orian-shipping-carrier'),'orian_multi_date_field_cb','orian_general','orian_main',array('label_for' => 'nonbusiness_days','class'=>'orian_nonbusiness_days') );
     add_settings_field( 'orian_businessday_end', __('Business Day End Time','orian-shipping-carrier'),'orian_common_time_field_cb','orian_general','orian_main',array('label_for' => 'businessday_end','class'=>'orian_businessday_end') );
     add_settings_field( 'orian_label_logo', __('PDF Label Logo','orian-shipping-carrier'),'orian_media_uploader_cb','orian_general','orian_main',array('label_for' => 'label_logo','class'=>'orian_label_logo') );
+    add_settings_field( 'orian_package_prefix', __('Package Name Prefix', 'orian-shipping-carrier'), 'orian_common_text_field_cb', 'orian_general', 'orian_main', array( 'label_for' => 'packageprefix', 'class' => 'orian_packageprefix') );
     add_settings_section( 'orian_source', __('Orian Source Settings','orian-shipping-carrier'),'orian_source_description_html','orian_general' );
     add_settings_field( 'orian_source_sitename', __('SITENAME','orian-shipping-carrier'),'orian_common_text_field_cb','orian_general','orian_source',array('label_for' => 'source_sitename','class'=>'orian_source_sitename') );
     add_settings_field( 'orian_source_street1', __('STREET1','orian-shipping-carrier'),'orian_common_text_field_cb','orian_general','orian_source',array('label_for' => 'source_street1','class'=>'orian_source_street1') );
@@ -28,8 +29,7 @@ add_action('admin_init','orian_shipping_init');
 
 function orian_sanitize_settings_callback( $input ) {
     $output = $input;
-    if ($input['source_sitename'] === "abc")
-        $output['source_sitename'] = "abc1";
+    osc_api()->logout();
     return $output;
 }
 
@@ -220,8 +220,8 @@ function orian_include_admin_js() {
 		wp_enqueue_media();
 	}
  
- 	wp_enqueue_script( 'oscuploadscript', plugin_dir_url(OSC_PLUGIN_FILE) . 'assets/js/admin-media-upload.js', array( 'jquery' ) );
-    wp_enqueue_script( 'multi-date', plugin_dir_url(OSC_PLUGIN_FILE) . 'assets/js/multi-date-select.js', array( 'jquery' ) );
-    wp_enqueue_style( 'multi-date', plugin_dir_url(OSC_PLUGIN_FILE) . 'assets/css/multi-date-select.css');
+ 	wp_enqueue_script( 'oscuploadscript', plugin_dir_url(OSC_PLUGIN_FILE) . 'assets/js/admin-media-upload.js', array( 'jquery' ),orian_shipping()->version );
+    wp_enqueue_script( 'multi-date', plugin_dir_url(OSC_PLUGIN_FILE) . 'assets/js/multi-date-select.js', array( 'jquery' ),orian_shipping()->version );
+    wp_enqueue_style( 'multi-date', plugin_dir_url(OSC_PLUGIN_FILE) . 'assets/css/multi-date-select.css',array(),orian_shipping()->version);
 }
 add_action( 'admin_enqueue_scripts', 'orian_include_admin_js' );

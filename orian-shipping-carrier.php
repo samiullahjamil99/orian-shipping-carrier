@@ -1,13 +1,9 @@
 <?php
-/**
- * @package Orian_Shipping_Carrier
- * @version 1.0.0
- */
 /*
 Plugin Name: Orian Shipping Carrier
 Description: This plugin is developed integrate Orian Shipping Carrier API to Woocommerce.
 Author: Samiullah Jamil
-Version: 1.0.0
+Version: 2.0.1
 Author URI: https://www.samiullahjaml.com/about-me/
 Domain Path: /i18n/languages
 */
@@ -123,18 +119,17 @@ function osc_pudo_script() {
 					if (pointval == pudocontactid) {
 						var pudotype = "";
 						if (pudo_points[i]['pudotype'] == 1)
-						pudotype = "Store";
+						pudotype = '<?php _e("Store","orian-shipping-carrier"); ?>';
 						else if (pudo_points[i]['pudotype'] == 2)
-						pudotype = "Locker";
+						pudotype = '<?php _e("Locker","orian-shipping-carreir"); ?>';
 						var accessibility = "";
 						if (pudo_points[i]['accessibility'] === "True")
-							accessibility = "Yes";
+							accessibility = '<?php _e("Yes","orian-shipping-carreir"); ?>';
 						else
-							accessibility = "No";
+							accessibility = '<?php _e("No","orian-shipping-carreir"); ?>';
 						var pudo_details = '<p><?php _e("Pudo Name","orian-shipping-carrier"); ?>: '+pudo_points[i]['pudoname']+'</p>';
 						pudo_details += '<p><?php _e("Pudo Address","orian-shipping-carrier"); ?>: '+pudo_points[i]['pudoaddress']+'</p>';
 						pudo_details += '<p><?php _e("Pudo City","orian-shipping-carrier"); ?>: '+pudo_points[i]['pudocity']+'</p>';
-						pudo_details += '<p><?php _e("Pudo Type","orian-shipping-carrier"); ?>: '+pudotype+'</p>';
 						if (pudotype === "Store") {
 							var workinghours = "";
 							var workinghoursarr = pudo_points[i]['workinghours'];
@@ -148,12 +143,13 @@ function osc_pudo_script() {
 								'<?php _e("Saturday","orian-shipping-carrier"); ?>',
 							];
 							for (var i = 0; i < workinghoursarr.length; i++) {
-								workinghours += "<br>"+days[i] + ": " + workinghoursarr[i][0] + " - " + workinghours[i][1];
+								workinghours += "<br>"+days[i] + ": " + workinghoursarr[i][0] + " - " + workinghoursarr[i][1];
 							}
 							pudo_details += '<p><?php _e("Working Hours","orian-shipping-carrier"); ?>: '+workinghours+'</p>';
 						} else {
 							pudo_details += '<p><?php _e("Working Hours","orian-shipping-carrier"); ?>: 24/7</p>';
 						}
+						pudo_details += '<p><?php _e("Pudo Type","orian-shipping-carrier"); ?>: '+pudotype+'</p>';
 						pudo_details += '<p><?php _e("Accessibility","orian-shipping-carrier"); ?>: '+accessibility+'</p>';
 						jQuery("#selectedpudodetails").html(pudo_details);
 						jQuery("#pudo_details").val(JSON.stringify(pudo_points[i]));
@@ -162,6 +158,18 @@ function osc_pudo_script() {
 			});
 		});
 	</script>
+	<style>
+		.woocommerce-shipping-methods .eta {
+			margin-left:24px;
+		}
+		.rtl .woocommerce-shipping-methods .eta {
+			margin-right:24px;
+			margin-left:0px;
+		}
+		#selectedpudodetails p {
+			margin-bottom:15px;
+		}
+	</style>
 	<?php
 	endif;
 }

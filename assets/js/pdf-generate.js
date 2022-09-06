@@ -8,7 +8,7 @@ function osc_pdf_generate(clickel,orderid) {
         if (response) {
         var pdfWindow = window.open("");
         pdfWindow.document.write(
-            "<title>Orian Labels</title><iframe width='100%' height='100%' src='data:application/pdf;base64, "+response+"'></iframe>"
+            "<title>מדבקות אוריין</title><iframe width='100%' height='100%' src='data:application/pdf;base64, "+response+"'></iframe>"
         );
         /*var pdfWindowLink = document.createElement('a');
         document.body.appendChild(pdfWindowLink);
@@ -36,7 +36,7 @@ function osc_pdf_generate_bulk(clickel) {
         if (response) {
         var pdfWindow = window.open("");
         pdfWindow.document.write(
-            "<title>Orian Labels</title><iframe width='100%' height='100%' src='data:application/pdf;base64, "+response+"'></iframe>"
+            "<title>מדבקות אוריין</title><iframe width='100%' height='100%' src='data:application/pdf;base64, "+response+"'></iframe>"
         );
         /*var pdfWindowLink = document.createElement('a');
         document.body.appendChild(pdfWindowLink);

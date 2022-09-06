@@ -2,6 +2,7 @@
 if (!class_exists('Orian_Shipping')) {
     final class Orian_Shipping {
         protected static $_instance = null;
+        public $version = '2.0.1';
         public $api;
         public $order_status;
         public $order_actions;
@@ -11,6 +12,8 @@ if (!class_exists('Orian_Shipping')) {
         public $meta_boxes;
         public $home_method_id = "orian_delivery_shipping";
         public $pudo_method_id = "orian_pudo_shipping";
+        public $package_prefix = "KKO";
+        public $legacy_package_prefix = "KKO";
         public static function instance() {
             if (is_null(self::$_instance)) {
                 self::$_instance = new self();
@@ -43,12 +46,15 @@ if (!class_exists('Orian_Shipping')) {
             $this->sla = new OSC_SLA();
             $this->pdf_labels = new OSC_PDF_Labels();
             $this->meta_boxes = new OSC_Meta_Boxes();
+            $options = get_option('orian_main_setting');
+            if ($options['packageprefix'])
+                $this->package_prefix = $options['packageprefix'];
         }
         public function admin_scripts() {
-            wp_enqueue_script( 'order-actions', plugin_dir_url(OSC_PLUGIN_FILE) . 'assets/js/order-actions.js', array( 'jquery' ),'1.0.1' );
+            wp_enqueue_script( 'order-actions', plugin_dir_url(OSC_PLUGIN_FILE) . 'assets/js/order-actions.js', array( 'jquery' ),$this->version );
             wp_localize_script( 'order-actions', 'ajax_object',
             array( 'ajax_url' => admin_url( 'admin-ajax.php' ) ) );
-            wp_enqueue_style( 'orders-page', plugin_dir_url(OSC_PLUGIN_FILE) . 'assets/css/orders-page.css', array(),'1.0.1' );
+            wp_enqueue_style( 'orders-page', plugin_dir_url(OSC_PLUGIN_FILE) . 'assets/css/orders-page.css', array(),$this->version );
         }
         public function osc_shipping_init() {
             include_once dirname(OSC_PLUGIN_FILE) . '/inc/shipping-methods/class-osc-delivery-shipping.php';
@@ -69,34 +75,39 @@ if (!class_exists('Orian_Shipping')) {
                 $far_destination = true;
             }
             $chosen_method = isset( WC()->session->chosen_shipping_methods[ $i ] ) ? WC()->session->chosen_shipping_methods[ $i ] : '';
-            if ($method->method_id === $this->pudo_method_id && $method->id === $chosen_method) {
+            if ($method->method_id === $this->pudo_method_id/* && $method->id === $chosen_method*/) {
                 $delivery_dates = $this->sla->get_delivery_date('pudo');
                 if ($delivery_dates[0] !== $delivery_dates[1]) {
-                    echo '<p>';
-                    printf(__('Estimated Delivery Between %1$s and %2$s','orian-shipping-carrier'), $delivery_dates[0], $delivery_dates[1]);
+                    echo '<p class="eta">';
+                    printf(__('Available for pick up between %1$s to %2$s','orian-shipping-carrier'), $delivery_dates[0], $delivery_dates[1]);
                     echo '</p>';
                 } else {
-                    echo '<p>';
-                    printf(__('Estimated Delivery On %1$s','orian-shipping-carrier'), $delivery_dates[0]);
+                    echo '<p class="eta">';
+                    printf(__('Available for pick up on %1$s','orian-shipping-carrier'), $delivery_dates[0]);
                     echo '</p>';
                 }
-            osc_pudo_fields_html();
-            } elseif ($method->method_id === $this->home_method_id && $method->id === $chosen_method) {
+				if ($method->id === $chosen_method)
+            		osc_pudo_fields_html();
+            } elseif ($method->method_id === $this->home_method_id/* && $method->id === $chosen_method*/) {
                 if ($far_destination) {
                     $delivery_dates = $this->sla->get_delivery_date('far');
                 } else {
                     $delivery_dates = $this->sla->get_delivery_date('home');
                 }
                 if ($delivery_dates[0] !== $delivery_dates[1]) {
-                    echo '<p>';
+                    echo '<p class="eta">';
                     printf(__('Estimated Delivery Between %1$s and %2$s','orian-shipping-carrier'), $delivery_dates[0], $delivery_dates[1]);
                     echo '</p>';
                 } else {
-                    echo '<p>';
+                    echo '<p class="eta">';
                     printf(__('Estimated Delivery On %1$s','orian-shipping-carrier'), $delivery_dates[0]);
                     echo '</p>';
                 }
             }
+        }
+        public function isAssoc(array $arr) {
+            if (array() === $arr) return false;
+            return array_keys($arr) !== range(0, count($arr) - 1);
         }
     }
 }

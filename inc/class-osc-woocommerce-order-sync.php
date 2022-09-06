@@ -32,45 +32,47 @@ if (!class_exists('OSC_Woocommerce_Order_Sync')) {
         public function osc_order_sync_callback() {
             $orders = wc_get_orders(array(
                 'limit' => -1,
-                'status' => array('osc-new','osc-loaded','osc-offloaded','osc-pickedup','osc-lost'),
+                'status' => array('osc-new','osc-loaded','osc-offloaded','osc-lost','wc-osc-pickedup-home','wc-osc-pickedup-pudo','wc-osc-dropedatpudo'),
             ));
             foreach($orders as $order) {
                 $number_of_packages = get_post_meta($order->get_id(),'number_of_packages',true);
-                $packages_statuses = get_post_meta($order->get_id(),'_osc_packages_statues',true);
+                $package_prefix = get_post_meta($order->get_id(), '_osc_package_prefix',true);
+                if (!$package_prefix)
+                    $package_prefix = orian_shipping()->legacy_package_prefix;
                 $pudo_shipping = false;
                 foreach($order->get_items("shipping") as $item_key => $item) {
                     if ($item->get_method_id() === orian_shipping()->pudo_method_id)
                         $pudo_shipping = true;
                 }
-                $new_packages_statuses = $packages_statuses;
+                $new_packages_statuses = array();
                 $carrier_response = orian_shipping()->api->get_transportation_order_status($order->get_id());
                 if ($carrier_response['status'] == 200) {
                     $woocommerce_status = orian_shipping()->order_status->compare_carrier_order_status($carrier_response['package_status'],$pudo_shipping);
-                    if ($woocommerce_status && $woocommerce_status !== "wc-".$order->get_status()) {
-                        $order->update_status($woocommerce_status);
+                    if ($woocommerce_status) {
+                        if ($woocommerce_status !== "wc-".$order->get_status())
+                            $order->update_status($woocommerce_status);
                         $woocommerce_status_array = explode('-',$woocommerce_status,2);
                         $woocommerce_status = $woocommerce_status_array[1];
-                        $new_packages_statuses[0] = $woocommerce_status;
+                        $packagename = $package_prefix . $order->get_id();
+                        $new_packages_statuses[$packagename] = $woocommerce_status;
                     }
                 }
                 if ($number_of_packages && intval($number_of_packages) > 1) {
 
-                    if ($packages_statuses) {
                         for ($i = 2; $i <= $number_of_packages; $i++) {
-                            $packages_status = $packages_statuses[$i];
                             $carrier_response = orian_shipping()->api->get_transportation_order_status($order->get_id(),$i);
                             if ($carrier_response['status'] == 200) {
                                 $woocommerce_status = orian_shipping()->order_status->compare_carrier_order_status($carrier_response['package_status'],$pudo_shipping);
-                                if ($woocommerce_status && $woocommerce_status !== 'wc-'.$packages_status) {
+                                if ($woocommerce_status) {
                                     $woocommerce_status_array = explode('-',$woocommerce_status,2);
                                     $woocommerce_status = $woocommerce_status_array[1];
-                                    $new_packages_statuses[$i - 1] = $woocommerce_status;
+                                    $packagename = $package_prefix . $order->get_id().'P'.$i;
+                                    $new_packages_statuses[$packagename] = $woocommerce_status;
                                 }
                             }
-                            $packages_status_index++;
+                            //$packages_status_index++;
                         }
                         update_post_meta($order->get_id(),'_osc_packages_statues',$new_packages_statuses);
-                    }
                 }
             }
             $processingorders = wc_get_orders(array(
